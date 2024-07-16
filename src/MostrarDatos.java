@@ -11,7 +11,7 @@ public class MostrarDatos {
             conexion = ConexionBD.obtenerConexion();
             
             // Ejemplo de consulta
-            String consulta = "SELECT * FROM salones";
+            String consulta = "SELECT * FROM evento";
             //la consulta se hace en tipo string que pasa a instruccion en el statement
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
@@ -19,12 +19,9 @@ public class MostrarDatos {
             // Iterar sobre el resultado
             while (resultado.next()) {
                 // Obtener datos
-                int id = resultado.getInt("id");
+                int numero = resultado.getInt("numero");
                 String nombre = resultado.getString("nombre");
-                Double precio = resultado.getDouble("precio");
-                int Patrones = resultado.getInt("acomodo");
-                // Hacer algo con los datos, por ejemplo, imprimirlos
-                System.out.println("ID: " + id + ", Nombre: " + nombre + ", Precio por Noche: " + precio + ", Patron de mesa: " + Patrones);
+                System.out.println("Numero: " + numero + ", Nombre: " + nombre);
             }
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());

@@ -33,11 +33,10 @@ public class main {
 
             switch (Opcion) {
                 case 1:
-                    System.out.println("Inicia sesion");
-                    //InicioSesion User = new InicioSesion();
-                    //User.InicioSesion();
+                InsertarDatos data = new InsertarDatos();
+                data.insertarDatosSalon();
+                break;
                     
-                    break;
                 case 2:
                     System.out.println("Bienvenido al sisema para registrarse en nuestro salon de eventos /nombre/");
                     
