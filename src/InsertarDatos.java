@@ -18,18 +18,14 @@ public class InsertarDatos {
             // Solicitar datos al usuario
             Scanner insert = new Scanner(System.in);
             
-            System.out.println("Ingrese el número del evento:");
-            int id = insert.nextInt();
-            insert.nextLine(); // Consumir el salto de línea pendiente
-            
             System.out.println("Ingrese el nombre del evento:");
             String nombre = insert.nextLine();
 
             // Crear la consulta preparada
-            String consulta = "INSERT INTO evento (numero, nombre) VALUES (?, ?)";
+            String consulta = "INSERT INTO evento (numero, nombre) VALUES (null, ?)";
             PreparedStatement statement = conexion.prepareStatement(consulta);
-            statement.setInt(1, id);
-            statement.setString(2, nombre);
+            //statement.setInt(1, id);
+            statement.setString(1, nombre);
 
             // Ejecutar la consulta
             int filasAfectadas = statement.executeUpdate();

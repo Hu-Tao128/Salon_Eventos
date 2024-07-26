@@ -14,43 +14,65 @@ public class main {
             System.out.println("================================");
             System.out.println("|              Menu             |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       1) Iniciar Sesion       |");
+            System.out.println("|        1) Ver mi Evento       |");
             System.out.println("|-------------------------------|");
             System.out.println("|         2) Registrarse        |");
             System.out.println("|-------------------------------|");
-            System.out.println("|   3) Ver Servicios y Salones  |");
+            System.out.println("|    3) Ver Eventos y Salones   |");
             System.out.println("|-------------------------------|");
             System.out.println("|            4) Salir           |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
 
             Validar = Leer.next();
-            //popn variable string y co try catch validas si se puede convertir a entero
 
             try {
                 Opcion = Integer.parseInt(Validar);
 
+                switch (Opcion) {
+                    case 1:
+                        
+                        break;
+                    case 2:
 
-            switch (Opcion) {
-                case 1:
-                InsertarDatos data = new InsertarDatos();
-                data.insertarDatosSalon();
-                break;
-                    
-                case 2:
-                    System.out.println("Bienvenido al sisema para registrarse en nuestro salon de eventos /nombre/");
-                    
-                    
-                    break;
-                case 3:
-                    InsertarDatos datos = new InsertarDatos();
-                    datos.insertarDatosSalon();
-                    break;
+                        break;
+                    case 3:
+                        System.out.println("Elige una opcion: ");
+                        System.out.println("1. Comenzar una renta del salon");
+                        System.out.println("2. Mostrar eventos de salones");
+                        System.out.println("3. Regresar");
+                        Opcion = Leer.nextInt();
+
+                        switch (Opcion) {
+                            case 1:
+                                MostrarSalones salones = new MostrarSalones();
+                                salones.MostrarSalones();   
+                                
+                                break;
+                        
+                            case 2:
+                                MostrarEventos eventos = new MostrarEventos();
+                                eventos.MostrarEventos();
+                                break;
+                        
+                            case 3:
+                                
+                                break;
+
+                            case 4:
+                                
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 4:
+                        System.out.println("Que tenga buen dia :)");
+                        break;
             
-                default:
-                    System.out.println("Por favor use una de las opciones anteriores");
-                    break;
-            }
+                    default:
+                        break;
+                }
 
             } catch (Exception e) {
                 System.out.println("Ingrese Numeros por favor");
