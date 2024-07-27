@@ -40,7 +40,30 @@ public class Salent {
                         NoCliente = registrarse.Formulario();
                         break;
                     case 3:
+                        String admin = "papa";
+                        String admin1 = "";
 
+                        String  pass = "no";
+                        String pass1 = "no";
+                        System.out.println("Bienvenido a la vista de administrador");
+
+                        
+                            do{
+                                System.out.println("Ingrese la contraseña para ingresar a la vista de administrador");
+                                admin1 = Leer.nextLine();
+                                
+                                if(!admin1.equals(admin)){
+                                    System.out.println("Quieres salir de este apartado? (si/no)");
+                                    pass = Leer.nextLine();
+                                }
+                            }while (!admin1.equals(admin) && pass.equals(pass1));
+
+                            if(admin1.equals(admin)){
+                                System.out.println("Inicio de sesion exitoso");
+
+                                administradorMain data1 = new administradorMain();
+                                data1.menuAdministrador();
+                            }
                         break;
                     case 0:
                         System.out.println("Que tenga buen dia :)");
