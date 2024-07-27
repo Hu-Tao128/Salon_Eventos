@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class main {
+public class Salent {
 
     public static void main(String[] args) {
         Scanner Leer = new Scanner(System.in);
@@ -80,16 +80,17 @@ public class main {
                             break;
                         case 2:
                             MostrarSalones salones = new MostrarSalones();
-                            salones.MostrarSalones();
+                            salones.showSalones();
                                     
                             break;
                         case 3:
                             MostrarEventos eventos = new MostrarEventos();
-                            eventos.MostrarEventos();
+                            eventos.showEventos();
 
                             break;
                         case 0:
                             System.out.println("Que tenga buen dia :)");
+                            Leer.close();
                             break;
                 
                         default:
