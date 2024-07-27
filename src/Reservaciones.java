@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class verMisReservaciones {
+public class Reservaciones {
     public void verMisReservaciones(int NoCliente){
         System.out.println("Aqui se muestran las reservaciones que tiene registradas");
 

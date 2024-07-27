@@ -9,7 +9,7 @@ public class ValidarCuenta {
     private String Apellido;
     private String nombreFiscal;
 
-    public int ValidarCuenta(int id){
+    public int validarID(int id){
         Connection connection = null;
 
         try {

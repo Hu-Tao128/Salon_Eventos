@@ -49,6 +49,8 @@ public class AgregarCliente {
         } while (opcion.equals("S") || opcion.equals("s"));
 
         try {
+
+            connection = ConexionBD.obtenerConexion();
             
             String agregarUsuario = "INSERT INTO cliente (numero, nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email) VALUES (null, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(agregarUsuario);
@@ -68,8 +70,12 @@ public class AgregarCliente {
 
         } catch (SQLException e) {
             System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
+        }finally {
+            // Cerrar la conexión
+            ConexionBD.cerrarConexion(connection);
         }
 
+        datos.close();
         return NoCliente;
     }
     

@@ -16,8 +16,10 @@ public class MostrarSalones {
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            // Iterar sobre el resultado
-            while (resultado.next()) {
+            System.out.printf("%-10s %-20s %-10s %-10s %-10s %-20s %-20s %-10s\n", 
+            "Numero", "Nombre", "Capacidad", "Tamaño", "Precio", "Colonia", "Calle", "Numero");
+
+                while (resultado.next()) {
                 // Obtener datos
                 int numero = resultado.getInt("numero");
                 String nombre = resultado.getString("nombre");
@@ -27,8 +29,12 @@ public class MostrarSalones {
                 String dirColonia = resultado.getString("dirColonia");
                 String dirCalle = resultado.getString("dirCalle");
                 String dirNumero = resultado.getString("dirNumero");
-                System.out.println("Numero: " + numero + ", Nombre: " + nombre + ", Capacidad: " + capacidad + ", Tamanio: " + tamanio + ", Precio: " + precio);
-            }
+
+                // Imprimir datos en forma de tabla
+                System.out.printf("%-10d %-20s %-10d %-10.2f %-10d %-20s %-20s %-10s\n", 
+                                numero, nombre, capacidad, tamanio, precio, dirColonia, dirCalle, dirNumero);
+                }
+
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
         } finally {

@@ -22,7 +22,7 @@ public class Cuenta {
                     int ID = leer.nextInt();
 
                     ValidarCuenta NumCliente = new ValidarCuenta();
-                    NoCliente = NumCliente.ValidarCuenta(ID);
+                    NoCliente = NumCliente.validarID(ID);
 
                     break;
                 case 2:

@@ -58,7 +58,7 @@ public class Salent {
                 System.out.println("================================");
                 System.out.println("|              Menu             |");
                 System.out.println("|-------------------------------|");
-                System.out.println("|        1) Ver mi Evento       |");
+                System.out.println("|      1) Ver mis Eventos       |");
                 System.out.println("|-------------------------------|");
                 System.out.println("|         2) Ver Salones        |");
                 System.out.println("|-------------------------------|");
@@ -75,7 +75,7 @@ public class Salent {
     
                     switch (Opcion) {
                         case 1:
-                            verMisReservaciones reservaciones = new verMisReservaciones();
+                            Reservaciones reservaciones = new Reservaciones();
                             reservaciones.verMisReservaciones(NoCliente);
                             break;
                         case 2:
