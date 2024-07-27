@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class MostrarEventos {
-    public void MostrarEventos() {
+    public void showEventos() {
         Scanner leer = new Scanner(System.in);
         int opcion;
         int evento = 0;
@@ -137,6 +137,7 @@ public class MostrarEventos {
         } finally {
             // Cerrar la conexión
             ConexionBD.cerrarConexion(conexion);
+            leer.close();
         }
     }
 }

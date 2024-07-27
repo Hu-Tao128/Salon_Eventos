@@ -38,6 +38,7 @@ public class InsertarDatos {
             // Cerrar recursos
             statement.close();
             conexion.close();
+            insert.close();
         } catch (SQLException e) {
             System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
         }

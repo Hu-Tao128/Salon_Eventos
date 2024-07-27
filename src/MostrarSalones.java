@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MostrarSalones {
-    public void MostrarSalones() {
+    public void showSalones() {
         Connection conexion = null;
         try {
             // Obtener la conexión
