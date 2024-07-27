@@ -18,7 +18,7 @@ public class ConexionBD {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Establecer la conexión
             conexion = DriverManager.getConnection(URL, USUARIO, CONTRASEÑA);
-            System.out.println("Conexión exitosa a la base de datos");
+            //System.out.println("Conexión exitosa a la base de datos");
         } catch (ClassNotFoundException e) {
             System.out.println("Error al cargar el controlador JDBC: " + e.getMessage());
             //en caso que no encuentre el controlador o driver
@@ -36,7 +36,7 @@ public class ConexionBD {
             //cuando la conexion este abierta, osea no es nula
             try {
                 conexion.close();
-                System.out.println("Conexión cerrada correctamente");
+                //System.out.println("Conexión cerrada correctamente");
             } catch (SQLException e) {
                 System.out.println("Error al cerrar la conexión: " + e.getMessage());
             }

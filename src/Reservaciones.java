@@ -33,7 +33,22 @@ public class Reservaciones {
                 statement.setInt(1, NoCliente);
                 ResultSet resultado = statement.executeQuery();
 
+                boolean reservaciones = false;
+                //boleano para validar si hay o no reservaciones
+                
+                System.out.printf("%-20s %-15s %-30s %-20s %-20s %-40s %-20s %-20s %-20s\n", 
+                    "Fecha Reservación", "Hora Reservación", "Nombre del Cliente", 
+                    "Tipo de Evento", "Nombre del Salón", "Dirección del Salón", 
+                    "Tipo de Montaje", "Cantidad de Invitados", "Costo Total del Evento");
+                
+                System.out.printf("%-20s %-15s %-30s %-20s %-20s %-40s %-20s %-20s %-20s\n", 
+                    "--------------------", "---------------", "------------------------------", 
+                    "--------------------", "--------------------", "----------------------------------------", 
+                    "--------------------", "--------------------", "--------------------");
+                
                 while (resultado.next()) {
+                    reservaciones = true;
+                
                     String fechaReservacion = resultado.getString("FechaReservacion");
                     String horaReservacion = resultado.getString("HoraReservacion");
                     String nombreCliente = resultado.getString("NombreCliente");
@@ -43,17 +58,16 @@ public class Reservaciones {
                     String tipoMontaje = resultado.getString("TipoMontaje");
                     int cantidadInvitados = resultado.getInt("CantidadInvitados");
                     float costoTotalEvento = resultado.getFloat("CostoTotalEvento");
-
-                    System.out.println("\nFecha de Reservación: " + fechaReservacion);
-                    System.out.println("Hora de Reservación: " + horaReservacion);
-                    System.out.println("Nombre del Cliente: " + nombreCliente);
-                    System.out.println("Tipo de Evento: " + tipoEvento);
-                    System.out.println("Nombre del Salón: " + nombreSalon);
-                    System.out.println("Dirección del Salón: " + direccionSalon);
-                    System.out.println("Tipo de Montaje: " + tipoMontaje);
-                    System.out.println("Cantidad de Invitados: " + cantidadInvitados);
-                    System.out.println("Costo Total del Evento: " + costoTotalEvento + "\n");
+                
+                    System.out.printf("%-20s %-15s %-30s %-20s %-20s %-40s %-20s %-20d %-20.2f\n", 
+                        fechaReservacion, horaReservacion, nombreCliente, tipoEvento, nombreSalon, 
+                        direccionSalon, tipoMontaje, cantidadInvitados, costoTotalEvento);
                 }
+                
+                if (!reservaciones) {
+                    System.out.println("No tienes reservaciones aún");
+                }
+                
             } catch (SQLException e) {
                 e.printStackTrace();
             }

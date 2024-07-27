@@ -97,7 +97,7 @@ public class ValidarCuenta {
             nombreFiscal = resultado.getString("nombreFiscal");
             NoCliente = resultado.getInt("NoCliente");
 
-            System.out.println("Bienvenido " + Nombres + " " + Apellido + " Representante de " + nombreFiscal);
+            System.out.println("\nBienvenido " + Nombres + " " + Apellido + " Representante de " + nombreFiscal + "\n");
 
         } catch (Exception e) {
             System.out.println("Usuario no encontrado");

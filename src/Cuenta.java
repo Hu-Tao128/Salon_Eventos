@@ -50,9 +50,9 @@ public class Cuenta {
                     System.out.println("Ingrese un numero de la lista por favor");
                     break;
             }
-            leer.close();
-        } while (opcion != 0 || NoCliente != 0);
+        } while (opcion != 0);
 
+        //leer.close();
         return NoCliente;
 
     }
