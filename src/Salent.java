@@ -136,7 +136,6 @@ public class Salent {
                             break;
                         case 0:
                             System.out.println("Que tenga buen dia :)");
-                            Leer.close();
                             break;
                 
                         default:

@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MostrarMontajes {
@@ -37,18 +38,27 @@ public class MostrarMontajes {
                         }
     }    
 
-    public int elegirMontaje(){
+    public int elegirMontaje() {
         Scanner Leer = new Scanner(System.in);
         int ID = 0;
+
         do {
-            System.out.println("Ingresar el numero de salon");
+            System.out.println("Ingresar el número de montaje:");
+
             try {
                 ID = Leer.nextInt();
-            } catch (Exception e) {
-                // TODO: handle exception
-                System.out.println("Ingrese numeros por favor");
+                if (ID <= 0) {
+                    System.out.println("El número de montaje debe ser un número positivo.");
+                    ID = 0; // Resetear ID para asegurar que el bucle continúe
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ingrese números por favor.");
+                Leer.next(); // Limpiar el buffer de entrada
             }
+
         } while (ID == 0);
+
         return ID;
     }
+
 }

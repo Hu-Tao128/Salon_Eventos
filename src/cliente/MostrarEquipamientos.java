@@ -3,6 +3,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class MostrarEquipamientos {
     public void showEquipamientos(int evento){
@@ -36,5 +38,29 @@ public class MostrarEquipamientos {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
+    }
+
+    public int elegirEquipamiento() {
+        Scanner Leer = new Scanner(System.in);
+        int ID = -1;
+        boolean entradaValida = false;
+
+        do {
+            System.out.println("Ingresar el número del equipamiento:");
+            try {
+                ID = Leer.nextInt();
+                Leer.nextLine(); // Limpiar el buffer de entrada
+                entradaValida = true; // Marcar la entrada como válida
+                if (ID <= 0) {
+                    System.out.println("El número del equipamiento debe ser un número positivo.");
+                    ID = -1; // Resetear ID para asegurar que el bucle continúe
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ingrese números por favor.");
+                Leer.nextLine(); // Limpiar el buffer de entrada
+            }
+        } while (!entradaValida);
+
+        return ID;
     }
 }

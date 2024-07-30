@@ -26,10 +26,13 @@ public class AgregarCliente {
         do {
             System.out.println("Tiene una empresa? (s/n)");
             opcion = datos.next();
+            datos.nextLine();
 
             if (opcion.equalsIgnoreCase("s")) {
                 System.out.println("A que nombre de empresa quedaran los eventos?");
                 nombreFiscal = datos.next();
+            }else{
+                nombreFiscal = null;
             }
 
             System.out.println("Ingrese su nombre y segundo nombre (No Apellidos)");
@@ -83,7 +86,6 @@ public class AgregarCliente {
             ConexionBD.cerrarConexion(connection);
         }
 
-        datos.close();
         return NoCliente;
     }
 }

@@ -16,29 +16,19 @@ public class agregarMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       1) cliente              |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       2) disponibilidad       |");
+            System.out.println("|       2) equipamiento         |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       3) equipamiento         |");
+            System.out.println("|       3) evento               |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       4) equipos_eventos      |");
+            System.out.println("|       4) montaje              |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       5) equipos_renta        |");
+            System.out.println("|       5) renta                |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       6) evento               |");
+            System.out.println("|       6) salon                |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       7) montaje              |");
+            System.out.println("|       7) servicios            |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       8) montaje_evento       |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       9) renta                |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       10) salon               |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       11) servicios           |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       12) servicios renta     |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       13) salir               |");
+            System.out.println("|       0) salir                |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
 
@@ -48,19 +38,23 @@ public class agregarMain {
 
                 switch(opcion1){
                     case 1:
-                        
+                        AgregarClienteAdmin data1 = new AgregarClienteAdmin();
+                        data1.agregarClienteF();
                     break;
 
                     case 2:
-                        
+                        AgregarEquipamiento data2 = new AgregarEquipamiento();
+                        data2.agregarEquipamientoF();
                     break;
 
                     case 3:
-
+                        AgregarEvento data3 = new AgregarEvento();
+                        data3.agregarEventoF();
                     break;
 
                     case 4:
-                        
+                        AgregarMontaje data4 = new AgregarMontaje();
+                        data4.agregarMontajeF();
                     break;
 
                     case 5:
@@ -68,34 +62,16 @@ public class agregarMain {
                     break;
 
                     case 6:
-
+                        AgregarSalon data6 = new AgregarSalon();
+                        data6.agregarSalonF();
                     break;
 
                     case 7:
-
+                        AgregarServicios data7 = new AgregarServicios();
+                        data7.agregarServiciosF();
                     break;
 
-                    case 8:
-
-                    break;
-
-                    case 9:
-
-                    break;
-
-                    case 10:
-
-                    break;
-
-                    case 11:
-
-                    break;
-
-                    case 12:
-
-                    break;
-
-                    case 13:
+                    case 0:
                         System.out.println("Saliendo del apartado de agregacion y regresando al menu de administrador");
                     break;
 
@@ -106,7 +82,6 @@ public class agregarMain {
             }catch(Exception e){
                 System.out.println("Ingrese numeros por favor");
             }
-        }while (opcion1 != 13);
-        Leer.close();
+        }while (opcion1 != 0);
     }
 }

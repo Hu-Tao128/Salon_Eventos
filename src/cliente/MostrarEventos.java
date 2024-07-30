@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import conexionDB.ConexionBD;
@@ -45,22 +46,29 @@ public class MostrarEventos {
         } finally {
             // Cerrar la conexión
             ConexionBD.cerrarConexion(conexion);
-            leer.close();
         }
     }
 
-    public int elegirEvento(){
+    public int elegirEvento() {
         Scanner Leer = new Scanner(System.in);
         int IDEvento = 0;
+
         do {
-            System.out.println("Ingresar el numero del evento");
+            System.out.println("Ingresar el número del evento:");
+
             try {
                 IDEvento = Leer.nextInt();
-            } catch (Exception e) {
-                // TODO: handle exception
-                System.out.println("Ingrese numeros por favor");
+                if (IDEvento <= 0) {
+                    System.out.println("El número del evento debe ser un número positivo.");
+                    IDEvento = 0; // Resetear IDEvento para asegurar que el bucle continúe
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ingrese números por favor.");
+                Leer.next(); // Limpiar el buffer de entrada
             }
+
         } while (IDEvento == 0);
+
         return IDEvento;
     }
 }

@@ -22,7 +22,7 @@ public class administradorMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       4) modificar datos      |");
             System.out.println("|-------------------------------|");
-            System.out.println("|            5) Salir           |");
+            System.out.println("|            0) Salir           |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
 
@@ -51,6 +51,10 @@ public class administradorMain {
                         data3.modificarMenu();
                     break;
 
+                    case 0:
+                        System.out.println("Cerrado el apartado de administrador");
+                    break;
+
                     default:
                         System.out.println("Ingrese una de las opciones marcadas");
                     break;
@@ -58,7 +62,6 @@ public class administradorMain {
             }catch(Exception e){
                 System.out.println("Ingrese numeros por favor");
             }
-        }while (opcion1 != 5);
-        
+        }while (opcion1 != 0);
     }
 }

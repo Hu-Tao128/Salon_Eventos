@@ -1,4 +1,5 @@
 package cliente;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,7 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
-/*  */
+import conexionDB.ConexionBD;
+
 public class rentaSalon {
     LocalDate fechaHoy = LocalDate.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
@@ -20,12 +22,16 @@ public class rentaSalon {
     private String horaInicio;
     private String horaFinal;
 
-    private int IDSalon = 0;
-    private int IDEvento = 0;
-    private int IDMontaje = 0;
-    private int IDServicios = 0;
-    private int IDEquipamientos = 0;
+    private int IDSalon;
+    private int IDEvento;
+    private int IDMontaje;
+    private int IDServicios;
+    private int IDEquipamientos;
     private int opcion = 0;
+
+    private float IVA = 0f;
+    private float subtotal = 0f;
+    private float total = 0f;
 
     public void reservacion(int NoCliente){
         Scanner Leer = new Scanner(System.in);
@@ -41,7 +47,6 @@ public class rentaSalon {
 
         do {
             do {
-                
                 System.out.println("Primero Elija un salon de su agrado:");
                 salones.showSalones();
                 IDSalon = salones.elegirSalon();
@@ -90,7 +95,6 @@ public class rentaSalon {
                     }
                 }
 
-                // Preguntar por la hora final
                 System.out.println("Ingrese la hora final (HH:mm): ");
                 while (true) {
                     try {
@@ -102,31 +106,67 @@ public class rentaSalon {
                         System.out.println("Hora inválida. Por favor, ingrese la hora en el formato HH:mm: ");
                     }
                 }
-                
-            } while (IDSalon == 0);
 
-            do {//agregar servicios y/o equipamientos
-                System.out.println("Desea agregar algún Servicio o Equipamiento?");
-                System.out.println("1) Servicio");
-                System.out.println("2) Equipamiento");
-                System.out.println("0) No, gracias");
-                opcion = Leer.nextInt();
-    
-                switch (opcion) {
-                    case 1:
-                        servicios.showServicios();
-                        break;
-                    case 2:
-                        equipamiento.showEquipamientos(IDEvento);
-                        break;
+                try {
                 
-                    default:
-                        System.out.println("Esta bien, prosigamos");
-                        break;
+                    subtotal = salones.obtenerPrecioSalon(IDSalon);
+                    IVA = (subtotal*1.16f);
+                    total = (IVA + subtotal);
+
+                    conexion = ConexionBD.obtenerConexion();
+                    String sql = "INSERT INTO renta (fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, cliente, salon, evento, montaje, IVA, subtotal, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement statement = conexion.prepareStatement(sql);
+                    statement.setString(1, fechaReservacion);
+                    statement.setString(2, fechaInicio);
+                    statement.setString(3, fechaFinal);
+                    statement.setString(4, horaInicio);
+                    statement.setString(5, horaFinal);
+                    statement.setInt(6, NoCliente);
+                    statement.setInt(7, IDSalon);
+                    statement.setInt(8, IDEvento);
+                    statement.setInt(9, IDMontaje);
+    
+                    int filasAfectadas = statement.executeUpdate();
+                    if (filasAfectadas > 0) {
+                        System.out.println("Reservación realizada con éxito.");
+    
+                        /*do {
+                            System.out.println("Desea agregar algún Servicio o Equipamiento?");
+                            System.out.println("1) Servicio");
+                            System.out.println("2) Equipamiento");
+                            System.out.println("0) No, gracias");
+                            opcion = Leer.nextInt();
+                            Leer.nextLine(); 
+            
+                            switch (opcion) {
+                                case 1:
+                                    servicios.showServicios();
+                                    IDServicios = servicios.elegirServicio();
+                                    break;
+                                case 2:
+                                    equipamiento.showEquipamientos(IDEvento);
+                                    IDEquipamientos = equipamiento.elegirEquipamiento();
+                                    break;
+                                case 0:
+                                    System.out.println("Esta bien, prosigamos");
+                                    break;
+                                default:
+                                    System.out.println("Opción no válida, intente de nuevo.");
+                                    break;
+                            }
+                        } while (opcion != 0);*/
+                    } else {
+                        System.out.println("No se pudo realizar la reservación.");
+                    }
+    
+                } catch (SQLException e) {
+                    System.out.println("Error al realizar la reservación: " + e.getMessage());
+                } finally {
+                    ConexionBD.cerrarConexion(conexion);
                 }
-            } while (opcion != 0); //se va a mover al final para validar el numero de renta
-        
+
+            } while (IDSalon == 0);
         } while (opcion != 0);
-        System.out.println("Hola");
+        
     }
 }

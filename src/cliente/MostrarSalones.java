@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import conexionDB.ConexionBD;
@@ -47,18 +48,49 @@ public class MostrarSalones {
         }
     }
 
-    public int elegirSalon(){
+   public int elegirSalon() {
         Scanner Leer = new Scanner(System.in);
-        int ID = 0;
+        int ID = -1;
+        boolean entradaValida = false;
+
         do {
-            System.out.println("Ingresar el numero de salon");
+            System.out.println("Ingresar el número de salón");
             try {
                 ID = Leer.nextInt();
-            } catch (Exception e) {
-                // TODO: handle exception
-                System.out.println("Ingrese numeros por favor");
+                Leer.nextLine(); // Limpiar el buffer de entrada
+                entradaValida = true; // Marcar la entrada como válida
+            } catch (InputMismatchException e) {
+                // Manejar excepción de entrada incorrecta
+                System.out.println("Ingrese números por favor.");
+                Leer.nextLine(); // Limpiar el buffer de entrada
             }
-        } while (ID == 0);
+        } while (!entradaValida);
+
         return ID;
+    }
+
+    public float obtenerPrecioSalon(int numeroSalon) {
+        Connection conexion = null;
+        float precio = 0;
+
+        String consulta = "SELECT precio FROM salon WHERE numero = ?";
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, numeroSalon); // Establece el parámetro del número de salón
+            ResultSet resultado = statement.executeQuery();
+
+            if (resultado.next()) {
+                precio = resultado.getFloat("precio");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        } finally {
+            ConexionBD.cerrarConexion(conexion);
+        }
+
+        return precio;
     }
 }

@@ -53,7 +53,6 @@ public class Cuenta {
             }
         } while (opcion == 0);
 
-        //leer.close();
         return NoCliente;
 
     }
