@@ -61,7 +61,6 @@ public class Salent {
                                 System.out.println("Ingrese la contraseña para ingresar a la vista de administrador");
                                 admin1 = Leer.nextLine();
                                 
-                                /* 
                                 if(!admin1.equals(admin)){
                                     System.out.println("Quieres salir de este apartado? (si/no)");
                                     pass = Leer.nextLine();
@@ -71,7 +70,7 @@ public class Salent {
                                     }
                                 }
 
-                                 */
+                                 
                             }while (!admin1.equals(admin) && pass2.equals(pass1));
 
                             if(admin1.equals(admin)){
@@ -105,7 +104,7 @@ public class Salent {
                 System.out.println("|-------------------------------|");
                 System.out.println("|    4) Hacer una reservacion   |");
                 System.out.println("|-------------------------------|");
-                System.out.println("|            0) Salir           |");
+                System.out.println("|        5) Cerrar Sesion       |");
                 System.out.println("|-------------------------------|");
                 System.out.println("================================");
 
@@ -134,10 +133,10 @@ public class Salent {
                             renta.reservacion(NoCliente);
 
                             break;
-                        case 0:
-                            System.out.println("Que tenga buen dia :)");
-                            break;
-                
+                        case 5:
+                            NoCliente = 0;
+                            System.out.println("Que tenga un excelente dia, vuelva pronto :)");
+                            
                         default:
                             break;
                     }

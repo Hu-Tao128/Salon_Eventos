@@ -17,18 +17,18 @@ public class MostrarMontajes {
                                                     "INNER JOIN montaje AS m ON me.montaje = m.numero \n" +
                                                     "WHERE me.evento = ?;";
                         
-                        try (PreparedStatement statement2 = conexion.prepareStatement(consultaMontaje)) {
-                            statement2.setInt(1, evento);
-                            ResultSet resultado2 = statement2.executeQuery();
+                        try (PreparedStatement statement = conexion.prepareStatement(consultaMontaje)) {
+                            statement.setInt(1, evento);
+                            ResultSet resultado = statement.executeQuery();
                            
                             System.out.printf("%-30s %-50s\n", "Nombre del Montaje", "Descripción");
 
                             System.out.printf("%-30s %-50s\n", "------------------------------", "--------------------------------------------------");
 
-                            while (resultado2.next()) {
+                            while (resultado.next()) {
                                 
-                                String montaje = resultado2.getString("NombreMontaje");
-                                String descripcion = resultado2.getString("Descripcion");
+                                String montaje = resultado.getString("NombreMontaje");
+                                String descripcion = resultado.getString("Descripcion");
 
                                 System.out.printf("%-30s %-50s\n", montaje, descripcion);
                             }
@@ -49,11 +49,11 @@ public class MostrarMontajes {
                 ID = Leer.nextInt();
                 if (ID <= 0) {
                     System.out.println("El número de montaje debe ser un número positivo.");
-                    ID = 0; // Resetear ID para asegurar que el bucle continúe
+                    ID = 0;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                Leer.next(); // Limpiar el buffer de entrada
+                Leer.next();
             }
 
         } while (ID == 0);

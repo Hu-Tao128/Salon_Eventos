@@ -37,15 +37,22 @@ public class rentaSalon {
         Scanner Leer = new Scanner(System.in);
         MostrarSalones salones = new MostrarSalones();
         MostrarEventos eventos = new MostrarEventos();
+        MostrarMontajes montajes = new MostrarMontajes();
         MostrarServicios servicios = new MostrarServicios();
         MostrarEquipamientos equipamiento = new MostrarEquipamientos();
-        MostrarMontajes montajes = new MostrarMontajes();
 
         Connection conexion = null;
         
-        System.out.println("Bienvenido al sistema de Renta de Salones Salent, Fecha " + fechaHoy);
+        System.out.println("Bienvenido al sistema de Renta de Salones Salent, Fecha: " + fechaHoy);
 
         do {
+
+            System.out.println("Desea reaalizar una renta de salon? (s/n)");
+            String respuesta = Leer.next();
+
+            if (!respuesta.equals("s")) {
+                break;   
+            }
             do {
                 System.out.println("Primero Elija un salon de su agrado:");
                 salones.showSalones();
@@ -125,12 +132,15 @@ public class rentaSalon {
                     statement.setInt(7, IDSalon);
                     statement.setInt(8, IDEvento);
                     statement.setInt(9, IDMontaje);
+                    statement.setFloat(10, IVA);
+                    statement.setFloat(11, subtotal);
+                    statement.setFloat(12, total);
     
                     int filasAfectadas = statement.executeUpdate();
                     if (filasAfectadas > 0) {
                         System.out.println("Reservación realizada con éxito.");
     
-                        /*do {
+                        do {
                             System.out.println("Desea agregar algún Servicio o Equipamiento?");
                             System.out.println("1) Servicio");
                             System.out.println("2) Equipamiento");
@@ -154,7 +164,8 @@ public class rentaSalon {
                                     System.out.println("Opción no válida, intente de nuevo.");
                                     break;
                             }
-                        } while (opcion != 0);*/
+                        } while (opcion != 0);
+
                     } else {
                         System.out.println("No se pudo realizar la reservación.");
                     }

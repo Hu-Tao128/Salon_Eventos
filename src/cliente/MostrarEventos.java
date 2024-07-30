@@ -1,4 +1,5 @@
 package cliente;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,7 +45,6 @@ public class MostrarEventos {
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
         } finally {
-            // Cerrar la conexión
             ConexionBD.cerrarConexion(conexion);
         }
     }
@@ -60,11 +60,11 @@ public class MostrarEventos {
                 IDEvento = Leer.nextInt();
                 if (IDEvento <= 0) {
                     System.out.println("El número del evento debe ser un número positivo.");
-                    IDEvento = 0; // Resetear IDEvento para asegurar que el bucle continúe
+                    IDEvento = 0;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                Leer.next(); // Limpiar el buffer de entrada
+                Leer.next();
             }
 
         } while (IDEvento == 0);

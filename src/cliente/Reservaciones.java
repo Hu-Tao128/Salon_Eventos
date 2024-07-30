@@ -35,7 +35,7 @@ public class Reservaciones {
             try (PreparedStatement statement = conexion.prepareStatement(consultaReservaciones)) {
                 statement.setInt(1, NoCliente);
                 ResultSet resultado = statement.executeQuery();
-
+                
                 boolean reservaciones = false;
                 //boleano para validar si hay o no reservaciones
                 
