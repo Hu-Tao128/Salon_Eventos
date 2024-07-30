@@ -1,5 +1,13 @@
 import java.util.Scanner;
 
+import admin.administradorMain;
+import cliente.AgregarCliente;
+import cliente.Cuenta;
+import cliente.MostrarEventos;
+import cliente.MostrarSalones;
+import cliente.Reservaciones;
+import cliente.rentaSalon;
+
 public class Salent {
 
     public static void main(String[] args) {
@@ -39,12 +47,13 @@ public class Salent {
                         AgregarCliente registrarse = new AgregarCliente();
                         NoCliente = registrarse.Formulario();
                         break;
-                    case 3:
+                        case 3:
                         String admin = "papa";
                         String admin1 = "";
 
                         String  pass = "no";
                         String pass1 = "no";
+                        String pass2 = "no";
                         System.out.println("Bienvenido a la vista de administrador");
 
                         
@@ -52,11 +61,18 @@ public class Salent {
                                 System.out.println("Ingrese la contraseña para ingresar a la vista de administrador");
                                 admin1 = Leer.nextLine();
                                 
+                                /* 
                                 if(!admin1.equals(admin)){
                                     System.out.println("Quieres salir de este apartado? (si/no)");
                                     pass = Leer.nextLine();
+
+                                    if(pass.equals("si")){
+                                        pass2 = "si";
+                                    }
                                 }
-                            }while (!admin1.equals(admin) && pass.equals(pass1));
+
+                                 */
+                            }while (!admin1.equals(admin) && pass2.equals(pass1));
 
                             if(admin1.equals(admin)){
                                 System.out.println("Inicio de sesion exitoso");
@@ -87,6 +103,8 @@ public class Salent {
                 System.out.println("|-------------------------------|");
                 System.out.println("|         3) Ver Eventos        |");
                 System.out.println("|-------------------------------|");
+                System.out.println("|    4) Hacer una reservacion   |");
+                System.out.println("|-------------------------------|");
                 System.out.println("|            0) Salir           |");
                 System.out.println("|-------------------------------|");
                 System.out.println("================================");
@@ -109,6 +127,11 @@ public class Salent {
                         case 3:
                             MostrarEventos eventos = new MostrarEventos();
                             eventos.showEventos();
+
+                            break;
+                        case 4:
+                            rentaSalon renta = new rentaSalon();
+                            renta.reservacion(NoCliente);
 
                             break;
                         case 0:
