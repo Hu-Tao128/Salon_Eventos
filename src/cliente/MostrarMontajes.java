@@ -1,4 +1,5 @@
 package cliente;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,36 +7,46 @@ import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import conexionDB.ConexionBD;
+
 public class MostrarMontajes {
     public void showMontajes(int evento){
         Connection conexion = null;
 
-        String consultaMontaje = "SELECT \n" +
-                                                    "    m.nombreMontaje AS NombreMontaje, \n" +
-                                                    "    m.descripcion AS Descripcion \n" +
-                                                    "FROM montaje_evento AS me \n" +
-                                                    "INNER JOIN montaje AS m ON me.montaje = m.numero \n" +
-                                                    "WHERE me.evento = ?;";
-                        
-                        try (PreparedStatement statement = conexion.prepareStatement(consultaMontaje)) {
-                            statement.setInt(1, evento);
-                            ResultSet resultado = statement.executeQuery();
-                           
-                            System.out.printf("%-30s %-50s\n", "Nombre del Montaje", "Descripción");
+        String consultaMontaje = "SELECT " +
+                "m.numero AS Numero, " +
+                "m.nombreMontaje AS NombreMontaje, " +
+                "m.descripcion AS Descripcion " +
+                "FROM montaje_evento AS me " +
+                "INNER JOIN montaje AS m ON me.montaje = m.numero " +
+                "WHERE me.evento = ?;";
 
-                            System.out.printf("%-30s %-50s\n", "------------------------------", "--------------------------------------------------");
+        try {
+            // Obtener la conexión
+            conexion = ConexionBD.obtenerConexion();
+            
+            try (PreparedStatement statement = conexion.prepareStatement(consultaMontaje)) {
+                statement.setInt(1, evento);
+                ResultSet resultado = statement.executeQuery();
+            
+                System.out.printf("%-10s %-30s %-50s\n", "Número", "Nombre del Montaje", "Descripción");
+                
+                System.out.printf("%-10s %-30s %-50s\n", "----------", "------------------------------", "--------------------------------------------------");
+            
+                while (resultado.next()) {
+                    int numero = resultado.getInt("Numero");
+                    String montaje = resultado.getString("NombreMontaje");
+                    String descripcion = resultado.getString("Descripcion");
+            
+                    
+                    System.out.printf("%-10d %-30s %-50s\n", numero, montaje, descripcion);
+                }
+            }
+            
 
-                            while (resultado.next()) {
-                                
-                                String montaje = resultado.getString("NombreMontaje");
-                                String descripcion = resultado.getString("Descripcion");
-
-                                System.out.printf("%-30s %-50s\n", montaje, descripcion);
-                            }
-
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }    
 
     public int elegirMontaje() {
@@ -53,12 +64,11 @@ public class MostrarMontajes {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                Leer.next();
+                Leer.next(); // Limpiar el buffer de entrada
             }
 
         } while (ID == 0);
 
         return ID;
     }
-
 }

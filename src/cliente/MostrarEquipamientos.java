@@ -49,18 +49,65 @@ public class MostrarEquipamientos {
             System.out.println("Ingresar el número del equipamiento:");
             try {
                 ID = Leer.nextInt();
-                Leer.nextLine(); // Limpiar el buffer de entrada
-                entradaValida = true; // Marcar la entrada como válida
+                Leer.nextLine(); 
+                entradaValida = true; 
                 if (ID <= 0) {
                     System.out.println("El número del equipamiento debe ser un número positivo.");
-                    ID = -1; // Resetear ID para asegurar que el bucle continúe
+                    ID = -1; 
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                Leer.nextLine(); // Limpiar el buffer de entrada
+                Leer.nextLine();
             }
         } while (!entradaValida);
 
         return ID;
+    }
+
+    public int getCantidad(int IDEquipamientos){
+        int cantidad;
+
+        Connection conexion = null;
+
+        String consultaCantidad = "SELECT " + 
+                                    "   stock, " +
+                                    "FROM equipamientos " + 
+                                    "WHERE numero = ?";
+
+        try (PreparedStatement statement = conexion.prepareStatement(consultaCantidad)) {
+            statement.setInt(1, IDEquipamientos);
+            ResultSet resultado = statement.executeQuery();
+
+            cantidad = resultado.getInt("stock");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            cantidad = 0;
+        }
+
+        return cantidad;
+    }
+
+    public float getPrecio(int IDEquipamientos){
+        float precio;
+
+        Connection conexion = null;
+
+        String consultaPrecio = "SELECT " + 
+                                    "   precio, " +
+                                    "FROM equipamientos " + 
+                                    "WHERE numero = ?";
+
+        try (PreparedStatement statement = conexion.prepareStatement(consultaPrecio)) {
+            statement.setInt(1, IDEquipamientos);
+            ResultSet resultado = statement.executeQuery();
+
+            precio = resultado.getFloat("precio");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            precio = 0f;
+        }
+        return precio;
     }
 }

@@ -1,81 +1,151 @@
 package cliente;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 import conexionDB.ConexionBD;
 
 public class Reservaciones {
-    public void verMisReservaciones(int NoCliente){
-        System.out.println("Aqui se muestran las reservaciones que tiene registradas");
 
-        Connection conexion = null;
-        try {
-            conexion = ConexionBD.obtenerConexion();
-            
-            String consultaReservaciones = "SELECT\n" +
-                                            "    DATE_FORMAT(r.fechaReservacion, \"%y-%m-%d\") AS FechaReservacion,\n" +
-                                            "    DATE_FORMAT(r.horaInicio, '%h:%i %p') AS HoraReservacion,\n" +
-                                            "    CONCAT(c.nomContacto, ' ', c.primerApellido, ' ', IFNULL(c.segundoApellido, '')) AS NombreCliente,\n" +
-                                            "    e.nombre AS TipoEvento,\n" +
-                                            "    s.nombre AS NombreSalon,\n" +
-                                            "    CONCAT(s.dirCalle, ' ', s.dirNumero, ', ', s.dirColonia) AS DireccionSalon,\n" +
-                                            "    m.nombreMontaje AS TipoMontaje,\n" +
-                                            "    s.capacidad AS CantidadInvitados,\n" +
-                                            "    r.total AS CostoTotalEvento\n" +
-                                            "FROM renta AS r\n" +
-                                            "INNER JOIN cliente AS c ON r.cliente = c.numero\n" +
-                                            "INNER JOIN evento AS e ON r.evento = e.numero\n" +
-                                            "INNER JOIN salon AS s ON r.salon = s.numero\n" +
-                                            "INNER JOIN montaje AS m ON r.montaje = m.numero\n" +
-                                            "WHERE c.numero = ?;";
-                        
+    Scanner Leer = new Scanner(System.in);
+    private int opcion;
+    private int IDRenta;
+
+    public void verMisReservaciones(int NoCliente) {
+        System.out.println("Aquí se muestran las reservaciones que tiene registradas");
+
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+
+            String consultaReservaciones = "SELECT " + 
+                                           "   r.numero AS 'No. Reservacion', " + 
+                                           "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " +
+                                           "   s.nombre AS Salon, " +
+                                           "   e.nombre AS 'Tipo de evento', " +
+                                           "   s.capacidad AS 'Cantidad de invitados' " +
+                                           "FROM salon AS s " +
+                                           "INNER JOIN renta AS r ON s.numero = r.salon " +
+                                           "INNER JOIN cliente AS c ON c.numero = r.cliente " +
+                                           "INNER JOIN evento AS e ON e.numero = r.evento " +
+                                           "WHERE c.numero = ?";
+
             try (PreparedStatement statement = conexion.prepareStatement(consultaReservaciones)) {
                 statement.setInt(1, NoCliente);
                 ResultSet resultado = statement.executeQuery();
-                
+
                 boolean reservaciones = false;
-                //boleano para validar si hay o no reservaciones
-                
-                System.out.printf("%-20s %-15s %-30s %-20s %-20s %-40s %-20s %-20s %-20s\n", 
-                    "Fecha Reservación", "Hora Reservación", "Nombre del Cliente", 
-                    "Tipo de Evento", "Nombre del Salón", "Dirección del Salón", 
-                    "Tipo de Montaje", "Cantidad de Invitados", "Costo Total del Evento");
-                
-                System.out.printf("%-20s %-15s %-30s %-20s %-20s %-40s %-20s %-20s %-20s\n", 
-                    "--------------------", "---------------", "------------------------------", 
-                    "--------------------", "--------------------", "----------------------------------------", 
-                    "--------------------", "--------------------", "--------------------");
-                
+
+                // Encabezados
+                System.out.println("======================================================================================================");
+                System.out.printf("| %-15s | %-20s | %-15s | %-30s | %-20s |\n", 
+                                    "No. Reservación", "Fecha Reservación", "Nombre del Salón", "Tipo de Evento", "Cantidad de Invitados");
+                System.out.println("======================================================================================================");
+
                 while (resultado.next()) {
                     reservaciones = true;
-                
-                    String fechaReservacion = resultado.getString("FechaReservacion");
-                    String horaReservacion = resultado.getString("HoraReservacion");
-                    String nombreCliente = resultado.getString("NombreCliente");
-                    String tipoEvento = resultado.getString("TipoEvento");
-                    String nombreSalon = resultado.getString("NombreSalon");
-                    String direccionSalon = resultado.getString("DireccionSalon");
-                    String tipoMontaje = resultado.getString("TipoMontaje");
-                    int cantidadInvitados = resultado.getInt("CantidadInvitados");
-                    float costoTotalEvento = resultado.getFloat("CostoTotalEvento");
-                
-                    System.out.printf("%-20s %-15s %-30s %-20s %-20s %-40s %-20s %-20d %-20.2f\n", 
-                        fechaReservacion, horaReservacion, nombreCliente, tipoEvento, nombreSalon, 
-                        direccionSalon, tipoMontaje, cantidadInvitados, costoTotalEvento);
+
+                    int noRenta = resultado.getInt("No. Reservacion");
+                    String fechaReservacion = resultado.getString("Fecha de reservacion");
+                    String nombreSalon = resultado.getString("Salon");
+                    String tipoEvento = resultado.getString("Tipo de evento");
+                    int cantidadInvitados = resultado.getInt("Cantidad de invitados");
+
+                    // Filas de datos
+                    System.out.printf("| %-15d | %-20s | %-15s | %-30s | %-20d |\n", 
+                                        noRenta, fechaReservacion, nombreSalon, tipoEvento, cantidadInvitados);
                 }
-                
+
                 if (!reservaciones) {
-                    System.out.println("No tienes reservaciones aún");
+                    System.out.println("|                                 No tienes reservaciones aún                                              |");
+                }else{
+                    System.out.println("Introduzca el numero de reservacion para conocer mas detalles o modificar su reservacion");
+                    do {
+                        System.out.println("Introdusca 0 si desea salir de este apartado");
+
+                        try {
+                            IDRenta = Leer.nextInt();
+                            if (IDRenta <= 0) {
+                                System.out.println("El número debe ser un número positivo.");
+                                IDRenta = 0;
+                            }else{
+                                verDetallesRenta(IDRenta, NoCliente);
+                            }
+                        } catch (InputMismatchException e) {
+                            System.out.println("Ingrese números por favor.");
+                            Leer.next();
+                        }
+
+                    } while (IDRenta != 0);
                 }
-                
+
+                System.out.println("======================================================================================================");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+    }
 
-        }catch (Exception e) {
+    public void verDetallesRenta(int IDRenta, int NoCliente) {
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+
+            String consultaRenta = "SELECT " + 
+                                   "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " +
+                                   "   DATE_FORMAT(r.horaInicio, '%H:%i') AS HoraReservacion, " + 
+                                   "   e.nombre AS 'Tipo de evento', " +
+                                   "   s.nombre AS Salon, " +
+                                   "   CONCAT(s.dirCalle, ' ', s.dirNumero, ', ', s.dirColonia) AS Direccion, " +
+                                   "   m.nombreMontaje AS TipoMontaje, " +
+                                   "   s.capacidad AS 'Cantidad de invitados', " +
+                                   "   r.total AS 'Costo Total' " +
+                                   "FROM salon AS s " +
+                                   "INNER JOIN renta AS r ON s.numero = r.salon " +
+                                   "INNER JOIN cliente AS c ON c.numero = r.cliente " +
+                                   "INNER JOIN evento AS e ON e.numero = r.evento " +
+                                   "INNER JOIN montaje AS m ON r.montaje = m.numero " +
+                                   "WHERE c.numero = ? AND r.numero = ?";
+
+            try (PreparedStatement statement = conexion.prepareStatement(consultaRenta)) {
+                statement.setInt(1, NoCliente);
+                statement.setInt(2, IDRenta);
+                ResultSet resultado = statement.executeQuery();
+                boolean valid = false;
+
+                while (resultado.next()) {
+                    valid = true;
+
+                    String fechaReservacion = resultado.getString("Fecha de reservacion");
+                    String horaReservacion = resultado.getString("HoraReservacion");
+                    String tipoEvento = resultado.getString("Tipo de evento");
+                    String salon = resultado.getString("Salon");
+                    String direccion = resultado.getString("Direccion");
+                    String montaje = resultado.getString("TipoMontaje");
+                    int cantInvitados = resultado.getInt("Cantidad de invitados");
+                    double costoTotal = resultado.getDouble("Costo Total");
+
+                    // Mostrar detalles
+                    System.out.println("Detalles de la Renta:");
+                    System.out.println("Fecha de Reservación: " + fechaReservacion);
+                    System.out.println("Hora de Reservación: " + horaReservacion);
+                    System.out.println("Tipo de Evento: " + tipoEvento);
+                    System.out.println("Salón: " + salon);
+                    System.out.println("Dirección: " + direccion);
+                    System.out.println("Tipo de Montaje: " + montaje);
+                    System.out.println("Cantidad de Invitados: " + cantInvitados);
+                    System.out.println("Costo Total: " + costoTotal);
+                }
+
+                if (!valid) {
+                    System.out.println("No encontramos datos de la renta o el número de la renta no te pertenece.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
         }
     }

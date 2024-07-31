@@ -49,15 +49,15 @@ public class MostrarServicios {
             System.out.println("Ingresar el número del servicio:");
             try {
                 ID = Leer.nextInt();
-                Leer.nextLine(); // Limpiar el buffer de entrada
-                entradaValida = true; // Marcar la entrada como válida
+                Leer.nextLine();
+                entradaValida = true;
                 if (ID <= 0) {
                     System.out.println("El número del servicio debe ser un número positivo.");
-                    ID = -1; // Resetear ID para asegurar que el bucle continúe
+                    ID = -1;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                Leer.nextLine(); // Limpiar el buffer de entrada
+                Leer.nextLine();
             }
         } while (!entradaValida);
 

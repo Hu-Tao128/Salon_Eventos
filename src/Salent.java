@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+import admin.MostrarMontaje;
 import admin.administradorMain;
 import cliente.AgregarCliente;
 import cliente.Cuenta;
@@ -121,7 +122,7 @@ public class Salent {
                         case 2:
                             MostrarSalones salones = new MostrarSalones();
                             salones.showSalones();
-                                    
+                            
                             break;
                         case 3:
                             MostrarEventos eventos = new MostrarEventos();
