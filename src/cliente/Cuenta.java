@@ -2,6 +2,8 @@ package cliente;
 import java.util.Scanner;
 
 public class Cuenta {
+    private String Apellido;
+    private String Nombre;
 
     public int InicioSesion(){
         Scanner leer = new Scanner(System.in);
@@ -28,10 +30,11 @@ public class Cuenta {
                     break;
                 case 2:
                     System.out.println("Ingrese su Primer Apellido");
-                    String Apellido = leer.nextLine();
+                    Apellido = leer.nextLine();
+                    leer.nextLine();
 
                     System.out.println("Ingrese Su Nombre, tal como lo indico al registrarse");
-                    String Nombre = leer.nextLine();
+                    Nombre = leer.nextLine();
 
                     ValidarCuenta NomContacto = new ValidarCuenta();
                     NoCliente = NomContacto.ValidarNombre(Nombre, Apellido);
@@ -39,6 +42,7 @@ public class Cuenta {
                 case 3:
                     System.out.println("Ingrese su Nombre de Empresa");
                     String NombreFiscal = leer.nextLine();
+                    leer.nextLine();
 
                     ValidarCuenta NomFiscal = new ValidarCuenta();
                     NoCliente = NomFiscal.ValidarNombreFiscal(NombreFiscal);

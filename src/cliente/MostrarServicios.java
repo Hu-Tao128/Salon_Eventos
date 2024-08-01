@@ -22,9 +22,10 @@ public class MostrarServicios {
         try (PreparedStatement statement = conexion.prepareStatement(consultaServicios);
                 ResultSet resultado1 = statement.executeQuery()) {
 
-            // Mostrar encabezados de tabla
-            System.out.printf("%-10s %-20s %-30s %-10s %-15s\n", "ID", "Nombre", "Descripción", "Precio", "Disponibilidad");
-            System.out.printf("%-10s %-20s %-30s %-10s %-15s\n", "----------", "--------------------", "------------------------------", "----------", "---------------");
+            System.out.println("=============================================================");
+            System.out.printf("| %-10s | %-20s | %-30s | %-10s | %-15s |\n", 
+                            "ID", "Nombre", "Descripción", "Precio", "Disponibilidad");
+            System.out.println("=============================================================");
 
             // Mostrar datos de servicios
             while (resultado1.next()) {
@@ -35,8 +36,11 @@ public class MostrarServicios {
                 int dis = resultado1.getInt("Disponibilidad");
                 String disponibilidad = (dis == 0) ? "No Disponible" : "Disponible";
 
-                System.out.printf("%-10d %-20s %-30s %-10.2f %-15s\n", id, nombre, descripcion, precio, disponibilidad);
+                System.out.printf("| %-10d | %-20s | %-30s | %-10.2f | %-15s |\n", 
+                                id, nombre, descripcion, precio, disponibilidad);
             }
+            System.out.println("=============================================================");
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -91,4 +95,53 @@ public class MostrarServicios {
 
         return disponible;
     }
+    public void showServiciosRenta(int IDRenta) {
+
+        Connection conexion = null;
+        String consultaServicios = "SELECT\n" + 
+                                    "    DATE_FORMAT(r.fechaReservacion, '%y-%m-%d') AS FechaReservacion,\n" + 
+                                    "    s.nombre AS NombreSalon,\n" + 
+                                    "    se.nombreServicio AS DescripcionServicio,\n" + 
+                                    "    se.precio AS CostoServicio\n" + 
+                                    "FROM renta AS r\n" + 
+                                    "INNER JOIN cliente AS c ON r.cliente = c.numero\n" + 
+                                    "INNER JOIN salon AS s ON r.salon = s.numero\n" + 
+                                    "INNER JOIN servicios_renta AS sr ON r.numero = sr.renta\n" + 
+                                    "INNER JOIN servicios AS se ON sr.servicios = se.numero\n" + 
+                                    "WHERE r.numero = ?;";
+
+        conexion = ConexionBD.obtenerConexion();
+        
+        try (PreparedStatement statement = conexion.prepareStatement(consultaServicios)) {
+            statement.setInt(1, IDRenta);
+            ResultSet resultado = statement.executeQuery();
+
+            System.out.println("=============================================================");
+            System.out.printf("| %-20s | %-20s | %-30s | %-10s |\n", 
+                            "Fecha", "Salon", "Descripción", "Precio");
+            System.out.println("=============================================================");
+
+            boolean valid = false;
+
+            while (resultado.next()) {
+                valid = true;
+                String FechaReservacion = resultado.getString("FechaReservacion");
+                String NombreSalon = resultado.getString("NombreSalon");
+                String DescripcionServicio = resultado.getString("DescripcionServicio");
+                float CostoServicio = resultado.getFloat("CostoServicio");
+
+                System.out.printf("| %-20s | %-20s | %-30s | %-10.2f |\n", 
+                                FechaReservacion, NombreSalon, DescripcionServicio, CostoServicio);
+            }
+            
+            if (!valid) {
+                System.out.println("|                                                No tienes servicios aún                                                   |");
+            } else {
+                System.out.println("=============================================================");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

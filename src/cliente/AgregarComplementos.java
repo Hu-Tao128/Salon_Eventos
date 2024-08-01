@@ -18,18 +18,19 @@ public class AgregarComplementos {
 
     Scanner Leer = new Scanner(System.in);
     MostrarServicios servicios = new MostrarServicios();
-    MostrarEquipamientos equipamiento = new MostrarEquipamientos();
     Reservaciones salon = new Reservaciones();
 
     public void menuComplementos(int IDRenta, int IDEvento) {
         do {
             try {
                 System.out.println("Desea agregar algún Servicio o Equipamiento?");
-                System.out.println("1) Servicio");
-                System.out.println("2) Equipamiento");
+                System.out.println("1) Agregar Servicio");
+                System.out.println("2) Agregar Equipamiento");
+                System.out.println("3) Mostrar Servicios de mi renta");
+                System.out.println("4) Mostrar Equipamiento de mi renta");
                 System.out.println("0) No, gracias");
                 opcion = Leer.nextInt();
-                Leer.nextLine(); // Limpiar buffer
+                Leer.nextLine();
 
                 switch (opcion) {
                     case 1:
@@ -44,16 +45,28 @@ public class AgregarComplementos {
                         break;
 
                     case 2:
+
+                        MostrarEquipamientos equipamiento = new MostrarEquipamientos();
                         equipamiento.showEquipamientos(IDEvento);
                         IDEquipamientos = equipamiento.elegirEquipamiento();
-                        cantidad = equipamiento.getCantidad(IDEquipamientos);
+
+                        System.out.println("Escoja la cantidad que desee agregar");
+                        cantidad = Leer.nextInt();
+
                         precio = equipamiento.getPrecio(IDEquipamientos);
 
-                        if (precio > 0 && cantidad > 0) {
                             AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
-                        } else {
-                            System.out.println("Ha ocurrido un error al agregar el equipamiento.");
-                        }
+                        
+                        break;
+
+                    case 3:
+                        MostrarServicios menu = new MostrarServicios();
+                        menu.showServiciosRenta(IDRenta);
+                        break;
+
+                    case 4:
+                        MostrarEquipamientos mostrarEquipamientos =  new MostrarEquipamientos();
+                        mostrarEquipamientos.showEquipoRentas(IDRenta);
                         break;
 
                     case 0:
@@ -66,7 +79,7 @@ public class AgregarComplementos {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida, por favor ingrese un número.");
-                Leer.nextLine(); // Limpiar buffer
+                Leer.nextLine(); 
             }
         } while (opcion != 0);
     }
@@ -94,20 +107,17 @@ public class AgregarComplementos {
                         precioServicio = resultado.getFloat("precio");
                     } else {
                         System.out.println("No se encontró el servicio con ID: " + IDServicios);
-                        return; // Salir del método si no se encuentra el servicio
+                        return; 
                     }
                 }
             }
     
-            // Obtener el subtotal actual
             subtotal = salon.getTotal(IDRenta);
             
-            // Calcular nuevos valores
             subtotal += precioServicio;
             IVA = subtotal * 0.16f;
             total = subtotal + IVA;
     
-            // Insertar el registro en la tabla servicios_renta
             try (PreparedStatement statementInsert = conexion.prepareStatement(insertServiciosRenta)) {
                 statementInsert.setInt(1, IDServicios);
                 statementInsert.setInt(2, IDRenta);
@@ -117,7 +127,7 @@ public class AgregarComplementos {
                     System.out.println("Inserción exitosa de servicio en su renta.");
                 } else {
                     System.out.println("No se pudo insertar el servicio en la renta.");
-                    return; // Salir del método si no se pudo insertar el servicio
+                    return; 
                 }
             }
     
@@ -151,26 +161,73 @@ public class AgregarComplementos {
     
 
     public void AgregarEquipRenta(int IDEquipamientos, int IDRenta, int cantidad, float precio) {
+        Connection conexion = null;
         float importe = cantidad * precio;
         String insertEquiposRenta = "INSERT INTO equipos_renta (equipamiento, renta, cantidad, importe) VALUES (?, ?, ?, ?)";
-
-        try (Connection conexion = ConexionBD.obtenerConexion();
-             PreparedStatement statement = conexion.prepareStatement(insertEquiposRenta)) {
-
-            statement.setInt(1, IDEquipamientos);
-            statement.setInt(2, IDRenta);
-            statement.setInt(3, cantidad);
-            statement.setFloat(4, importe);
-            int filasInsertadas = statement.executeUpdate();
-
-            if (filasInsertadas > 0) {
-                System.out.println("Inserción exitosa de los equipos a su evento.");
-            } else {
-                System.out.println("No se pudo insertar el equipamiento en la renta.");
+        String actualizarRenta = "UPDATE renta SET subtotal = ?, IVA = ?, total = ? WHERE numero = ?";
+        String actualizarStock = "UPDATE equipamiento SET stock = stock - ? WHERE numero = ?";
+    
+        try {
+            conexion = ConexionBD.obtenerConexion();
+    
+            try (PreparedStatement statementInsert = conexion.prepareStatement(insertEquiposRenta)) {
+                statementInsert.setInt(1, IDEquipamientos);
+                statementInsert.setInt(2, IDRenta);
+                statementInsert.setInt(3, cantidad);
+                statementInsert.setFloat(4, importe);
+                int filasInsertadas = statementInsert.executeUpdate();
+    
+                if (filasInsertadas > 0) {
+                    System.out.println("Inserción exitosa de los equipos a su evento.");
+                } else {
+                    System.out.println("No se pudo insertar el equipamiento en la renta.");
+                    return; 
+                }
             }
-
+    
+            try (PreparedStatement statementActualizarStock = conexion.prepareStatement(actualizarStock)) {
+                statementActualizarStock.setInt(1, cantidad);
+                statementActualizarStock.setInt(2, IDEquipamientos);
+                int filasActualizadasStock = statementActualizarStock.executeUpdate();
+    
+                if (filasActualizadasStock > 0) {
+                    System.out.println("Stock de equipamiento actualizado.");
+                } else {
+                    System.out.println("No se pudo actualizar el stock del equipamiento.");
+                }
+            }
+    
+            float subtotal = salon.getTotal(IDRenta);
+            subtotal += importe;
+            float IVA = subtotal * 0.16f;
+            float total = subtotal + IVA;
+    
+            try (PreparedStatement statementActualizarRenta = conexion.prepareStatement(actualizarRenta)) {
+                statementActualizarRenta.setFloat(1, subtotal);
+                statementActualizarRenta.setFloat(2, IVA);
+                statementActualizarRenta.setFloat(3, total);
+                statementActualizarRenta.setInt(4, IDRenta);
+                int filasActualizadasRenta = statementActualizarRenta.executeUpdate();
+    
+                if (filasActualizadasRenta > 0) {
+                    System.out.println("Actualización exitosa de la renta.");
+                } else {
+                    System.out.println("No se pudo actualizar la renta.");
+                }
+            }
+    
         } catch (SQLException e) {
-            System.out.println("Error al insertar el equipamiento: " + e.getMessage());
+            System.out.println("Error al procesar la solicitud: " + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                } catch (SQLException e) {
+                    System.out.println("Error al cerrar la conexión: " + e.getMessage());
+                }
+            }
         }
     }
+    
+
 }

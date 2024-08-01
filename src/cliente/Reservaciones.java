@@ -11,7 +11,6 @@ import conexionDB.ConexionBD;
 
 public class Reservaciones {
 
-    AgregarComplementos complementos = new AgregarComplementos();
     Scanner Leer = new Scanner(System.in);
     private int opcion;
     private int IDRenta;
@@ -47,10 +46,10 @@ public class Reservaciones {
                     try {
 
                         // Encabezados
-                        System.out.println("================================================================================================================");
+                        System.out.println("==============================================================================================================================");
                         System.out.printf("| %-17s | %-22s | %-17s | %-32s | %-22s |\n", 
                                             "No. Reservación", "Fecha Reservación", "Nombre del Salón", "Tipo de Evento", "Cantidad de Invitados");
-                        System.out.println("================================================================================================================");
+                                            System.out.println("==============================================================================================================================");
                     
                         while (resultado.next()) {
                             reservaciones = true;
@@ -142,9 +141,9 @@ public class Reservaciones {
                     String colonia = direccionPartes.length > 1 ? direccionPartes[1] : ""; // "Colonia"
 
                     System.out.println("Detalles de la Renta:");
-                    System.out.println("============================================================");
+                    System.out.println("========================================================================");
                     System.out.printf("| %-25s | %-40s |\n", "Nombre de la Columna", "Valor");
-                    System.out.println("============================================================");
+                    System.out.println("========================================================================");
                     System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservación", fechaReservacion);
                     System.out.printf("| %-25s | %-40s |\n", "Hora de Reservación", horaReservacion);
                     System.out.printf("| %-25s | %-40s |\n", "Tipo de Evento", tipoEvento);
@@ -156,13 +155,14 @@ public class Reservaciones {
                     System.out.printf("| %-25s | %-40s |\n", "Tipo de Montaje", montaje);
                     System.out.printf("| %-25s | %-40d |\n", "Cantidad de Invitados", cantInvitados);
                     System.out.printf("| %-25s | %-40.2f |\n", "Costo Total", costoTotal);
-                    System.out.println("============================================================");
+                    System.out.println("========================================================================");
                 }
 
                 if (!valid) {
                     System.out.println("No encontramos datos de la renta o el número de la renta no te pertenece.");
                 } else {
                     System.out.println("");
+                    AgregarComplementos complementos = new AgregarComplementos();
                     complementos.menuComplementos(IDRenta, IDEvento);
                 }
 

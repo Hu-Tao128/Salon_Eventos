@@ -57,14 +57,14 @@ public class ValidarCuenta {
                                 "    nomContacto AS Nombres,\n" +
                                 "    primerApellido AS Apellido\n" +
                                 "FROM cliente\n" +
-                                "WHERE Nombres = ? AND Apellido = ?";
+                                "WHERE nomContacto = ? AND primerApellido = ?";
             
             PreparedStatement statement = connection.prepareStatement(consulta);
             statement.setString(1, Nombre);
             statement.setString(2, Apellido);
             ResultSet resultado = statement.executeQuery();
 
-            Nombres = resultado.getString("consulta");
+            Nombres = resultado.getString("Nomnbres");
             Apellido = resultado.getString("Apellido");
             NoCliente = resultado.getInt("NoCliente");
 
