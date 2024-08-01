@@ -1,4 +1,5 @@
 package cliente;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,9 +19,9 @@ public class MostrarEquipamientos {
                                                       "INNER JOIN equipos_evento AS ee ON eq.numero = ee.equipamiento\n" +
                                                       "WHERE ee.evento = ?;";
                         
-                        try (PreparedStatement statement3 = conexion.prepareStatement(consultaEquipamiento)) {
-                            statement3.setInt(1, evento);
-                            ResultSet resultado3 = statement3.executeQuery();
+                        try (PreparedStatement statement = conexion.prepareStatement(consultaEquipamiento)) {
+                            statement.setInt(1, evento);
+                            ResultSet resultado3 = statement.executeQuery();
 
                             System.out.printf("%-30s %-10s %-10s\n", "Nombre del Equipamiento", "Precio", "Stock");
 

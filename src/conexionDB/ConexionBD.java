@@ -1,4 +1,5 @@
 package conexionDB;
+
 import java.sql.Connection;
 //para establecer la clase de conexion
 import java.sql.DriverManager;

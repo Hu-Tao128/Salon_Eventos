@@ -45,24 +45,31 @@ public class rentaSalon {
 
         do {
 
-            System.out.println("Desea reaalizar una renta de salon? (s/n)");
+            System.out.println("Desea realizar una renta de salón? (s/n)");
             String respuesta = Leer.next();
 
             if (!respuesta.equals("s")) {
                 break;   
             }
             do {
-                System.out.println("Primero Elija un salon de su agrado:");
+                System.out.println("Primero elija un salón de su agrado:");
                 salones.showSalones();
                 IDSalon = salones.elegirSalon();
+                
+                if (IDSalon == 0) {
+                    System.out.println("No ha seleccionado un salón válido.");
+                    continue; // Salir del bucle actual y volver a pedir un salón
+                }
+                
+                subtotal = salones.obtenerPrecioSalon(IDSalon);
 
                 System.out.println("Ahora elija su evento");
                 eventos.showEventos();
                 IDEvento = eventos.elegirEvento();
 
-                System.out.println("Que tipo de montaje requiere?");
+                System.out.println("Qué tipo de montaje requiere?");
                 montajes.showMontajes(IDEvento);
-                montajes.elegirMontaje();
+                IDMontaje = montajes.elegirMontaje();
 
                 System.out.println("Ingrese la fecha en la que desea su evento (dd-MM-yy): ");
                 while (true) {
@@ -76,7 +83,7 @@ public class rentaSalon {
                     }
                 }
 
-                System.out.println("Ingrese la fecha en la que desea y terminar su evento (dd-MM-yy): ");
+                System.out.println("Ingrese la fecha en la que desea terminar su evento (dd-MM-yy): ");
                 while (true) {
                     try {
                         String input = Leer.nextLine();
@@ -113,35 +120,35 @@ public class rentaSalon {
                 }
 
                 try {
-                
-                    subtotal = salones.obtenerPrecioSalon(IDSalon);
-                    IVA = (subtotal*1.16f);
-                    total = (IVA + subtotal);
+                    IVA = subtotal * 0.16f;
+                    total = IVA + subtotal;
 
                     conexion = ConexionBD.obtenerConexion();
-                    String sql = "INSERT INTO renta (numero, fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, cliente, salon, evento, montaje, IVA, subtotal, total) VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                    PreparedStatement statement = conexion.prepareStatement(sql);
+                    String sql = "INSERT INTO renta(fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, IVA, subtotal, total, montaje, salon, cliente, evento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement statement = conexion.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     statement.setString(1, fechaReservacion);
                     statement.setString(2, fechaInicio);
                     statement.setString(3, fechaFinal);
                     statement.setString(4, horaInicio);
                     statement.setString(5, horaFinal);
-                    statement.setInt(6, NoCliente);
-                    statement.setInt(7, IDSalon);
-                    statement.setInt(8, IDEvento);
+                    statement.setFloat(6, IVA);
+                    statement.setFloat(7, subtotal);
+                    statement.setFloat(8, total);
                     statement.setInt(9, IDMontaje);
-                    statement.setFloat(10, IVA);
-                    statement.setFloat(11, subtotal);
-                    statement.setFloat(12, total);
+                    statement.setInt(10, IDSalon);
+                    statement.setInt(11, NoCliente);
+                    statement.setInt(12, IDEvento);
     
                     int filasAfectadas = statement.executeUpdate();
                     if (filasAfectadas > 0) {
                         ResultSet generatedKeys = statement.getGeneratedKeys();
-                        System.out.println("Reservación realizada con éxito.");
-                        int IDRenta = generatedKeys.getInt(1);
-    
-                        complementos.menuComplementos(IDRenta, IDEvento);
+                        if (generatedKeys.next()) {
+                            
+                            int IDRenta = generatedKeys.getInt(1);
+                            System.out.println("Reservación realizada con éxito.");
 
+                            complementos.menuComplementos(IDRenta, IDEvento);
+                        }
                     } else {
                         System.out.println("No se pudo realizar la reservación.");
                     }
