@@ -14,7 +14,7 @@ public class MostrarServicios {
     // Método para mostrar servicios disponibles
     public void showServicios() {
         Connection conexion = null;
-        String consultaServicios = "SELECT numero, nombreServicio AS Nombre, descripcion AS Descripcion, precio AS Precio, disponibilidad AS Disponibilidad FROM servicios";
+        String consultaServicios = "SELECT numero, nombreServicio AS Nombre, descripcion AS Descripcion, precio AS Precio FROM servicios WHERE disponibilidad = 1";
 
         // Obtener la conexión
         conexion = ConexionBD.obtenerConexion();
@@ -23,8 +23,8 @@ public class MostrarServicios {
                 ResultSet resultado1 = statement.executeQuery()) {
 
             System.out.println("=============================================================");
-            System.out.printf("| %-10s | %-20s | %-30s | %-10s | %-15s |\n", 
-                            "ID", "Nombre", "Descripción", "Precio", "Disponibilidad");
+            System.out.printf("| %-5s | %-25s | %-40s | %-10s |\n", 
+                            "ID", "Nombre", "Descripción", "Precio");
             System.out.println("=============================================================");
 
             // Mostrar datos de servicios
@@ -33,11 +33,9 @@ public class MostrarServicios {
                 String nombre = resultado1.getString("Nombre");
                 String descripcion = resultado1.getString("Descripcion");
                 float precio = resultado1.getFloat("Precio");
-                int dis = resultado1.getInt("Disponibilidad");
-                String disponibilidad = (dis == 0) ? "No Disponible" : "Disponible";
 
-                System.out.printf("| %-10d | %-20s | %-30s | %-10.2f | %-15s |\n", 
-                                id, nombre, descripcion, precio, disponibilidad);
+                System.out.printf("| %-5d | %-25s | %-40s | %-10.2f |\n", 
+                                id, nombre, descripcion, precio);
             }
             System.out.println("=============================================================");
 
@@ -116,10 +114,10 @@ public class MostrarServicios {
             statement.setInt(1, IDRenta);
             ResultSet resultado = statement.executeQuery();
 
-            System.out.println("=============================================================");
-            System.out.printf("| %-20s | %-20s | %-30s | %-10s |\n", 
+            System.out.println("===================================================================================");
+            System.out.printf("| %-10s | %-20s | %-30s | %-10s |\n", 
                             "Fecha", "Salon", "Descripción", "Precio");
-            System.out.println("=============================================================");
+            System.out.println("===================================================================================");
 
             boolean valid = false;
 
@@ -130,14 +128,14 @@ public class MostrarServicios {
                 String DescripcionServicio = resultado.getString("DescripcionServicio");
                 float CostoServicio = resultado.getFloat("CostoServicio");
 
-                System.out.printf("| %-20s | %-20s | %-30s | %-10.2f |\n", 
+                System.out.printf("| %-10s | %-20s | %-30s | %-10.2f |\n", 
                                 FechaReservacion, NombreSalon, DescripcionServicio, CostoServicio);
             }
             
             if (!valid) {
                 System.out.println("|                                                No tienes servicios aún                                                   |");
             } else {
-                System.out.println("=============================================================");
+                System.out.println("===================================================================================");
             }
         } catch (SQLException e) {
             e.printStackTrace();

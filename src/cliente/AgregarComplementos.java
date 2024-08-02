@@ -50,10 +50,16 @@ public class AgregarComplementos {
                         equipamiento.showEquipamientos(IDEvento);
                         IDEquipamientos = equipamiento.elegirEquipamiento();
 
+                        System.out.println(IDEquipamientos);
+
                         System.out.println("Escoja la cantidad que desee agregar");
                         cantidad = Leer.nextInt();
 
+                        System.out.println(cantidad);
+
                         precio = equipamiento.getPrecio(IDEquipamientos);
+
+                        System.out.println(precio);
 
                             AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
                         
@@ -131,7 +137,6 @@ public class AgregarComplementos {
                 }
             }
     
-            // Actualizar la tabla renta con los nuevos valores
             try (PreparedStatement statementActualizar = conexion.prepareStatement(actualizarRenta)) {
                 statementActualizar.setFloat(1, subtotal);
                 statementActualizar.setFloat(2, IVA);
@@ -148,15 +153,7 @@ public class AgregarComplementos {
     
         } catch (SQLException e) {
             System.out.println("Error al procesar la solicitud: " + e.getMessage());
-        } finally {
-            if (conexion != null) {
-                try {
-                    conexion.close();
-                } catch (SQLException e) {
-                    System.out.println("Error al cerrar la conexión: " + e.getMessage());
-                }
-            }
-        }
+        } 
     }
     
 
@@ -218,15 +215,7 @@ public class AgregarComplementos {
     
         } catch (SQLException e) {
             System.out.println("Error al procesar la solicitud: " + e.getMessage());
-        } finally {
-            if (conexion != null) {
-                try {
-                    conexion.close();
-                } catch (SQLException e) {
-                    System.out.println("Error al cerrar la conexión: " + e.getMessage());
-                }
-            }
-        }
+        } 
     }
     
 

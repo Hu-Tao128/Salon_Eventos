@@ -28,10 +28,10 @@ public class MostrarEquipamientos {
             statement.setInt(1, evento);
             ResultSet resultado3 = statement.executeQuery();
             
-            System.out.println("============================================================================");
+            System.out.println("===================================================================================");
             System.out.printf("| %10s | %-33s | %-10s | %-10s |\n", 
                             "Numero", "Nombre del Equipamiento", "Precio", "Stock");
-                            System.out.println("============================================================================");
+                            System.out.println("===================================================================================");
     
             System.out.printf("| %10s | %-33s | %-10s | %-10s |\n", 
                             "----------", "-------------------------------", "----------", "----------");
@@ -45,7 +45,7 @@ public class MostrarEquipamientos {
                 System.out.printf("| %10d | %-33s | %-10.2f | %-10d |\n", 
                                 num, nombreEquipamiento, precio, stock);
             }
-            System.out.println("============================================================================");
+            System.out.println("===================================================================================");
     
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,10 +149,10 @@ public class MostrarEquipamientos {
                 statement.setInt(1, IDRenta);
                 ResultSet resultado = statement.executeQuery();
 
-            System.out.println("=============================================================");
+                System.out.println("===================================================================================");
             System.out.printf("| %-10s | %-20s | %-30s | %-10s |\n", 
                             "Fecha", "Salon", "Descripción", "Precio");
-            System.out.println("=============================================================");
+            System.out.println("===================================================================================");
 
             boolean valid = false;
 
@@ -169,9 +169,9 @@ public class MostrarEquipamientos {
             }
 
             if (!valid) {
-                System.out.println("|                                                No tienes servicios aún                                                   |");
+                System.out.println("|                                       No tienes servicios aún                                                   |");
             }else{
-                System.out.println("=============================================================");
+                System.out.println("===================================================================================");
             }
 
 

@@ -36,7 +36,6 @@ public class rentaSalon {
         Scanner Leer = new Scanner(System.in);
         MostrarSalones salones = new MostrarSalones();
         MostrarEventos eventos = new MostrarEventos();
-        MostrarMontajes montajes = new MostrarMontajes(); 
         AgregarComplementos complementos = new AgregarComplementos();
 
         Connection conexion = null;
@@ -47,6 +46,7 @@ public class rentaSalon {
 
             System.out.println("Desea realizar una renta de salón? (s/n)");
             String respuesta = Leer.next();
+            Leer.nextLine();
 
             if (!respuesta.equals("s")) {
                 break;   
@@ -68,11 +68,13 @@ public class rentaSalon {
                 IDEvento = eventos.elegirEvento();
 
                 System.out.println("Qué tipo de montaje requiere?");
+                MostrarMontajes montajes = new MostrarMontajes();
                 montajes.showMontajes(IDEvento);
                 IDMontaje = montajes.elegirMontaje();
 
-                System.out.println("Ingrese la fecha en la que desea su evento (dd-MM-yy): ");
                 while (true) {
+                    System.out.println("Ingrese la fecha en la que desea su evento (dd-MM-yy): ");
+                    salones.mostrarFechasNoPermitidas(IDSalon);
                     try {
                         String input = Leer.nextLine();
                         LocalDate date = LocalDate.parse(input, formatter);
@@ -83,8 +85,9 @@ public class rentaSalon {
                     }
                 }
 
-                System.out.println("Ingrese la fecha en la que desea terminar su evento (dd-MM-yy): ");
                 while (true) {
+                    System.out.println("Ingrese la fecha en la que desea terminar su evento (dd-MM-yy): ");
+                    salones.mostrarFechasNoPermitidas(IDSalon);
                     try {
                         String input = Leer.nextLine();
                         LocalDate date = LocalDate.parse(input, formatter);
@@ -155,10 +158,7 @@ public class rentaSalon {
     
                 } catch (SQLException e) {
                     System.out.println("Error al realizar la reservación: " + e.getMessage());
-                } finally {
-                    ConexionBD.cerrarConexion(conexion);
                 }
-
             } while (IDSalon == 0);
         } while (opcion != 0);
         

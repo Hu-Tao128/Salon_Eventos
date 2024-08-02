@@ -1,63 +1,98 @@
 package cliente;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
+import conexionDB.ConexionBD;
+
 public class Cuenta {
-    private String Apellido;
-    private String Nombre;
+    private int NoCliente;
 
     public int InicioSesion(){
         Scanner leer = new Scanner(System.in);
-        int opcion;
         int NoCliente = 0;
 
-        do {
-            System.out.println("Bienvenido Cliente");
-            System.out.println("Desea Ingresar Por:");
-            System.out.println("1) Numero de Cliente");
-            System.out.println("2) Nombre de Contacto");
-            System.out.println("3) Nombre Empresa");
-            System.out.println("0) Salir");
-            opcion = leer.nextInt();
+            System.out.println("Bienvenido, Por Favor Ingrese su Numero de Cliente");
+            NoCliente = leer.nextInt();
 
-            switch (opcion) {
-                case 1:
-                    System.out.println("Ingrese su Numero de Cliente");
-                    int ID = leer.nextInt();
+            Connection connection = null;
 
-                    ValidarCuenta NumCliente = new ValidarCuenta();
-                    NoCliente = NumCliente.validarID(ID);
-
-                    break;
-                case 2:
-                    System.out.println("Ingrese su Primer Apellido");
-                    Apellido = leer.nextLine();
-                    leer.nextLine();
-
-                    System.out.println("Ingrese Su Nombre, tal como lo indico al registrarse");
-                    Nombre = leer.nextLine();
-
-                    ValidarCuenta NomContacto = new ValidarCuenta();
-                    NoCliente = NomContacto.ValidarNombre(Nombre, Apellido);
-                    break;
-                case 3:
-                    System.out.println("Ingrese su Nombre de Empresa");
-                    String NombreFiscal = leer.nextLine();
-                    leer.nextLine();
-
-                    ValidarCuenta NomFiscal = new ValidarCuenta();
-                    NoCliente = NomFiscal.ValidarNombreFiscal(NombreFiscal);
-                    break;
-                case 0:
-                    System.out.println("Que Tenga Buen Dia :)");
-                    break;
+        try {
+            connection = ConexionBD.obtenerConexion();
             
-                default:
-                    System.out.println("Ingrese un numero de la lista por favor");
-                    break;
+            String consulta = "SELECT\n" +
+                              "    numero AS NoCliente,\n" +
+                              "    nomContacto AS Nombres,\n" +
+                              "    primerApellido AS Apellido\n" +
+                              "FROM cliente\n" +
+                              "WHERE numero = ?";
+            
+            PreparedStatement statement = connection.prepareStatement(consulta);
+            statement.setInt(1, NoCliente);
+            ResultSet resultado = statement.executeQuery();
+    
+            if (resultado.next()) { 
+                String Nombres = resultado.getString("Nombres");
+                String Apellido = resultado.getString("Apellido");
+                NoCliente = resultado.getInt("NoCliente");
+                
+                System.out.println("Bienvenido " + Nombres + " " + Apellido);
+            } else {
+                System.out.println("Usuario no encontrado");
             }
-        } while (opcion == 0);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return NoCliente;
 
     }
+
+    public void perfil(int IDCliente) {
+        Connection conexion = null;
+        String consultaCliente = "SELECT nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email FROM cliente WHERE numero = ?";
+
+        conexion = ConexionBD.obtenerConexion();
+
+        try (PreparedStatement statement = conexion.prepareStatement(consultaCliente)) {
+            statement.setInt(1, IDCliente);
+            ResultSet resultado = statement.executeQuery();
+
+            if (resultado.next()) { 
+                String nombreFiscal = resultado.getString("nombreFiscal");
+                String Nombre = resultado.getString("nomContacto");
+                String primerApellido = resultado.getString("primerApellido");
+                String segundoApellido = resultado.getString("segundoApellido");
+                String numTel = resultado.getString("numTel");
+                String email = resultado.getString("email");
+
+                System.out.println("Detalles del Cliente:");
+                System.out.println("========================================================================");
+                System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+                System.out.println("========================================================================");
+                    
+                if (nombreFiscal != null && !nombreFiscal.isEmpty()) {
+                    System.out.printf("| %-25s | %-40s |\n", "Nombre de Empresa", nombreFiscal);
+                }
+                System.out.printf("| %-25s | %-40s |\n", "Nombre", Nombre);
+                System.out.printf("| %-25s | %-40s |\n", "Apellido Paterno", primerApellido);
+                System.out.printf("| %-25s | %-40s |\n", "Apellido Materno", segundoApellido);
+                System.out.printf("| %-25s | %-40s |\n", "Teléfono", numTel);
+                System.out.printf("| %-25s | %-40s |\n", "Email", email);
+                System.out.println("========================================================================");
+
+                OpcionesCuenta cuenta = new OpcionesCuenta();
+                cuenta.menuModificar(IDCliente);
+
+            } else {
+                System.out.println("No se encontraron detalles para el cliente con ID: " + IDCliente);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener los datos del cliente: " + e.getMessage());
+        }
+    }
+    
 }

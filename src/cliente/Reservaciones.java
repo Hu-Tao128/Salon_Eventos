@@ -142,7 +142,7 @@ public class Reservaciones {
 
                     System.out.println("Detalles de la Renta:");
                     System.out.println("========================================================================");
-                    System.out.printf("| %-25s | %-40s |\n", "Nombre de la Columna", "Valor");
+                    System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
                     System.out.println("========================================================================");
                     System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservación", fechaReservacion);
                     System.out.printf("| %-25s | %-40s |\n", "Hora de Reservación", horaReservacion);

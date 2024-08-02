@@ -16,7 +16,7 @@ public class MostrarMontajes {
 
     public void showMontajes(int evento) {
         Connection conexion = null;
-
+    
         String consultaMontaje = "SELECT " +
                 "m.numero AS Numero, " +
                 "m.nombreMontaje AS NombreMontaje, " +
@@ -24,9 +24,8 @@ public class MostrarMontajes {
                 "FROM montaje_evento AS me " +
                 "INNER JOIN montaje AS m ON me.montaje = m.numero " +
                 "WHERE me.evento = ?;";
-
+    
         try {
-            // Obtener la conexión
             conexion = ConexionBD.obtenerConexion();
             
             try (PreparedStatement statement = conexion.prepareStatement(consultaMontaje)) {
@@ -36,36 +35,44 @@ public class MostrarMontajes {
                 // Limpiar la lista de montajes disponibles antes de agregar nuevos
                 montajesDisponibles.clear();
 
-                System.out.printf("%-10s %-30s %-50s\n", "Número", "Nombre del Montaje", "Descripción");
-                System.out.printf("%-10s %-30s %-50s\n", "----------", "------------------------------", "--------------------------------------------------");
-
+                System.out.println("Detalles de los Montajes:");
+                System.out.println("========================================================================");
+                System.out.printf("| %-10s | %-30s | %-50s |\n", "Número", "Nombre del Montaje", "Descripción");
+                System.out.println("========================================================================");
+    
                 while (resultado.next()) {
                     int numero = resultado.getInt("Numero");
-                    String montaje = resultado.getString("NombreMontaje");
+                    String nombreMontaje = resultado.getString("NombreMontaje");
                     String descripcion = resultado.getString("Descripcion");
 
-                    // Añadir el número del montaje a la lista
+                    // Agregar el número del montaje a la lista de montajes disponibles
                     montajesDisponibles.add(numero);
-
-                    // Imprimir la información del montaje
-                    System.out.printf("%-10d %-30s %-50s\n", numero, montaje, descripcion);
+    
+                    System.out.printf("| %-10d | %-30s | %-50s |\n", numero, nombreMontaje, descripcion);
                 }
+                
+                System.out.println("========================================================================");
+                
+                // Verificación de depuración
+                System.out.println("Montajes Disponibles (IDs): " + montajesDisponibles);
             }
-
+    
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error en la consulta: " + e.getMessage());
+        } finally {
+            ConexionBD.cerrarConexion(conexion);
         }
     }
-
+    
     public int elegirMontaje() {
-        Scanner Leer = new Scanner(System.in);
+        Scanner leer = new Scanner(System.in);
         int ID = 0;
 
         do {
             System.out.println("Ingresar el número de montaje:");
 
             try {
-                ID = Leer.nextInt();
+                ID = leer.nextInt();
                 if (ID <= 0) {
                     System.out.println("El número de montaje debe ser un número positivo.");
                     ID = 0;
@@ -75,7 +82,7 @@ public class MostrarMontajes {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                Leer.next(); // Limpiar el buffer del scanner
+                leer.next(); // Limpiar el buffer del scanner
             }
 
         } while (ID == 0);

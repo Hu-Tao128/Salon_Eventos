@@ -6,6 +6,7 @@ import cliente.AgregarCliente;
 import cliente.Cuenta;
 import cliente.MostrarEventos;
 import cliente.MostrarSalones;
+import cliente.MostrarServicios;
 import cliente.Reservaciones;
 import cliente.rentaSalon;
 
@@ -99,13 +100,19 @@ public class Salent {
                 System.out.println("|-------------------------------|");
                 System.out.println("|      1) Ver mis Eventos       |");
                 System.out.println("|-------------------------------|");
-                System.out.println("|         2) Ver Salones        |");
+                System.out.println("|   2) Conoce Nuestros Salones  |");
                 System.out.println("|-------------------------------|");
-                System.out.println("|         3) Ver Eventos        |");
+                System.out.println("|   3) Conoce Nuestros Eventos  |");
                 System.out.println("|-------------------------------|");
-                System.out.println("|    4) Hacer una reservacion   |");
+                System.out.println("|  4) Conoce Nuestros Montajes  |");
                 System.out.println("|-------------------------------|");
-                System.out.println("|        5) Cerrar Sesion       |");
+                System.out.println("|  5) Conoce Nuestros Servicios |");
+                System.out.println("|-------------------------------|");
+                System.out.println("|    6) Hacer una reservacion   |");
+                System.out.println("|-------------------------------|");
+                System.out.println("|        7) Ver mis Datos       |");
+                System.out.println("|-------------------------------|");
+                System.out.println("|        0) Cerrar Sesion       |");
                 System.out.println("|-------------------------------|");
                 System.out.println("================================");
 
@@ -130,14 +137,29 @@ public class Salent {
 
                             break;
                         case 4:
-                            rentaSalon renta = new rentaSalon();
-                            renta.reservacion(NoCliente);
-
+                            MostrarMontaje montajes = new MostrarMontaje();
+                            montajes.showMontaje();
                             break;
                         case 5:
+                            MostrarServicios servicios = new MostrarServicios();
+                            servicios.showServicios();
+                            
+                            break;
+                        case 6:
+                            rentaSalon renta = new rentaSalon();
+                            renta.reservacion(NoCliente);
+                            
+                            break;
+                        case 7:
+                            Cuenta perfil = new Cuenta();
+                            perfil.perfil(NoCliente);
+                            
+                            break;
+                        case 0:
                             NoCliente = 0;
                             System.out.println("Que tenga un excelente dia, vuelva pronto :)");
                             
+                            break;
                         default:
                             break;
                     }

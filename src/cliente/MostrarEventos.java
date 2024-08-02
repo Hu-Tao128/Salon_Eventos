@@ -19,35 +19,33 @@ public class MostrarEventos {
             // Obtener la conexión
             conexion = ConexionBD.obtenerConexion();
             
-            // Ejemplo de consulta
+            // Consulta SQL para obtener datos de la tabla 'evento'
             String consulta = "SELECT * FROM evento";
-            //la consulta se hace en tipo string que pasa a instruccion en el statement
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            System.out.println("Escoge tu evento:");
-            // Iterar sobre el resultado
-            // Imprimir la cabecera de la tabla
-            System.out.printf("%-10s %-20s\n", "Numero", "Nombre");
-
-            // Imprimir una línea separadora
-            System.out.printf("%-10s %-20s\n", "----------", "--------------------");
-
+            System.out.println("Detalles de los Eventos:");
+            System.out.println("=========================================================");
+            System.out.printf("| %-10s | %-40s |\n", "Numero", "Nombre");
+            System.out.println("=========================================================");
+    
+            // Iterar sobre el resultado de la consulta
             while (resultado.next()) {
                 // Obtener datos
                 int numero = resultado.getInt("numero");
                 String nombre = resultado.getString("nombre");
-
+    
                 // Imprimir datos en forma de tabla
-                System.out.printf("%-10d %-20s\n", numero, nombre);
+                System.out.printf("| %-10d | %-40s |\n", numero, nombre);
             }
-
+            
+            System.out.println("=========================================================");
+    
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
-        } finally {
-            ConexionBD.cerrarConexion(conexion);
         }
     }
+    
 
     public int elegirEvento() {
         Scanner Leer = new Scanner(System.in);
