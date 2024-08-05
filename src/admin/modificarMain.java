@@ -17,29 +17,19 @@ public class modificarMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       1) cliente              |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       2) disponibilidad       |");
+            System.out.println("|       2) equipamiento         |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       3) equipamiento         |");
+            System.out.println("|       3) evento               |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       4) equipos_eventos      |");
+            System.out.println("|       4) montaje              |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       5) equipos_renta        |");
+            System.out.println("|       5) renta                |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       6) evento               |");
+            System.out.println("|       6) salon                |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       7) montaje              |");
+            System.out.println("|       7) servicios            |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       8) montaje_evento       |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       9) renta                |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       10) salon               |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       11) servicios           |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       12) servicios renta     |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       13) salir               |");
+            System.out.println("|       0) salir                |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
 
@@ -49,54 +39,41 @@ public class modificarMain {
 
                 switch(opcion1){
                     case 1:
-                        
+                        ActualizarCliente data1 = new ActualizarCliente();
+                        data1.updateCliente();
                     break;
 
                     case 2:
-                        
+                        ActualizarEquipamiento data2 = new ActualizarEquipamiento();
+                        data2.updateEquipamiento();
                     break;
 
                     case 3:
-
+                        ActualizarEvento data3 = new ActualizarEvento();
+                        data3.updateEvento();
                     break;
 
                     case 4:
-                        
+                        ActualizarMontaje data4 = new ActualizarMontaje();
+                        data4.updateMontaje();
                     break;
 
                     case 5:
-
+                        ActualizarRenta data5 = new ActualizarRenta();
+                        data5.updateRenta();
                     break;
 
                     case 6:
-
+                        ActualizarSalon data6 = new ActualizarSalon();
+                        data6.updateSalon();
                     break;
 
                     case 7:
-
+                        ActualizarServicios data7 = new ActualizarServicios();
+                        data7.updateSalon();
                     break;
-
-                    case 8:
-
-                    break;
-
-                    case 9:
-
-                    break;
-
-                    case 10:
-
-                    break;
-
-                    case 11:
-
-                    break;
-
-                    case 12:
-
-                    break;
-
-                    case 13:
+                    
+                    case 0:
                         System.out.println("Saliendo del apartado de modificacion y regresando al menu de administrador");
                     break;
 
@@ -107,7 +84,6 @@ public class modificarMain {
             }catch(Exception e){
                 System.out.println("Ingrese numeros por favor");
             }
-        }while (opcion1 != 13);
-        Leer.close();
+        }while (opcion1 != 0);
     }
 }

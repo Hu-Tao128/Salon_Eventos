@@ -19,8 +19,10 @@ public class MostrarEquiposEvento {
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            System.out.printf("%-10s %-10s\n", 
-            "Evento", "Equipamiento");
+            System.out.println("Detalles de la relacion de equipos y evento");
+            System.out.println("===========================");
+            System.out.printf("| %-10s | %-10s |\n", "Evento", "Equipamiento");
+            System.out.println("===========================");
 
                 while (resultado.next()) {
                 // Obtener datos
@@ -29,10 +31,10 @@ public class MostrarEquiposEvento {
                 
 
                 // Imprimir datos en forma de tabla
-                System.out.printf("%-10d %-10d\n", 
+                System.out.printf("%-15s %-10s\n", 
                                 evento, equipamiento);
                 }
-
+                System.out.println("===========================");
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
         } finally {

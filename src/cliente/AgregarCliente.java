@@ -41,8 +41,12 @@ public class AgregarCliente {
             System.out.println("Ingrese su primer apellido:");
             primerApellido = datos.nextLine();
 
-            System.out.println("Escriba su segundo apellido:");
+            System.out.println("Escriba su segundo apellido, si no tiene solo ponga 0");
             segundoApellido = datos.nextLine();
+
+            if (segundoApellido.equals("0")) {
+                segundoApellido = null;
+            }
 
             System.out.println("Ingrese su numero de telefono:");
             numTel = datos.nextLine();

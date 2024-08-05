@@ -6,12 +6,16 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.InputMismatchException;
+//import java.util.Calendar;
 import java.sql.Date;
 import java.util.Scanner;
 
 import conexionDB.ConexionBD;
 
 public class MostrarSalones {
+
+    private int IDSalon;
+    
     public void showSalones() {
         Connection conexion = null;
         try {
@@ -23,12 +27,6 @@ public class MostrarSalones {
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            // Encabezado de la tabla
-            System.out.println("Detalles de los Salones:");
-            /*System.out.println("========================================================================");
-            System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
-            System.out.println("========================================================================");*/
-
             // Iterar sobre el resultado de la consulta
             while (resultado.next()) {
                 int numero = resultado.getInt("numero");
@@ -39,25 +37,26 @@ public class MostrarSalones {
                 String dirColonia = resultado.getString("dirColonia");
                 String dirCalle = resultado.getString("dirCalle");
                 String dirNumero = resultado.getString("dirNumero");
-
-                
-                System.out.println("\n========================================================================");
-                System.out.printf("| %-25s | %-40s |\n", "Número de Salón", numero);
-                System.out.printf("| %-25s | %-40s |\n", "Nombre del Salón", nombre);
-                System.out.printf("| %-25s | %-40s |\n", "Capacidad", capacidad);
-                System.out.printf("| %-25s | %-40.2f |\n", "Tamaño (m²)", tamanio);
-                System.out.printf("| %-25s | %-40.2f |\n", "Precio", precio);
-                System.out.printf("| %-25s | %-40s |\n", "Dirección", "Calle y Número:");
-                System.out.printf("| %-25s | %-40s |\n", "", dirCalle + " " + dirNumero);
-                System.out.printf("| %-25s | %-40s |\n", "", "Colonia:");
-                System.out.printf("| %-25s | %-40s |\n", "", dirColonia);
-                System.out.println("========================================================================");
+    
+                // Encabezado del salón
+                System.out.println("===================================================================");
+                System.out.printf("| %-20s | %-40s |\n", "Salon " + numero, nombre);
+                System.out.println("===================================================================");
+    
+                // Detalles del salón
+                System.out.printf("| %-20s | %-40d |\n", "Capacidad:", capacidad);
+                System.out.printf("| %-20s | %-40.2f |\n", "Tamaño (m²):", tamanio);
+                System.out.printf("| %-20s | %-40.2f |\n", "Precio:", precio);
+                System.out.printf("| %-20s | %-40s |\n", "Dirección:", dirCalle + " " + dirNumero);
+                System.out.printf("| %-20s | %-40s |\n", "", "Colonia: " + dirColonia);
+                System.out.println("===================================================================");
             }
-
+    
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
         }
     }
+    
 
    public int elegirSalon() {
         Scanner Leer = new Scanner(System.in);
@@ -68,12 +67,11 @@ public class MostrarSalones {
             System.out.println("Ingresar el número de salón");
             try {
                 ID = Leer.nextInt();
-                Leer.nextLine(); // Limpiar el buffer de entrada
-                entradaValida = true; // Marcar la entrada como válida
+                Leer.nextLine(); 
+                entradaValida = true; 
             } catch (InputMismatchException e) {
-                // Manejar excepción de entrada incorrecta
                 System.out.println("Ingrese números por favor.");
-                Leer.nextLine(); // Limpiar el buffer de entrada
+                Leer.nextLine();
             }
         } while (!entradaValida);
 
@@ -89,7 +87,7 @@ public class MostrarSalones {
         try {
             conexion = ConexionBD.obtenerConexion();
             PreparedStatement statement = conexion.prepareStatement(consulta);
-            statement.setInt(1, numeroSalon); // Establece el parámetro del número de salón
+            statement.setInt(1, numeroSalon);
             ResultSet resultado = statement.executeQuery();
 
             if (resultado.next()) {
@@ -120,20 +118,18 @@ public class MostrarSalones {
             ResultSet resultado = statement.executeQuery();
             
             System.out.println("Fechas Apartadas para el Salón ID " + IDSalon + ":");
-            System.out.println("========================================================================");
+            System.out.println("===============================");
             System.out.printf("| %-12s | %-12s |\n", "Fecha Inicio", "Fecha Final");
-            System.out.println("========================================================================");
+            System.out.println("===============================");
     
             while (resultado.next()) {
-                // Obtener datos
                 Date fechaInicio = resultado.getDate("fechaInicio");
                 Date fechaFinal = resultado.getDate("fechaFinal");
     
-                // Imprimir datos en forma de tabla
                 System.out.printf("| %-12s | %-12s |\n", fechaInicio.toString(), fechaFinal.toString());
             }
             
-            System.out.println("========================================================================");
+            System.out.println("===============================");
     
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
@@ -147,7 +143,8 @@ public class MostrarSalones {
         try {
             // Validar el formato de la fecha
             sdf.setLenient(false);
-            java.util.Date fechaUsuario = sdf.parse(fecha);
+            java.util.Date fechaUsuarioUtil = sdf.parse(fecha);
+            java.sql.Date fechaUsuarioSQL = new java.sql.Date(fechaUsuarioUtil.getTime());
 
             // Obtener la conexión
             conexion = ConexionBD.obtenerConexion();
@@ -164,24 +161,138 @@ public class MostrarSalones {
                 Date fechaInicio = resultado.getDate("fechaInicio");
                 Date fechaFinal = resultado.getDate("fechaFinal");
 
-                // Convertir las fechas de la base de datos a java.util.Date
-                java.util.Date fechaInicioDB = new java.util.Date(fechaInicio.getTime());
-                java.util.Date fechaFinalDB = new java.util.Date(fechaFinal.getTime());
-
                 // Validar que la fecha del usuario no esté en el rango de fechas reservadas
-                if (!fechaUsuario.before(fechaInicioDB) && !fechaUsuario.after(fechaFinalDB)) {
+                if ((fechaUsuarioSQL.equals(fechaInicio) || fechaUsuarioSQL.equals(fechaFinal)) ||
+                    (fechaUsuarioSQL.after(fechaInicio) && fechaUsuarioSQL.before(fechaFinal))) {
                     return "Fecha no disponible. Por favor, elija otra fecha.";
                 }
             }
 
             // Si la fecha es válida, devolverla en el formato correcto
-            return sdf.format(fechaUsuario);
+            return sdf.format(fechaUsuarioSQL);
 
         } catch (ParseException e) {
             return "Formato de fecha inválido. Por favor, use el formato yyyy-MM-dd.";
         } catch (SQLException e) {
             return "Error al verificar las fechas reservadas: " + e.getMessage();
+        } finally {
+            // Cerrar la conexión si no es null
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                } catch (SQLException e) {
+                    System.out.println("Error al cerrar la conexión: " + e.getMessage());
+                }
+            }
         }
     }
     
+    public void consultaResSalon(){
+
+        String opcion = "";
+
+        Scanner Leer = new Scanner(System.in);
+
+        Connection conexion = null;
+   
+            System.out.println("Escoga el salon al que quiere ver las reservaciones");
+            showSalones();
+            IDSalon = Leer.nextInt();
+        
+        try {
+            // Obtener la conexión
+            conexion = ConexionBD.obtenerConexion();
+            
+            // Consulta SQL para obtener datos de la tabla 'salon'
+            String consulta = "SELECT\r\n" + 
+                                "    s.nombre AS NombreSalon,\r\n" + 
+                                "    DATE_FORMAT(r.fechaReservacion, \"%d-%m-%y\") AS FechaReservacion,\r\n" + 
+                                "    CONCAT(c.nomContacto, ' ', c.primerApellido, ' ', IFNULL(c.segundoApellido, '')) AS NombreCliente,\r\n" +
+                                "    e.nombre AS TipoEvento\r\n" + 
+                                "FROM renta AS r\r\n" + 
+                                "INNER JOIN cliente AS c ON r.cliente = c.numero\r\n" + 
+                                "INNER JOIN salon AS s ON r.salon = s.numero\r\n" + 
+                                "INNER JOIN evento AS e ON r.evento = e.numero\r\n" + 
+                                "WHERE s.numero = ?";
+
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, IDSalon);
+            ResultSet resultado20 = statement.executeQuery();
+            
+            // Encabezado de la tabla
+            /*System.out.println("========================================================================");
+            System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+            System.out.println("========================================================================");*/
+
+            System.out.println("Reservaciones del salon numero: " + IDSalon);
+
+            // Iterar sobre el resultado de la consulta
+            while (resultado20.next()) {
+                String nombreSalon = resultado20.getString("NombreSalon");
+                String fechaReservacion = resultado20.getString("FechaReservacion");
+                String nombreCliente = resultado20.getString("NombreCliente");
+                String tipoEvento = resultado20.getString("TipoEvento");
+                
+                System.out.println("\n========================================================================");
+                System.out.printf("| %-25s | %-40s |\n", "NombreSalon", nombreSalon);
+                System.out.printf("| %-25s | %-40s |\n", "FechaReservacion", fechaReservacion);
+                System.out.printf("| %-25s | %-40s |\n", "NombreCliente", nombreCliente);
+                System.out.printf("| %-25s | %-40s |\n", "TipoEvento", tipoEvento);
+                System.out.println("========================================================================");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+    }
+
+    public void menuSalones(){
+
+        System.out.println("Bienvenido al menu de salones");
+
+        Scanner Leer = new Scanner(System.in);
+
+        String validar1;
+        int opcion1 = 0;
+
+        do{
+            System.out.println("=================================");
+            System.out.println("|               Menu             |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       1) Consulta general      |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       2) Reservaciones para    |");
+            System.out.println("|          el mismo salon        |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|        0) salir                |");
+            System.out.println("|--------------------------------|");
+            System.out.println("=================================");
+
+            validar1 = Leer.next();
+
+            try{
+                opcion1 = Integer.parseInt(validar1);
+
+                switch (opcion1) {
+                    case 1:
+                        showSalones();
+                    break;
+
+                    case 2:
+                        consultaResSalon();
+                    break;
+
+                    case 0:
+                        System.out.println("Saliendo del menu de salones");
+                    break;
+                
+                    default:
+                        break;
+                }
+
+            }catch(Exception e){
+                System.out.println("Ingrese numeros por favor");
+            }
+        }while(opcion1 != 0);
+    }
 }

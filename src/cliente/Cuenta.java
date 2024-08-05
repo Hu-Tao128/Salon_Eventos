@@ -41,6 +41,7 @@ public class Cuenta {
                 System.out.println("Bienvenido " + Nombres + " " + Apellido);
             } else {
                 System.out.println("Usuario no encontrado");
+                NoCliente = 0;
             }
             
         } catch (SQLException e) {
@@ -53,7 +54,7 @@ public class Cuenta {
 
     public void perfil(int IDCliente) {
         Connection conexion = null;
-        String consultaCliente = "SELECT nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email FROM cliente WHERE numero = ?";
+        String consultaCliente = "SELECT numero, nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email FROM cliente WHERE numero = ?";
 
         conexion = ConexionBD.obtenerConexion();
 
@@ -62,6 +63,7 @@ public class Cuenta {
             ResultSet resultado = statement.executeQuery();
 
             if (resultado.next()) { 
+                int numero = resultado.getInt("numero");
                 String nombreFiscal = resultado.getString("nombreFiscal");
                 String Nombre = resultado.getString("nomContacto");
                 String primerApellido = resultado.getString("primerApellido");
@@ -71,7 +73,7 @@ public class Cuenta {
 
                 System.out.println("Detalles del Cliente:");
                 System.out.println("========================================================================");
-                System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+                System.out.printf("| %-25s | %-40s |\n", "Cliente", numero);
                 System.out.println("========================================================================");
                     
                 if (nombreFiscal != null && !nombreFiscal.isEmpty()) {

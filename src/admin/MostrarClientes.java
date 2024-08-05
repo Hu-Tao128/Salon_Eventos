@@ -3,8 +3,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.InputMismatchException;
+import java.util.Scanner;
 import conexionDB.ConexionBD;
+
 public class MostrarClientes {
     public void showClientes(){
         Connection conexion = null;
@@ -17,9 +19,6 @@ public class MostrarClientes {
             //la consulta se hace en tipo string que pasa a instruccion en el statement
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
-            
-            System.out.printf("%-10s %-30s %-40s %-40s %-30s %-20s %-20s\n", 
-            "Numero", "Nombre Fiscal", "Nombre", "Apellido Paterno", "Apellido Materno", "Numero Celular", "Email");
 
                 while (resultado.next()) {
                 // Obtener datos
@@ -32,9 +31,15 @@ public class MostrarClientes {
                 String email = resultado.getString("email");
                 
 
-                // Imprimir datos en forma de tabla
-                System.out.printf("%-10d %-30s %-40s %-40s %-30s %-20s %-20s\n", 
-                                numero, nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email);
+                System.out.println("\n========================================================================");
+                System.out.printf("| %-25s | %-40d |\n", "Cliente", numero);
+                System.out.printf("| %-25s | %-40s |\n", "Nombre Fiscal", nombreFiscal);
+                System.out.printf("| %-25s | %-40s |\n", "Nombre", nomContacto);
+                System.out.printf("| %-25s | %-40s |\n", "Primer apellido", primerApellido);
+                System.out.printf("| %-25s | %-40s |\n", "Segundo apellido", segundoApellido);
+                System.out.printf("| %-25s | %-40s |\n", "Numero de telefono", numTel);
+                System.out.printf("| %-25s | %-40s |\n", "Correo electronico", email);
+                System.out.println("========================================================================");
                 }
 
         } catch (SQLException e) {
@@ -43,5 +48,28 @@ public class MostrarClientes {
             // Cerrar la conexión
             ConexionBD.cerrarConexion(conexion);
         }
+    }
+
+    public int elegirCliente() {
+        Scanner Leer = new Scanner(System.in);
+        int IDCliente = 0;
+
+        do {
+            System.out.println("Ingresar el número del cliente:");
+
+            try {
+                IDCliente = Leer.nextInt();
+                if (IDCliente <= 0) {
+                    System.out.println("El número del cliente debe ser un número positivo.");
+                    IDCliente = 0;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ingrese números por favor.");
+                Leer.next();
+            }
+
+        } while (IDCliente == 0);
+
+        return IDCliente;
     }
 }

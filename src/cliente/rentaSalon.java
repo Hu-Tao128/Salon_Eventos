@@ -27,10 +27,13 @@ public class rentaSalon {
     private int IDEvento;
     private int IDMontaje;
     private int opcion = 0;
+    private int metodoPago = 0;
 
     private float IVA = 0f;
     private float subtotal = 0f;
     private float total = 0f;
+
+    private float monto = 0f;
 
     public void reservacion(int NoCliente){
         Scanner Leer = new Scanner(System.in);
@@ -121,8 +124,11 @@ public class rentaSalon {
                         System.out.println("Hora inválida. Por favor, ingrese la hora en el formato HH:mm: ");
                     }
                 }
+                Leer.nextLine();
 
                 try {
+
+
                     IVA = subtotal * 0.16f;
                     total = IVA + subtotal;
 
@@ -151,6 +157,37 @@ public class rentaSalon {
                             System.out.println("Reservación realizada con éxito.");
 
                             complementos.menuComplementos(IDRenta, IDEvento);
+
+                            do {
+                                System.out.println("Cual es su metodo de pago?");
+                                System.out.println("1) Efectivo");
+                                System.out.println("2) Tarjeta");
+                                System.out.println("0) Salir, no puedo pagar");
+                                metodoPago = Leer.nextInt();
+            
+                                pagos metodoPagos = new pagos();
+                                
+                                switch (metodoPago) {
+                                    case 1:
+                                        monto = metodoPagos.Efectivo(total);
+                                        break;
+                                    case 2:
+                                        monto = metodoPagos.Tarjeta(total);
+                                        break;
+                                    case 0:
+                                        System.out.println("Hasta");
+                                        break;
+                                
+                                    default:
+                                    System.out.println("Esta opcion no esta en el menu");
+                                        break;
+                                }
+                            } while (metodoPago >= 0 && metodoPago < 3 || monto > 0);
+            
+                            if (metodoPago == 0 || monto == 0) {
+                                pagos eliminar = new pagos();
+                                eliminar.EliminarRenta(IDRenta);
+                            }
                         }
                     } else {
                         System.out.println("No se pudo realizar la reservación.");

@@ -10,6 +10,8 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class MostrarEquipamientos {
+    Scanner Leer = new Scanner(System.in);
+
     public void showEquipamientos(int evento) {
         Connection conexion = null;
     
@@ -55,14 +57,12 @@ public class MostrarEquipamientos {
     public int elegirEquipamiento() {
         Scanner Leer = new Scanner(System.in);
         int ID = -1;
-        boolean entradaValida = false;
 
         do {
             System.out.println("Ingresar el número del equipamiento:");
             try {
                 ID = Leer.nextInt();
-                Leer.nextLine(); 
-                entradaValida = true; 
+                Leer.nextLine();
                 if (ID <= 0) {
                     System.out.println("El número del equipamiento debe ser un número positivo.");
                     ID = -1; 
@@ -71,28 +71,50 @@ public class MostrarEquipamientos {
                 System.out.println("Ingrese números por favor.");
                 Leer.nextLine();
             }
-        } while (!entradaValida);
+        } while (ID <= 0);
 
         return ID;
     }
 
-    public int getCantidad(int IDEquipamientos){
-        int cantidad;
-
-        System.out.println("Cual es la cantidad que va a seleccionar?");
-
+    public int getCantidad(int IDEquipamientos) {
+        int cantidad = 0;
         Connection conexion = null;
 
-        String consultaCantidad = "SELECT " + 
-                                    "   stock " +
-                                    "FROM equipamiento " + 
-                                    "WHERE numero = ?";
+        try {
+            // Obtener la conexión
+            conexion = ConexionBD.obtenerConexion();
+            
+            do {
+                System.out.println("¿Cuál es la cantidad que va a seleccionar?");
+                try {
+                    cantidad = Leer.nextInt();
+                } catch (Exception e) {
+                    System.out.println("Ingrese números válidos.");
+                    Leer.next(); // Limpiar el buffer del scanner
+                    cantidad = 0;
+                }
 
-        try (PreparedStatement statement = conexion.prepareStatement(consultaCantidad)) {
-            statement.setInt(1, IDEquipamientos);
-            ResultSet resultado = statement.executeQuery();
+                if (cantidad > 0) {
+                    String consultaCantidad = "SELECT stock FROM equipamiento WHERE numero = ?";
 
-            cantidad = resultado.getInt("stock");
+                    try (PreparedStatement statement = conexion.prepareStatement(consultaCantidad)) {
+                        statement.setInt(1, IDEquipamientos);
+                        ResultSet resultado = statement.executeQuery();
+
+                        if (resultado.next()) {
+                            int cantidadTotal = resultado.getInt("stock");
+
+                            if (cantidad > cantidadTotal) {
+                                System.out.println("Está eligiendo más equipos de los disponibles.");
+                                cantidad = 0;
+                            }
+                        } else {
+                            System.out.println("No se encontró equipamiento con el ID especificado.");
+                            cantidad = 0;
+                        }
+                    }
+                }
+            } while (cantidad <= 0);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,80 +126,74 @@ public class MostrarEquipamientos {
 
     public float getPrecio(int IDEquipamientos) {
         float precio = 0f;
-    
         Connection conexion = null;
     
-        String consultaPrecio = "SELECT " + 
-                                "   precio " +
-                                "FROM equipamiento " + 
-                                "WHERE numero = ?";
+            conexion = ConexionBD.obtenerConexion();
+            
+            String consultaPrecio = "SELECT precio FROM equipamiento WHERE numero = ?";
     
-        try (PreparedStatement statement = conexion.prepareStatement(consultaPrecio)) {
-            statement.setInt(1, IDEquipamientos);
-            ResultSet resultado = statement.executeQuery();
-        
-            if (resultado.next()) { 
-                precio = resultado.getFloat("precio");
-            } else {
-                System.out.println("No se encontró equipamiento con ID: " + IDEquipamientos);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-                                
-        return precio;
-    }    
-
-    public void showEquipoRentas(int IDRenta){
-
-        Connection conexion = null;
-        String consultaEquipos = "SELECT " + 
-                            "   DATE_FORMAT(r.fechaReservacion, '%y-%m-%d') AS FechaReservacion, " +
-                            "   s.nombre AS NombreSalon, " +
-                            "   eq.descripcion AS DescripcionEquipo, " +
-                            "   eq.precio AS CostoEquipo " +
-                            "FROM renta AS r " +
-                            "INNER JOIN cliente AS c ON r.cliente = c.numero " +
-                            "INNER JOIN salon AS s ON r.salon = s.numero " +
-                            "INNER JOIN equipos_renta AS er ON r.numero = er.renta " +
-                            "INNER JOIN equipamiento AS eq ON er.equipamiento = eq.numero " +
-                            "WHERE r.numero = ?;";
-
-        conexion = ConexionBD.obtenerConexion();
-
-        try (PreparedStatement statement = conexion.prepareStatement(consultaEquipos)){
-                statement.setInt(1, IDRenta);
+            try (PreparedStatement statement = conexion.prepareStatement(consultaPrecio)) {
+                statement.setInt(1, IDEquipamientos);
                 ResultSet resultado = statement.executeQuery();
+            
+                if (resultado.next()) { 
+                    precio = resultado.getFloat("precio");
+                } else {
+                    System.out.println("No se encontró equipamiento con ID: " + IDEquipamientos);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    
+        return precio;
+    }   
 
-                System.out.println("===================================================================================");
-            System.out.printf("| %-10s | %-20s | %-30s | %-10s |\n", 
-                            "Fecha", "Salon", "Descripción", "Precio");
-            System.out.println("===================================================================================");
-
+    public void showEquipoRentas(int IDRenta) {
+        Connection conexion = null;
+        String consultaEquipos = "SELECT\n" + 
+                                 "    DATE_FORMAT(r.fechaReservacion, '%y-%m-%d') AS FechaReservacion,\n" + 
+                                 "    s.nombre AS NombreSalon,\n" + 
+                                 "    eq.descripcion AS DescripcionEquipo,\n" + 
+                                 "    eq.precio AS CostoEquipo\n" + 
+                                 "FROM renta AS r\n" + 
+                                 "INNER JOIN salon AS s ON r.salon = s.numero\n" + 
+                                 "INNER JOIN equipos_renta AS er ON r.numero = er.renta\n" + 
+                                 "INNER JOIN equipamiento AS eq ON er.equipamiento = eq.numero\n" + 
+                                 "WHERE r.numero = ?;";
+    
+        conexion = ConexionBD.obtenerConexion();
+    
+        try (PreparedStatement statement = conexion.prepareStatement(consultaEquipos)) {
+            statement.setInt(1, IDRenta);
+            ResultSet resultado = statement.executeQuery();
+    
+            System.out.println("\n========================================================================");
             boolean valid = false;
-
+    
             while (resultado.next()) {
-                valid = true;
-
-                String FechaReservacion = resultado.getString("FechaReservacion");
-                String NombreSalon = resultado.getString("NombreSalon");
-                String DescripcionServicio = resultado.getString("DescripcionEquipo");
-                float CostoServicio = resultado.getFloat("CostoEquipo");
-
-                System.out.printf("| %-10s | %-20s | %-30s | %-10.2f |\n", 
-                                FechaReservacion, NombreSalon, DescripcionServicio, CostoServicio);
+                if (!valid) {
+                    System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservación", resultado.getString("FechaReservacion"));
+                    System.out.printf("| %-25s | %-40s |\n", "Nombre del Salón", resultado.getString("NombreSalon"));
+                    System.out.println("========================================================================");
+                    valid = true;
+                }
+    
+                String DescripcionEquipo = resultado.getString("DescripcionEquipo");
+                float CostoEquipo = resultado.getFloat("CostoEquipo");
+    
+                System.out.printf("| %-25s | %-40s |\n", "Descripción del Equipo", DescripcionEquipo);
+                System.out.printf("| %-25s | %-40.2f |\n", "Costo del Equipo", CostoEquipo);
+                System.out.println("------------------------------------------------------------------------");
             }
-
+    
             if (!valid) {
-                System.out.println("|                                       No tienes servicios aún                                                   |");
-            }else{
-                System.out.println("===================================================================================");
+                System.out.println("|                                         No se encontraron equipos para esta renta                                       |");
+            } else {
+                System.out.println("========================================================================");
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }    
 
 }

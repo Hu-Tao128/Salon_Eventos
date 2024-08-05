@@ -11,26 +11,30 @@ public class agregarMain {
         int opcion1 = 0;
         
         do{
-            System.out.println("================================");
-            System.out.println("|              Menu             |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       1) cliente              |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       2) equipamiento         |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       3) evento               |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       4) montaje              |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       5) renta                |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       6) salon                |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       7) servicios            |");
-            System.out.println("|-------------------------------|");
-            System.out.println("|       0) salir                |");
-            System.out.println("|-------------------------------|");
-            System.out.println("================================");
+            System.out.println("=================================");
+            System.out.println("|               Menu             |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       1) cliente               |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       2) equipamiento          |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       3) evento                |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       4) montaje               |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       5) renta                 |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       6) salon                 |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       7) servicios             |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       8) Montajes de evento    |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       9) Equipamiento de evento|");
+            System.out.println("|--------------------------------|");
+            System.out.println("|        0) salir                |");
+            System.out.println("|--------------------------------|");
+            System.out.println("=================================");
 
             validar1 = Leer.next();
             try{
@@ -58,7 +62,8 @@ public class agregarMain {
                     break;
 
                     case 5:
-
+                        AgregarRenta data5 = new AgregarRenta();
+                        data5.agregarRentaF();
                     break;
 
                     case 6:
@@ -69,6 +74,16 @@ public class agregarMain {
                     case 7:
                         AgregarServicios data7 = new AgregarServicios();
                         data7.agregarServiciosF();
+                    break;
+
+                    case 8:
+                        AgregarEventoMontaje data8 = new AgregarEventoMontaje();
+                        data8.agregarEventoMontajeF();
+                    break;
+
+                    case 9:
+                        AgregarEventoEquipamiento data9 = new AgregarEventoEquipamiento();
+                        data9.agregarEventoEquipamientoF();
                     break;
 
                     case 0:

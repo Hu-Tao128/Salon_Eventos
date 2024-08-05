@@ -12,7 +12,6 @@ import conexionDB.ConexionBD;
 public class Reservaciones {
 
     Scanner Leer = new Scanner(System.in);
-    private int opcion;
     private int IDRenta;
 
     public void verMisReservaciones(int NoCliente) {
@@ -24,7 +23,7 @@ public class Reservaciones {
 
                 String consultaReservaciones = "SELECT " + 
                                             "   r.numero AS 'No. Reservacion', " + 
-                                            "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " +
+                                            "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " + 
                                             "   s.nombre AS Salon, " +
                                             "   e.nombre AS 'Tipo de evento', " +
                                             "   s.capacidad AS 'Cantidad de invitados' " +

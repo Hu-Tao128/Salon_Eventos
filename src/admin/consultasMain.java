@@ -40,7 +40,7 @@ public class consultasMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       11) servicios           |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       12) servicios renta     |");
+            System.out.println("|       12) servicios_renta     |");
             System.out.println("|-------------------------------|");
             System.out.println("|       0) salir                |");
             System.out.println("|-------------------------------|");
@@ -63,7 +63,7 @@ public class consultasMain {
 
                     case 3:
                         MostrarEquipamiento data3 = new MostrarEquipamiento();
-                        data3.showEquipamiento();
+                        data3.menuEquipamientos();
                     break;
 
                     case 4:
@@ -83,7 +83,7 @@ public class consultasMain {
 
                     case 7:
                         MostrarMontaje data7 = new MostrarMontaje();
-                        data7.showMontaje();
+                        data7.menuMontajes();
                     break;
 
                     case 8:
@@ -93,17 +93,17 @@ public class consultasMain {
 
                     case 9:
                         MostrarRenta data9 = new MostrarRenta();
-                        data9.showRentas();
+                        data9.menuRentas();
                     break;
 
                     case 10:
                         MostrarSalones data10 = new MostrarSalones();
-                        data10.showSalones();
+                        data10.menuSalones();
                     break;
 
                     case 11:
                         MostrarServicios data11 = new MostrarServicios();
-                        data11.showServicios();
+                        data11.menuServicios();
                     break;
 
                     case 12:

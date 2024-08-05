@@ -22,7 +22,6 @@ public class AgregarComplementos {
 
     public void menuComplementos(int IDRenta, int IDEvento) {
         do {
-            try {
                 System.out.println("Desea agregar algún Servicio o Equipamiento?");
                 System.out.println("1) Agregar Servicio");
                 System.out.println("2) Agregar Equipamiento");
@@ -30,7 +29,6 @@ public class AgregarComplementos {
                 System.out.println("4) Mostrar Equipamiento de mi renta");
                 System.out.println("0) No, gracias");
                 opcion = Leer.nextInt();
-                Leer.nextLine();
 
                 switch (opcion) {
                     case 1:
@@ -50,14 +48,10 @@ public class AgregarComplementos {
                         equipamiento.showEquipamientos(IDEvento);
                         IDEquipamientos = equipamiento.elegirEquipamiento();
 
-                        System.out.println(IDEquipamientos);
+                        cantidad = equipamiento.getCantidad(IDEquipamientos);
 
-                        System.out.println("Escoja la cantidad que desee agregar");
-                        cantidad = Leer.nextInt();
-
-                        System.out.println(cantidad);
-
-                        precio = equipamiento.getPrecio(IDEquipamientos);
+                        MostrarEquipamientos precios = new MostrarEquipamientos();
+                        precio = precios.getPrecio(IDEquipamientos);
 
                         System.out.println(precio);
 
@@ -68,25 +62,25 @@ public class AgregarComplementos {
                     case 3:
                         MostrarServicios menu = new MostrarServicios();
                         menu.showServiciosRenta(IDRenta);
+
                         break;
 
                     case 4:
                         MostrarEquipamientos mostrarEquipamientos =  new MostrarEquipamientos();
                         mostrarEquipamientos.showEquipoRentas(IDRenta);
+
                         break;
 
                     case 0:
                         System.out.println("Está bien, prosigamos.");
+
                         break;
 
                     default:
                         System.out.println("Opción no válida, intente de nuevo.");
+                        
                         break;
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida, por favor ingrese un número.");
-                Leer.nextLine(); 
-            }
         } while (opcion != 0);
     }
 

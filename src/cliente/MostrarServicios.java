@@ -11,6 +11,8 @@ import conexionDB.ConexionBD;
 
 public class MostrarServicios {
 
+    private int IDServicio;
+    
     // Método para mostrar servicios disponibles
     public void showServicios() {
         Connection conexion = null;
@@ -20,53 +22,56 @@ public class MostrarServicios {
         conexion = ConexionBD.obtenerConexion();
 
         try (PreparedStatement statement = conexion.prepareStatement(consultaServicios);
-                ResultSet resultado1 = statement.executeQuery()) {
+     ResultSet resultado1 = statement.executeQuery()) {
 
-            System.out.println("=============================================================");
-            System.out.printf("| %-5s | %-25s | %-40s | %-10s |\n", 
-                            "ID", "Nombre", "Descripción", "Precio");
-            System.out.println("=============================================================");
+        System.out.println("=====================================================================================================");
+    System.out.printf("| %-2s | %-32s | %-44s | %-10s |\n", 
+                        "ID", "Nombre", "Descripción", "Precio");
+    System.out.println("=====================================================================================================");
+    
+    while (resultado1.next()) {
+        int id = resultado1.getInt("numero");
+        String nombre = resultado1.getString("Nombre");
+        String descripcion = resultado1.getString("Descripcion");
+        float precio = resultado1.getFloat("Precio");
+    
+        System.out.printf("| %-2d | %-32s | %-44s | %-10.2f |\n", 
+                        id, nombre, descripcion, precio);
+    }
+    
+    System.out.println("=====================================================================================================\n");
 
-            // Mostrar datos de servicios
-            while (resultado1.next()) {
-                int id = resultado1.getInt("numero");
-                String nombre = resultado1.getString("Nombre");
-                String descripcion = resultado1.getString("Descripcion");
-                float precio = resultado1.getFloat("Precio");
+} catch (SQLException e) {
+    e.printStackTrace();
+}
 
-                System.out.printf("| %-5d | %-25s | %-40s | %-10.2f |\n", 
-                                id, nombre, descripcion, precio);
-            }
-            System.out.println("=============================================================");
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
-    // Método para elegir un servicio disponible
     public int elegirServicio() {
         Scanner Leer = new Scanner(System.in);
         int ID = -1;
         boolean entradaValida = false;
 
         do {
-            System.out.println("Ingrese el número del servicio:");
+            System.out.println("Ingrese el número del servicio (o 0 para cancelar):");
             try {
                 ID = Leer.nextInt();
-                Leer.nextLine();
+                Leer.nextLine(); // Limpiar el buffer del scanner
+
+                if (ID == 0) {
+                    System.out.println("Operación cancelada.");
+                    return 0; // Salir del método si el usuario cancela
+                }
+
                 if (ID <= 0) {
                     System.out.println("El número del servicio debe ser un número positivo.");
-                    entradaValida = false;
                 } else if (!esServicioDisponible(ID)) {
                     System.out.println("El servicio seleccionado no está disponible. Por favor, elija otro.");
-                    entradaValida = false;
                 } else {
-                    entradaValida = true;
+                    entradaValida = true; // El ID es válido y el servicio está disponible
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Ingrese números por favor.");
+                System.out.println("Ingrese un número válido.");
                 Leer.nextLine(); // Limpiar el buffer del scanner
             }
         } while (!entradaValida);
@@ -93,53 +98,179 @@ public class MostrarServicios {
 
         return disponible;
     }
+    
     public void showServiciosRenta(int IDRenta) {
-
         Connection conexion = null;
         String consultaServicios = "SELECT\n" + 
                                     "    DATE_FORMAT(r.fechaReservacion, '%y-%m-%d') AS FechaReservacion,\n" + 
                                     "    s.nombre AS NombreSalon,\n" + 
-                                    "    se.nombreServicio AS DescripcionServicio,\n" + 
-                                    "    se.precio AS CostoServicio\n" + 
+                                    "    srv.descripcion AS DescripcionServicio,\n" + 
+                                    "    ts.nombre AS TipoServicio,\n" + 
+                                    "    srv.precio AS CostoServicio\n" + 
                                     "FROM renta AS r\n" + 
-                                    "INNER JOIN cliente AS c ON r.cliente = c.numero\n" + 
                                     "INNER JOIN salon AS s ON r.salon = s.numero\n" + 
                                     "INNER JOIN servicios_renta AS sr ON r.numero = sr.renta\n" + 
-                                    "INNER JOIN servicios AS se ON sr.servicios = se.numero\n" + 
+                                    "INNER JOIN servicios AS srv ON sr.servicios = srv.numero\n" + 
+                                    "INNER JOIN tipo_servicios AS ts ON srv.tipoServicio = ts.numero\n" + 
                                     "WHERE r.numero = ?;";
-
+    
         conexion = ConexionBD.obtenerConexion();
-        
+    
         try (PreparedStatement statement = conexion.prepareStatement(consultaServicios)) {
             statement.setInt(1, IDRenta);
             ResultSet resultado = statement.executeQuery();
-
-            System.out.println("===================================================================================");
-            System.out.printf("| %-10s | %-20s | %-30s | %-10s |\n", 
-                            "Fecha", "Salon", "Descripción", "Precio");
-            System.out.println("===================================================================================");
-
+    
+            System.out.println("\n========================================================================");
             boolean valid = false;
-
+    
             while (resultado.next()) {
-                valid = true;
-                String FechaReservacion = resultado.getString("FechaReservacion");
-                String NombreSalon = resultado.getString("NombreSalon");
+                if (!valid) {
+                    System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservación", resultado.getString("FechaReservacion"));
+                    System.out.printf("| %-25s | %-40s |\n", "Nombre del Salón", resultado.getString("NombreSalon"));
+                    System.out.println("========================================================================");
+                    valid = true;
+                }
+    
                 String DescripcionServicio = resultado.getString("DescripcionServicio");
+                String TipoServicio = resultado.getString("TipoServicio");
                 float CostoServicio = resultado.getFloat("CostoServicio");
-
-                System.out.printf("| %-10s | %-20s | %-30s | %-10.2f |\n", 
-                                FechaReservacion, NombreSalon, DescripcionServicio, CostoServicio);
+    
+                System.out.printf("| %-25s | %-40s |\n", "Descripción del Servicio", DescripcionServicio);
+                System.out.printf("| %-25s | %-40s |\n", "Tipo de Servicio", TipoServicio);
+                System.out.printf("| %-25s | %-40.2f |\n", "Costo del Servicio", CostoServicio);
+                System.out.println("--------------------------------------------------------------------------------");
             }
-            
+    
             if (!valid) {
-                System.out.println("|                                                No tienes servicios aún                                                   |");
+                System.out.println("|                                         No se encontraron servicios para esta renta                                       |");
             } else {
-                System.out.println("===================================================================================");
+                System.out.println("========================================================================");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
+    
+    
+    public void consultaResServicio(){
+        String opcion = "";
+
+        Scanner Leer = new Scanner(System.in);
+
+        Connection conexion = null;
+   
+            System.out.println("Escoga el servicio al que quiere ver las reservaciones");
+            showServicios();
+            IDServicio = Leer.nextInt();
+        
+        try {
+            // Obtener la conexión
+            conexion = ConexionBD.obtenerConexion();
+            
+            // Consulta SQL para obtener datos de la tabla 'salon'
+            String consulta = "SELECT\r\n" +  
+                                "r.numero as Reservacion\r\n," + 
+                                "DATE_FORMAT(r.fechaReservacion, \"%d-%m-%y\") as FechaReservacion\r\n," +
+                                "sa.nombre as Salon\r\n," +
+                                "concat(c.nomContacto,' ',c.primerApellido,' ', ifnull(concat (c.segundoApellido,' '),' ')) as Cliente\r\n," +
+                                "e.nombre as TipoEvento\r\n," +
+                                "sa.capacidad as CantidadInvitados\r\n," + 
+                                "s.descripcion as DescripcionServicio\r\n," + 
+                                "s.precio as CostoServicio\r\n" + 
+                                "from servicios as s\r\n" + 
+                                "inner join servicios_renta as sr on s.numero = sr.servicios\r\n" + 
+                                "inner join renta as r on sr.renta = r.numero\r\n" +
+                                "inner join salon as sa on sa.numero = r.salon\r\n" + 
+                                "inner join cliente as c on c.numero = r.cliente\r\n" + 
+                                "inner join evento as e on e.numero = r.evento\r\n" + 
+                                "WHERE s.numero = ?";
+
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, IDServicio);
+            ResultSet resultado11 = statement.executeQuery();
+            
+            // Encabezado de la tabla
+            /*System.out.println("========================================================================");
+            System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+            System.out.println("========================================================================");*/
+
+            System.out.println("Reservaciones donde se pidio el servicio numero: " + IDServicio);
+
+            // Iterar sobre el resultado de la consulta
+            while (resultado11.next()) {
+                int Reservacion = resultado11.getInt("Reservacion");
+                String FechaReservacion = resultado11.getString("FechaReservacion");
+                String Salon = resultado11.getString("Salon");
+                String Cliente = resultado11.getString("Cliente");
+                String TipoEvento = resultado11.getString("TipoEvento");
+                int CantidadInvitados = resultado11.getInt("CantidadInvitados");
+                String DescripcionServicio = resultado11.getString("DescripcionServicio");
+                double CostoServicio = resultado11.getDouble("CostoServicio");
+                
+                System.out.println("\n========================================================================");
+                System.out.printf("| %-25s | %-40d |\n", "Reservacion", Reservacion);
+                System.out.printf("| %-25s | %-40s |\n", "FechaReservacion", FechaReservacion);
+                System.out.printf("| %-25s | %-40s |\n", "Salon", Salon);
+                System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
+                System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
+                System.out.printf("| %-25s | %-40d |\n", "CantidadInvitados", CantidadInvitados);
+                System.out.printf("| %-25s | %-40s |\n", "DescripcionServicio", DescripcionServicio);
+                System.out.printf("| %-25s | %-40.0f |\n", "CostoServicio", CostoServicio);
+                System.out.println("========================================================================");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+    }
+
+    public void menuServicios(){
+        System.out.println("Bienvenido al menu de servicios");
+
+        Scanner Leer = new Scanner(System.in);
+
+        String validar1;
+        int opcion1 = 0;
+
+        do{
+            System.out.println("=================================");
+            System.out.println("|               Menu             |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       1) Consulta general      |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|       2) Reservaciones para    |");
+            System.out.println("|          el mismo servicio     |");
+            System.out.println("|--------------------------------|");
+            System.out.println("|        0) salir                |");
+            System.out.println("|--------------------------------|");
+            System.out.println("=================================");
+
+            validar1 = Leer.next();
+
+            try{
+                opcion1 = Integer.parseInt(validar1);
+
+                switch (opcion1) {
+                    case 1:
+                        showServicios();
+                    break;
+
+                    case 2:
+                        consultaResServicio();
+                    break;
+
+                    case 0:
+                        System.out.println("Saliendo del menu de servicios");
+                    break;
+                
+                    default:
+                        break;
+                }
+
+            }catch(Exception e){
+                System.out.println("Ingrese numeros por favor");
+            }
+        }while(opcion1 != 0);
+    }
 }

@@ -36,9 +36,9 @@ public class MostrarMontajes {
                 montajesDisponibles.clear();
 
                 System.out.println("Detalles de los Montajes:");
-                System.out.println("========================================================================");
-                System.out.printf("| %-10s | %-30s | %-50s |\n", "Número", "Nombre del Montaje", "Descripción");
-                System.out.println("========================================================================");
+                System.out.println("======================================================================================");
+                System.out.printf("| %-6s | %-25s | %-45s |\n", "Número", "Nombre del Montaje", "Descripción");
+                System.out.println("======================================================================================");
     
                 while (resultado.next()) {
                     int numero = resultado.getInt("Numero");
@@ -48,10 +48,10 @@ public class MostrarMontajes {
                     // Agregar el número del montaje a la lista de montajes disponibles
                     montajesDisponibles.add(numero);
     
-                    System.out.printf("| %-10d | %-30s | %-50s |\n", numero, nombreMontaje, descripcion);
+                    System.out.printf("| %-6d | %-25s | %-45s |\n", numero, nombreMontaje, descripcion);
                 }
                 
-                System.out.println("========================================================================");
+                System.out.println("======================================================================================");
                 
                 // Verificación de depuración
                 System.out.println("Montajes Disponibles (IDs): " + montajesDisponibles);

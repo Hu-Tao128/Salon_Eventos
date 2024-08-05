@@ -19,18 +19,20 @@ public class MostrarEventoAdmin {
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            System.out.printf("%-10s %-20s\n", 
-            "Numero", "Nombre");
-
+            System.out.println("Detalles de los eventos");
+            System.out.println("=========================================");
+            System.out.printf("| %-10s | %-25s |\n", "Numero", "Nombre");
+            System.out.println("=========================================");
                 while (resultado.next()) {
                 // Obtener datos
                 int numero = resultado.getInt("numero");
                 String nombre = resultado.getString("nombre");
 
                 // Imprimir datos en forma de tabla
-                System.out.printf("%-10d %-30s\n", 
+                System.out.printf("%-15s %-30s\n", 
                                 numero, nombre);
                 }
+                System.out.println("=========================================");
 
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());

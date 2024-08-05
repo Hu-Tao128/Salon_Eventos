@@ -25,9 +25,9 @@ public class MostrarEventos {
             ResultSet resultado = statement.executeQuery();
             
             System.out.println("Detalles de los Eventos:");
-            System.out.println("=========================================================");
-            System.out.printf("| %-10s | %-40s |\n", "Numero", "Nombre");
-            System.out.println("=========================================================");
+            System.out.println("===========================================");
+            System.out.printf("| %-6s | %-30s |\n", "Numero", "Nombre");
+            System.out.println("===========================================");
     
             // Iterar sobre el resultado de la consulta
             while (resultado.next()) {
@@ -36,10 +36,10 @@ public class MostrarEventos {
                 String nombre = resultado.getString("nombre");
     
                 // Imprimir datos en forma de tabla
-                System.out.printf("| %-10d | %-40s |\n", numero, nombre);
+                System.out.printf("| %-6d | %-30s |\n", numero, nombre);
             }
             
-            System.out.println("=========================================================");
+            System.out.println("===========================================");
     
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());

@@ -19,8 +19,10 @@ public class MostrarDisponibilidad {
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            System.out.printf("%-10s %-30s\n", 
-            "Numero", "Estado");
+            System.out.println("Detalles de la disponibilidad");
+            System.out.println("================================");
+            System.out.printf("| %-10s | %-15s |\n", "Número", "Estado");
+            System.out.println("================================");
 
                 while (resultado.next()) {
                 // Obtener datos
@@ -28,10 +30,12 @@ public class MostrarDisponibilidad {
                 String estado = resultado.getString("estado");
                 
 
-                // Imprimir datos en forma de tabla
-                System.out.printf("%-10d %-30s\n", 
+                // Imprimir datos en forma d tabla
+                System.out.printf("%-12d %-30s\n", 
                                 numero, estado);
                 }
+
+            System.out.println("================================");
 
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());

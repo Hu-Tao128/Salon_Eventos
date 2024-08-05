@@ -19,8 +19,10 @@ public class MostrarServiciosRenta {
             PreparedStatement statement = conexion.prepareStatement(consulta);
             ResultSet resultado = statement.executeQuery();
             
-            System.out.printf("%-10s %-30s\n", 
-            "Servicio", "Renta");
+            System.out.println("Detalles de la relacion servios y renta");
+            System.out.println("============================");
+            System.out.printf("| %-10s | %-10s |\n", "Servicio", "Renta");
+            System.out.println("============================");
 
                 while (resultado.next()) {
                 // Obtener datos
@@ -28,9 +30,12 @@ public class MostrarServiciosRenta {
                 int renta = resultado.getInt("renta");
 
                 // Imprimir datos en forma de tabla
-                System.out.printf("%-10d %-10d\n", 
+                System.out.printf("%-15d %-10d\n", 
                                 servicios, renta);
                 }
+
+                System.out.println("============================");
+
 
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());
