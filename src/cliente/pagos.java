@@ -61,24 +61,23 @@ public class pagos {
         }
 
         // Validar fecha de vencimiento
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM-yy");
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MM-yy");
-        LocalDate fechaVencimiento;
-        while (true) {
-            try {
-                System.out.println("Ingrese la fecha de vencimiento (MM/yy):");
-                String input = Leer.nextLine();
-                fechaVencimiento = LocalDate.parse("01/" + input, inputFormatter); // El día se fija como 01 para la validación
-                LocalDate now = LocalDate.now();
-                if (fechaVencimiento.isAfter(now)) {
-                    break;
-                } else {
-                    System.out.println("La fecha de vencimiento no puede ser una fecha pasada.");
-                }
-            } catch (DateTimeParseException e) {
-                System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato MM/yy.");
-            }
+DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/yy");
+YearMonth fechaVencimiento;
+while (true) {
+    try {
+        System.out.println("Ingrese la fecha de vencimiento (MM/yy):");
+        String input = Leer.nextLine();
+        fechaVencimiento = YearMonth.parse(input, inputFormatter);
+        YearMonth now = YearMonth.now();
+        if (fechaVencimiento.isAfter(now)) {
+            break;
+        } else {
+            System.out.println("La fecha de vencimiento no puede ser una fecha pasada.");
         }
+    } catch (DateTimeParseException e) {
+        System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato MM/yy.");
+    }
+}
 
         // Validar CVC
         String cvc;
