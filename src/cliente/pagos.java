@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -13,8 +14,10 @@ import conexionDB.ConexionBD;
 
 public class pagos {
     private float monto = 0f;
-    private String concepto;
     private float restante;
+    private String concepto;
+
+    private int contador;
 
     Scanner Leer = new Scanner(System.in);
 
@@ -45,7 +48,7 @@ public class pagos {
     }
 
     // Método para procesar pago con tarjeta
-   public float Tarjeta(float total) {
+    public float Tarjeta(float total) {
         System.out.println("Bienvenido al apartado de pago con tarjeta");
 
         // Validar número de tarjeta
@@ -61,24 +64,24 @@ public class pagos {
         }
 
         // Validar fecha de vencimiento
-DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/yy");
-YearMonth fechaVencimiento;
-while (true) {
-    try {
-        System.out.println("Ingrese la fecha de vencimiento (MM/yy):");
-        String input = Leer.nextLine();
-        fechaVencimiento = YearMonth.parse(input, inputFormatter);
-        YearMonth now = YearMonth.now();
-        if (fechaVencimiento.isAfter(now)) {
-            break;
-        } else {
-            System.out.println("La fecha de vencimiento no puede ser una fecha pasada.");
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/yy");
+        YearMonth fechaVencimiento;
+        while (true) {
+            try {
+                System.out.println("Ingrese la fecha de vencimiento (MM/yy):");
+                String input = Leer.nextLine();
+                fechaVencimiento = YearMonth.parse(input, inputFormatter);
+                YearMonth now = YearMonth.now();
+                if (fechaVencimiento.isAfter(now)) {
+                    break;
+                } else {
+                    System.out.println("La fecha de vencimiento no puede ser una fecha pasada.");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato MM/yy.");
+            }
         }
-    } catch (DateTimeParseException e) {
-        System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato MM/yy.");
-    }
-}
-
+    
         // Validar CVC
         String cvc;
         while (true) {
@@ -190,6 +193,47 @@ while (true) {
                 }
             }
         }
+    }
+
+    public void registrarPago(float total, String concepto, float monto, int renta, int metodoPago){
+        LocalDate fechaHoy = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        String fechaPago = fechaHoy.format(formatter);    
+
+        Connection conexion = null;
+        PreparedStatement statement = null;
+
+        float restante = total - monto;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+
+            String agregarPago = "INSERT INTO pago(numero, fechaPago, monto, concepto, renta, metodoPago) VALUES(null, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement statementInsert = conexion.prepareStatement(agregarPago)) {
+                statementInsert.setString(1, fechaPago);
+                statementInsert.setFloat(2, monto);
+                statementInsert.setString(3, concepto);
+                statementInsert.setInt(4, renta);
+                statementInsert.setInt(5, metodoPago);
+
+                int filasInsertadas = statementInsert.executeUpdate();
+    
+                if (filasInsertadas > 0) {
+                    if (restante > 0) {
+                        System.out.println("Pago Completado con exito, su restante es: " + restante);
+                    }else{
+                        System.out.println("Le han sobrado " + (restante * (-1)));
+                    }
+                } else {
+                    System.out.println("No se pudo insertar el servicio en la renta.");
+                    return; 
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al ingresar datos: " + e.getMessage());
+        }
+
     }
 }
 
