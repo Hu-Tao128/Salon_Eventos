@@ -8,6 +8,9 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class AgregarCliente {
+
+    Cuenta perfil = new Cuenta();
+
     public int Formulario() {
         Connection connection = null;
 
@@ -76,8 +79,10 @@ public class AgregarCliente {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     NoCliente = generatedKeys.getInt(1);
-                    System.out.println("Los datos se han insertado correctamente en la tabla cliente.");
-                    System.out.println("ID del nuevo cliente: " + NoCliente);
+                    System.out.println("Gracias por haberse resgistrado en Renta de Salones Salent.");
+                    System.out.println("A continuacion sus datos");
+
+                    perfil.perfil(NoCliente);
                 }
             } else {
                 System.out.println("No se pudo insertar los datos en la tabla cliente.");
@@ -85,9 +90,6 @@ public class AgregarCliente {
 
         } catch (SQLException e) {
             System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
-        } finally {
-            // Cerrar la conexión
-            ConexionBD.cerrarConexion(connection);
         }
 
         return NoCliente;

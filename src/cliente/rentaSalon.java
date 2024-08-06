@@ -156,9 +156,10 @@ public class rentaSalon {
                             int IDRenta = generatedKeys.getInt(1);
                             System.out.println("Reservación realizada con éxito.");
 
-                            complementos.menuComplementos(IDRenta, IDEvento);
+                            complementos.menuComplementos(IDRenta, IDEvento, total);
 
                             do {
+                                System.out.println("El total de su reservacion es: " + total);
                                 System.out.println("Cual es su metodo de pago?");
                                 System.out.println("1) Efectivo");
                                 System.out.println("2) Tarjeta");
