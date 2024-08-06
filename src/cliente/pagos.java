@@ -27,8 +27,10 @@ public class pagos {
             monto = Leer.nextFloat();
             if (monto > total) {
                 System.out.println("Su cambio es de: " + (monto - total));
+                concepto = "Pago Completo";
             }else if ((monto < (total * 0.2f) && (monto > (total * 0.2f)))) {
                 restante = total - monto;
+                concepto = "Abono";
                 System.out.println("Su restante sera de: " + restante);
             }else{
                 System.out.println("El pago es insuficiente");
