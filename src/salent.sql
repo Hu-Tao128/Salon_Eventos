@@ -543,7 +543,7 @@ WHERE c.numero = 5;
 */
 SELECT 
     DATE_FORMAT(r.fechaReservacion, "%y-%m-%d") AS "Fecha de Reservacion",
-    c.nombreFiscal AS "Nombre del Cliente",
+    CONCAT(c.nomContacto, ' ', c.primerApellido, ' ', IFNULL(c.segundoApellido, '')) AS "Nombre del Cliente",
     s.nombre AS "Nombre del Salón",
     srv.descripcion AS "Descripción del Servicio",
     ts.nombre AS "Tipo de Servicio",

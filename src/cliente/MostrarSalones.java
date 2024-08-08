@@ -109,7 +109,9 @@ public class MostrarSalones {
         try {
             conexion = ConexionBD.obtenerConexion();
             
-            String consulta = "SELECT fechaInicio, fechaFinal " +
+            String consulta = "SELECT " +
+                              "   DATE_FORMAT(fechaInicio, '%d/%m/%y') AS fechaInicio, " +
+                              "   DATE_FORMAT(fechaFinal, '%d/%m/%y') AS fechaFinal " +
                               "FROM renta " +
                               "WHERE salon = ?";
     
@@ -138,7 +140,7 @@ public class MostrarSalones {
 
     public String validarFecha(String fecha, int IDSalon) {
         Connection conexion = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
             // Validar el formato de la fecha
@@ -172,7 +174,7 @@ public class MostrarSalones {
             return sdf.format(fechaUsuarioSQL);
 
         } catch (ParseException e) {
-            return "Formato de fecha inválido. Por favor, use el formato yyyy-MM-dd.";
+            return "Formato de fecha inválido. Por favor, use el formato dd-MM-yyyy.";
         } catch (SQLException e) {
             return "Error al verificar las fechas reservadas: " + e.getMessage();
         } finally {

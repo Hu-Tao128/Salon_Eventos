@@ -339,7 +339,7 @@ public class OpcionesCuenta {
         try {
             conexion = ConexionBD.obtenerConexion();
             String consulta = "SELECT numTarjeta, " + 
-                                "DATE_FORMAT(vencimiento, '%d-%m-%y') AS vencimiento, " +
+                                "DATE_FORMAT(vencimiento, '%m/%d') AS vencimiento, " +
                                 "cvc FROM tarjetas WHERE cliente = ?";
             
             statement = conexion.prepareStatement(consulta);
