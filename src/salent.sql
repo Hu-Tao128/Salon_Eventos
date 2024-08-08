@@ -98,6 +98,15 @@ use salent;
         foreign key(metodoPago) references metodo_pago(numero)
     );
 
+    create table tarjetas(
+        numero int primary key auto_increment,
+        numTarjeta varchar(16) not null,
+        vencimiento date not null, 
+        cvc int not null,
+        cliente int not null,
+        foreign key(cliente) references cliente(numero)
+    );
+
     create table servicios_renta(
         servicios int not null,
         renta int not null,
@@ -287,6 +296,18 @@ use salent;
     (null, "24-06-25", "Pago Completo", 24128.00, 18, 2),
     (null, "24-07-12", "Pago Completo", 18850.00, 19, 1),
     (null, "24-08-03", "Pago Completo", 24940.00, 20, 1);
+
+    insert into tarjetas(numero, numTarjeta, vencimiento, cvc, cliente) values
+    (null, "4000123456789010", "01/12/26", 123, 1),
+    (null, "4556789012345678", "01/11/25", 456, 2),
+    (null, "4024567890123456", "01/10/27", 789, 3),
+    (null, "4242424242424242", "01/09/26", 321, 4),
+    (null, "4532123456789012", "01/08/25", 654, 5),
+    (null, "4900111122223333", "01/07/27", 987, 6),
+    (null, "7777777777777777", "01/06/26", 111, 7),
+    (null, "4400567812346789", "01/05/28", 222, 8),
+    (null, "4716123456789000", "01/04/29", 333, 9),
+    (null, "4847222233334444", "01/03/27", 444, 10);
 
     insert into servicios_renta(servicios, renta) values 
     (1, 8),

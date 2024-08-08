@@ -3,6 +3,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import conexionDB.ConexionBD;
@@ -24,6 +27,10 @@ public class OpcionesCuenta {
             System.out.println("5) Modificar o Agregar Segundo Apellido");
             System.out.println("6) Cambiar Numero de Telefono");
             System.out.println("7) Cambiar Correo Electronico");
+            System.out.println("8) Agregar Tarjeta");
+            if (tieneTarjeta(NoCliente)) {                
+                System.out.println("9) Ver mis Tarjetas");
+            }
             System.out.println("0) Salir");
             opcion = Leer.nextInt();
             Leer.nextLine();
@@ -50,8 +57,19 @@ public class OpcionesCuenta {
                 case 7:
                         cambiarEmail(NoCliente);
                     break;
+                case 8:                        
+                        agregarTarjetas(NoCliente);
+                    break;
+                case 9:
+                    if (tieneTarjeta(NoCliente)) {                            
+                        mostrarTarjetas(NoCliente);
+                    }else{
+                        System.out.println("Ingrese un numero de los que se te indican");
+                    }
+                    break;
             
                 default:
+                    System.out.println("Ingrese un numero de los que se te indican");
                     break;
             }
 
@@ -311,5 +329,131 @@ public class OpcionesCuenta {
         } catch (SQLException e) {
             System.out.println("Error al obtener los datos del cliente: " + e.getMessage());
         }
+    }
+
+    public void mostrarTarjetas(int clienteID) {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultado = null;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            String consulta = "SELECT numTarjeta, " + 
+                                "DATE_FORMAT(vencimiento, '%d-%m-%y') AS vencimiento, " +
+                                "cvc FROM tarjetas WHERE cliente = ?";
+            
+            statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, clienteID);
+            resultado = statement.executeQuery();
+
+            System.out.println("===========================================");
+            System.out.printf("| %-17s | %-12s | %-4s |\n", "Número de Tarjeta", "Vencimiento", "CVC");
+            System.out.println("===========================================");
+
+            while (resultado.next()) {
+                String numTarjeta = resultado.getString("numTarjeta");
+                String fechaVencimiento = resultado.getNString("vencimiento");
+                int cvc = resultado.getInt("cvc");
+
+                System.out.printf("| %-17s | %-12s | %-4d |\n", numTarjeta, fechaVencimiento, cvc);
+            }
+
+            System.out.println("===========================================");
+            
+        } catch (SQLException e) {
+            System.out.println("Error al consultar las tarjetas: " + e.getMessage());
+        }
+    }
+    
+    public boolean tieneTarjeta(int clienteID) {
+        boolean tieneTarjeta = false;
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultado = null;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            String consulta = "SELECT COUNT(*) AS cantidad FROM tarjetas WHERE cliente = ?";
+            
+            statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, clienteID);
+            resultado = statement.executeQuery();
+
+            if (resultado.next()) {
+                int cantidad = resultado.getInt("cantidad");
+                tieneTarjeta = cantidad > 0; 
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error al verificar las tarjetas del cliente: " + e.getMessage());
+        } finally {
+            try {
+                if (resultado != null) resultado.close();
+                if (statement != null) statement.close();
+                if (conexion != null) conexion.close();
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+
+        return tieneTarjeta;
+    }
+
+    public void agregarTarjetas(int NoCliente) {
+        System.out.println("Bienvenido al apartado de Agregar Tarjeta");
+
+        // Validar número de tarjeta
+        String NoTarjeta;
+        while (true) {
+            System.out.println("Introduzca su número de tarjeta (16 dígitos):");
+            NoTarjeta = Leer.nextLine();
+            if (NoTarjeta.matches("\\d{16}")) {
+                break;
+            } else {
+                System.out.println("Número de tarjeta inválido. Debe tener 16 dígitos.");
+            }
+        }
+
+        // Validar fecha de vencimiento
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/yy");
+        YearMonth fechaVencimiento;
+        while (true) {
+            try {
+                System.out.println("Ingrese la fecha de vencimiento (MM/yy):");
+                String input = Leer.nextLine();
+                fechaVencimiento = YearMonth.parse(input, inputFormatter);
+                YearMonth now = YearMonth.now();
+                if (fechaVencimiento.isAfter(now)) {
+                    break;
+                } else {
+                    System.out.println("La fecha de vencimiento no puede ser una fecha pasada.");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato MM/yy.");
+            }
+        }
+    
+        // Validar CVC
+        String cvc;
+        while (true) {
+            System.out.println("Introduzca los 3 números CVC:");
+            cvc = Leer.nextLine();
+            if (cvc.matches("\\d{3}")) {
+                break;
+            } else {
+                System.out.println("CVC inválido. Debe tener 3 dígitos.");
+            }
+        }
+
+        Connection conexion = null;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();    
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("A ocurrido un error, esta seguro que introdujo un numero?");
+            System.out.println("Si desea cancelar presione 0");
+        }
+        
     }
 }

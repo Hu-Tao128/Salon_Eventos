@@ -118,7 +118,7 @@ public class Reservaciones {
                 ResultSet resultado = statement.executeQuery();
                 boolean valid = false;
     
-                int IDEvento = 0; // Inicializa aquí, para tener acceso fuera del bucle
+                int IDEvento = 0; 
 
                 while (resultado.next()) {
                     valid = true;
@@ -130,7 +130,7 @@ public class Reservaciones {
                     String direccion = resultado.getString("Direccion");
                     String montaje = resultado.getString("TipoMontaje");
                     int cantInvitados = resultado.getInt("Cantidad de invitados");
-                    double costoTotal = resultado.getDouble("Costo Total");
+                    float costoTotal = resultado.getFloat("Costo Total");
 
                     IDEvento = resultado.getInt("evento"); // Aquí dentro del bucle
 
@@ -155,14 +155,14 @@ public class Reservaciones {
                     System.out.printf("| %-25s | %-40d |\n", "Cantidad de Invitados", cantInvitados);
                     System.out.printf("| %-25s | %-40.2f |\n", "Costo Total", costoTotal);
                     System.out.println("========================================================================");
+                    
+
+                    AgregarComplementos complementos = new AgregarComplementos();
+                    complementos.menuComplementosReservacion(IDRenta, IDEvento);
                 }
 
                 if (!valid) {
                     System.out.println("No encontramos datos de la renta o el número de la renta no te pertenece.");
-                } else {
-                    System.out.println("");
-                    AgregarComplementos complementos = new AgregarComplementos();
-                    complementos.menuComplementos(IDRenta, IDEvento);
                 }
 
                 

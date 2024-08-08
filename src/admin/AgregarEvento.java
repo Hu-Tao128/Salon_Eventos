@@ -19,6 +19,13 @@ public class AgregarEvento {
         Connection connection = null;
 
         Scanner datos = new Scanner(System.in);
+        String opcion1 = "";
+        String opcion21 = "";
+        String opcion31 = "";
+        String opcion41 = "n";
+        int opcion5 = 0;
+        String resOpcion1 = "s";
+        String resOpcion2 = "n";
         String opcion;
         String opcion2 = "";
         String opcion3;
@@ -30,75 +37,158 @@ public class AgregarEvento {
 
         System.out.println("Registro de evento");
 
-        do {
-           
-            System.out.println("Ingrese el nombre del evento");
-            nombre = datos.nextLine();
+        do{
+            System.out.println("Quieres agregar un evento? (s/n)");
+            opcion3 = datos.nextLine();
 
-            System.out.println("Escribio bien los datos? (s/n)");
-            opcion = datos.next();
+            if(opcion3.equals("n")){
+                System.out.println("Quieres salir de este apartado (s/n)");
+                opcion4 = datos.nextLine();
+                if(opcion4.equals("s")){
+                    break;
+                }
 
-            if(opcion.equals("s")){
-                opcion2 = "s";
+                if(opcion4.equals("n")){
+
+                }else{
+                    System.out.println("Respuesta invalida");
+                }
+            }else{
+                if(opcion3.equals("s")){
+
+                }else{
+                    System.out.println("Introduzca una respuesta valida");
+                }  
             }
-            
-        } while (!opcion2.equals("s"));
+        }while(!opcion3.equals(resOpcion1));
 
-        try {
+        if(opcion3.equals(resOpcion1)){
+            do {
+           
+                System.out.println("Ingrese el nombre del evento");
+                nombre = datos.nextLine();
 
-            connection = ConexionBD.obtenerConexion();
-            
-            String agregarUsuario = "INSERT INTO evento (numero, nombre) VALUES (null, ?)";
-            PreparedStatement statement = connection.prepareStatement(agregarUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
-            statement.setString(1, nombre);
+                System.out.println("Nombre del evento" + nombre);
 
-            int filasAfectadas = statement.executeUpdate();
-            if (filasAfectadas > 0) {
-                System.out.println("Los datos se han insertado correctamente en la tabla evento.");
-
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            IDEvento = generatedKeys.getInt(1);
-                        } else {
-                            throw new SQLException("No se pudo obtener la clave primaria generada.");
+                do{
+                    System.out.println("Escribio bien los datos? (s/n)");
+                    opcion = datos.next();
+        
+                    if(opcion.equals("s")){
+                        opcion2 = "s";
+                    }else{
+                        if(opcion.equals("n")){
+                            
+                        }else{
+                            System.out.println("Ingrese una opcion valida");
                         }
                     }
-            } else {
-                System.out.println("No se pudo insertar los datos en la tabla evento.");
-            }
 
-            System.out.println("Agregando los montajes para el evento");
+                    if(opcion.equals("n")){
+                        opcion2 = "n";
+                        if(opcion2.equals("n")){
+                            do{ 
+                                System.out.println("--Informacion--");
+                                System.out.println("[1] Nombre del evento" + nombre);
+                                System.out.println("Ingrese el numero de la opcion a modificar");
+                                System.out.println("Ingrese 0 para salir de este apartado");
+                                opcion5 = datos.nextInt();
 
-            do{
-                System.out.println("Eliga el montaje para el evento");
-                montaje.showMontaje();
-                IDMontaje = datos.nextInt();
+                                switch (opcion5) {
+                                    case 1:
+                                        System.out.println("Ingrese el nombre del evento");
+                                        nombre = datos.next();
+                                    break;
+    
+                                    case 0:
+                                        System.out.println("Saliendo del apartado");
+                                        opcion2 = "s";
+                                    break;
+                                
+                                    default:
+                                        System.out.println("Opcion no valida");
+                                    break;
+                                }
+                                if(opcion5 > 0 && opcion5 < 2){
+                                    System.out.println("Cambio realizado");
+                                }
+                            }while(opcion5 != 0);
+                        }
+                    }else{
+                        if(opcion2.equals("n")){
 
-                agregacionEventoMontaje(IDEvento,IDMontaje);
+                        }else{
+
+                            if(opcion2.equals("s")){
+
+                            }else{
+                                System.out.println("Ingrese una opcion valida");
+                            }    
+                        }
+                    }
+                }while(!opcion2.equals(resOpcion1) || opcion2.equals(resOpcion2));
+            } while (!opcion2.equals(resOpcion1));
+    
+            try {
+    
+                connection = ConexionBD.obtenerConexion();
                 
-                System.out.println("Quieres continuar agregando opciones de montajes al evento (s/n)");
-                opcion3 = datos.next();
-
-            }while(!opcion3.equals("n"));
-
-            do{
-                System.out.println("Eliga el equipamiento para el evento");
-                equipamiento.showEquipamiento();
-                IDEquipamiento = datos.nextInt();
-
-                agregacionEventoEquipamiento(IDEvento,IDEquipamiento);
-
-                System.out.println("Quieres continuar agregando opciones de equipamiento para al evento (s/n)");
-                opcion4 = datos.next();
-            }while(!opcion4.equals("n"));
-
-        } catch (SQLException e) {
-            System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
-        }finally {
-            // Cerrar la conexión
-            ConexionBD.cerrarConexion(connection);
+                String agregarUsuario = "INSERT INTO evento (numero, nombre) VALUES (null, ?)";
+                PreparedStatement statement = connection.prepareStatement(agregarUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
+                statement.setString(1, nombre);
+    
+                int filasAfectadas = statement.executeUpdate();
+                if (filasAfectadas > 0) {
+                    System.out.println("Los datos se han insertado correctamente en la tabla evento.");
+    
+                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                            if (generatedKeys.next()) {
+                                IDEvento = generatedKeys.getInt(1);
+                            } else {
+                                throw new SQLException("No se pudo obtener la clave primaria generada.");
+                            }
+                        }
+                } else {
+                    System.out.println("No se pudo insertar los datos en la tabla evento.");
+                }
+    
+                System.out.println("Agregando los montajes para el evento");
+    
+                do{
+                    System.out.println("Eliga el montaje para el evento");
+                    montaje.showMontaje();
+                    IDMontaje = datos.nextInt();
+    
+                    agregacionEventoMontaje(IDEvento,IDMontaje);
+                    
+                    System.out.println("Quieres continuar agregando opciones de montajes al evento (s/n)");
+                    opcion3 = datos.next();
+    
+                }while(!opcion3.equals("n"));
+    
+                do{
+                    System.out.println("Eliga el equipamiento para el evento");
+                    equipamiento.showEquipamiento();
+                    IDEquipamiento = datos.nextInt();
+    
+                    agregacionEventoEquipamiento(IDEvento,IDEquipamiento);
+    
+                    System.out.println("Quieres continuar agregando opciones de equipamiento para al evento (s/n)");
+                    opcion4 = datos.next();
+                }while(!opcion4.equals("n"));
+    
+            } catch (SQLException e) {
+                System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
+            }finally {
+                // Cerrar la conexión
+                ConexionBD.cerrarConexion(connection);
+            }
+        }else{
+            System.out.println("Saliendo del apartado");
         }
     }
+    
+       
 
     public void agregacionEventoMontaje(int IDEvento, int IDMontaje){
         Connection connection = null;

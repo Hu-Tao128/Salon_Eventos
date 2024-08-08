@@ -57,7 +57,7 @@ public class AgregarCliente {
             System.out.println("Ingrese su correo electronico:");
             email = datos.nextLine();
 
-            System.out.println("Escribio bien los datos? (s/n)");
+            System.out.println("Desea registrarse? (s/n), si escribio mal un dato podra modificarlo al presionar s");
             opcion = datos.next();
 
         } while (opcion.equalsIgnoreCase("n"));
@@ -85,7 +85,7 @@ public class AgregarCliente {
                     perfil.perfil(NoCliente);
                 }
             } else {
-                System.out.println("No se pudo insertar los datos en la tabla cliente.");
+                System.out.println("No se pudo agregar los datos.");
             }
 
         } catch (SQLException e) {

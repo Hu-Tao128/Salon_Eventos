@@ -35,35 +35,34 @@ public class rentaSalon {
 
     private float monto = 0f;
 
-    public void reservacion(int NoCliente){
+    public void reservacion(int NoCliente) {
         Scanner Leer = new Scanner(System.in);
         MostrarSalones salones = new MostrarSalones();
         MostrarEventos eventos = new MostrarEventos();
         AgregarComplementos complementos = new AgregarComplementos();
 
         Connection conexion = null;
-        
+
         System.out.println("Bienvenido al sistema de Renta de Salones Salent, Fecha: " + fechaHoy);
 
         do {
-
             System.out.println("Desea realizar una renta de salón? (s/n)");
             String respuesta = Leer.next();
             Leer.nextLine();
 
             if (!respuesta.equals("s")) {
-                break;   
+                break;
             }
             do {
                 System.out.println("Primero elija un salón de su agrado:");
                 salones.showSalones();
                 IDSalon = salones.elegirSalon();
-                
+
                 if (IDSalon == 0) {
                     System.out.println("No ha seleccionado un salón válido.");
                     continue; // Salir del bucle actual y volver a pedir un salón
                 }
-                
+
                 subtotal = salones.obtenerPrecioSalon(IDSalon);
 
                 System.out.println("Ahora elija su evento");
@@ -124,11 +123,8 @@ public class rentaSalon {
                         System.out.println("Hora inválida. Por favor, ingrese la hora en el formato HH:mm: ");
                     }
                 }
-                Leer.nextLine();
 
                 try {
-
-
                     IVA = subtotal * 0.16f;
                     total = IVA + subtotal;
 
@@ -147,17 +143,17 @@ public class rentaSalon {
                     statement.setInt(10, IDSalon);
                     statement.setInt(11, NoCliente);
                     statement.setInt(12, IDEvento);
-    
+
                     int filasAfectadas = statement.executeUpdate();
                     if (filasAfectadas > 0) {
                         ResultSet generatedKeys = statement.getGeneratedKeys();
                         if (generatedKeys.next()) {
-                            
                             int IDRenta = generatedKeys.getInt(1);
                             System.out.println("Reservación realizada con éxito.");
 
                             complementos.menuComplementos(IDRenta, IDEvento, total);
 
+                            boolean pagoCompletado = false;
                             do {
                                 System.out.println("El total de su reservacion es: " + total);
                                 System.out.println("Cual es su metodo de pago?");
@@ -165,26 +161,35 @@ public class rentaSalon {
                                 System.out.println("2) Tarjeta");
                                 System.out.println("0) Salir, no puedo pagar");
                                 metodoPago = Leer.nextInt();
-            
+
                                 pagos metodoPagos = new pagos();
-                                
+
                                 switch (metodoPago) {
                                     case 1:
-                                        monto = metodoPagos.Efectivo(total);
+                                        monto = metodoPagos.Efectivo(total, IDRenta);
+                                        if (monto > 0) {
+                                            pagoCompletado = true;
+                                        } else {
+                                            metodoPago = 0;
+                                        }
                                         break;
                                     case 2:
-                                        monto = metodoPagos.Tarjeta(total);
+                                        monto = metodoPagos.Tarjeta(total, IDRenta);
+                                        if (monto > 0) {
+                                            pagoCompletado = true;
+                                        } else {
+                                            metodoPago = 0;
+                                        }
                                         break;
                                     case 0:
-                                        System.out.println("Hasta");
+                                        System.out.println("Hasta luego.");
                                         break;
-                                
                                     default:
-                                    System.out.println("Esta opcion no esta en el menu");
+                                        System.out.println("Esta opción no está en el menú.");
                                         break;
                                 }
-                            } while (metodoPago >= 0 && metodoPago < 3 || monto > 0);
-            
+                            } while (!pagoCompletado && metodoPago != 0);
+
                             if (metodoPago == 0 || monto == 0) {
                                 pagos eliminar = new pagos();
                                 eliminar.EliminarRenta(IDRenta);
@@ -193,12 +198,11 @@ public class rentaSalon {
                     } else {
                         System.out.println("No se pudo realizar la reservación.");
                     }
-    
                 } catch (SQLException e) {
                     System.out.println("Error al realizar la reservación: " + e.getMessage());
                 }
             } while (IDSalon == 0);
         } while (opcion != 0);
-        
+
     }
 }

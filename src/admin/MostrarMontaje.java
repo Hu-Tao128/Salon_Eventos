@@ -114,16 +114,24 @@ public class MostrarMontaje {
 
             System.out.println("Reservaciones del montaje numero: " + IDMontaje);
 
+            resultado11.next();
+
+            System.out.println("\n========================================================================");
+            String DescripcionMontaje = resultado11.getString("DescripcionMontaje");
+            System.out.printf("| %-25s | %-40s |", "Descripcion del montaje", DescripcionMontaje);
+            System.out.println("\n========================================================================");
+
+            ResultSet resultado14 = statement.executeQuery();
+
             // Iterar sobre el resultado de la consulta
-            while (resultado11.next()) {
-                int Reservacion = resultado11.getInt("Reservacion");
-                String FechaReservacion = resultado11.getString("FechaReservacion");
-                String Salon = resultado11.getString("Salon");
-                String Cliente = resultado11.getString("Cliente");
-                String TipoEvento = resultado11.getString("TipoEvento");
-                int CantidadInvitados = resultado11.getInt("CantidadInvitados");
-                String DescripcionMontaje = resultado11.getString("DescripcionMontaje");
-                
+            while (resultado14.next()) {
+                int Reservacion = resultado14.getInt("Reservacion");
+                String FechaReservacion = resultado14.getString("FechaReservacion");
+                String Salon = resultado14.getString("Salon");
+                String Cliente = resultado14.getString("Cliente");
+                String TipoEvento = resultado14.getString("TipoEvento");
+                int CantidadInvitados = resultado14.getInt("CantidadInvitados");
+                   
                 System.out.println("\n========================================================================");
                 System.out.printf("| %-25s | %-40d |\n", "Reservacion", Reservacion);
                 System.out.printf("| %-25s | %-40s |\n", "FechaReservacion", FechaReservacion);
@@ -131,7 +139,6 @@ public class MostrarMontaje {
                 System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
                 System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
                 System.out.printf("| %-25s | %-40d |\n", "CantidadInvitados", CantidadInvitados);
-                System.out.printf("| %-25s | %-40s |\n", "DescripcionEquipo", DescripcionMontaje);
                 System.out.println("========================================================================");
             }
 

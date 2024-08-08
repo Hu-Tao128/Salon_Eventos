@@ -85,6 +85,91 @@ public class AgregarComplementos {
         } while (opcion != 0);
     }
 
+    public void menuComplementosReservacion(int IDRenta, int IDEvento) {
+
+        pagos pagoss = new pagos();
+
+        do {
+                System.out.println("Desea agregar algún Servicio o Equipamiento?");
+                System.out.println("1) Agregar Servicio");
+                System.out.println("2) Agregar Equipamiento");
+                System.out.println("3) Mostrar Servicios de mi renta");
+                System.out.println("4) Mostrar Equipamiento de mi renta");
+                System.out.println("5) Ver mis Pagos");
+                if (!pagoss.getPago(IDRenta)) {
+                    System.out.println("6) Realizar Pago");
+                }
+                System.out.println("0) No, gracias");
+                opcion = Leer.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        servicios.showServicios();
+                        IDServicios = servicios.elegirServicio();
+
+                        if (IDServicios > 0) {
+                            AgregarServRentas(IDServicios, IDRenta);
+                        } else {
+                            System.out.println("ID de servicio inválido.");
+                        }
+                        break;
+
+                    case 2:
+
+                        MostrarEquipamientos equipamiento = new MostrarEquipamientos();
+                        equipamiento.showEquipamientos(IDEvento);
+                        IDEquipamientos = equipamiento.elegirEquipamiento();
+
+                        cantidad = equipamiento.getCantidad(IDEquipamientos);
+
+                        MostrarEquipamientos precios = new MostrarEquipamientos();
+                        precio = precios.getPrecio(IDEquipamientos);
+
+                        System.out.println(precio);
+
+                            AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
+                        
+                        break;
+
+                    case 3:
+                        MostrarServicios menu = new MostrarServicios();
+                        menu.showServiciosRenta(IDRenta);
+
+                        break;
+
+                    case 4:
+                        MostrarEquipamientos mostrarEquipamientos =  new MostrarEquipamientos();
+                        mostrarEquipamientos.showEquipoRentas(IDRenta);
+
+                        break;
+
+                    case 5:
+                        pagos verPagos = new pagos();
+                        verPagos.mostrarPagos(IDRenta);
+
+                        break;
+                    case 6:
+                        if (!pagoss.getPago(IDRenta)) {
+                            System.out.println("Opción no válida, intente de nuevo.");
+                        }else{
+
+                        }
+
+                        break;
+
+                    case 0:
+                        System.out.println("Está bien, prosigamos.");
+
+                        break;
+
+                    default:
+                        System.out.println("Opción no válida, intente de nuevo.");
+                        
+                        break;
+                }
+        } while (opcion != 0);
+    }
+
     public void AgregarServRentas(int IDServicios, int IDRenta) {
         String obtenerPrecioServicio = "SELECT precio FROM servicios WHERE numero = ?";
         String insertServiciosRenta = "INSERT INTO servicios_renta (servicios, renta) VALUES (?, ?)";

@@ -123,16 +123,24 @@ public class MostrarEquipamiento {
 
             System.out.println("Reservaciones del equipamiento numero: " + IDEquipamiento);
 
+            resultado11.next();
+
+            System.out.println("\n========================================================================");
+            String DescripcionEquipo = resultado11.getString("DescripcionEquipo");
+            System.out.printf("| %-25s | %-40s |", "DescripcionEquipo", DescripcionEquipo);
+            System.out.println("\n========================================================================");
+
+            ResultSet resultado12 = statement.executeQuery();
+
             // Iterar sobre el resultado de la consulta
-            while (resultado11.next()) {
-                int Reservacion = resultado11.getInt("Reservacion");
-                String FechaReservacion = resultado11.getString("FechaReservacion");
-                String Salon = resultado11.getString("Salon");
-                String Cliente = resultado11.getString("Cliente");
-                String TipoEvento = resultado11.getString("TipoEvento");
-                int CapacidadInvitados = resultado11.getInt("CapacidadInvitados");
-                String DescripcionEquipo = resultado11.getString("DescripcionEquipo");
-                double CostoEquipo = resultado11.getDouble("CostoEquipo");
+            while (resultado12.next()) {
+                int Reservacion = resultado12.getInt("Reservacion");
+                String FechaReservacion = resultado12.getString("FechaReservacion");
+                String Salon = resultado12.getString("Salon");
+                String Cliente = resultado12.getString("Cliente");
+                String TipoEvento = resultado12.getString("TipoEvento");
+                int CapacidadInvitados = resultado12.getInt("CapacidadInvitados");
+                double CostoEquipo = resultado12.getDouble("CostoEquipo");
                 
                 System.out.println("\n========================================================================");
                 System.out.printf("| %-25s | %-40d |\n", "Reservacion", Reservacion);
@@ -141,7 +149,6 @@ public class MostrarEquipamiento {
                 System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
                 System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
                 System.out.printf("| %-25s | %-40d |\n", "CapacidadInvitados", CapacidadInvitados);
-                System.out.printf("| %-25s | %-40s |\n", "DescripcionEquipo", DescripcionEquipo);
                 System.out.printf("| %-25s | %-40.0f |\n", "CostoEquipo", CostoEquipo);
                 System.out.println("========================================================================");
             }

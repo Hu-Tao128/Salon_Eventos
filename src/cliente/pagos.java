@@ -2,6 +2,7 @@ package cliente;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,7 +23,8 @@ public class pagos {
     Scanner Leer = new Scanner(System.in);
 
     // Método para procesar pago en efectivo
-    public float Efectivo(float total) {
+    public float Efectivo(float total, int renta) {
+        int metodoPago = 1;
         System.out.println("La cantidad a pagar es: " + total);
         System.out.println("Ingrese la cantidad que pagara (Debera apartar con " + (total * 0.2f) + " minimo)");
 
@@ -31,10 +33,12 @@ public class pagos {
             if (monto > total) {
                 System.out.println("Su cambio es de: " + (monto - total));
                 concepto = "Pago Completo";
+                registrarPago(total, concepto, monto, renta, metodoPago);
             }else if ((monto < (total * 0.2f) && (monto > (total * 0.2f)))) {
                 restante = total - monto;
                 concepto = "Abono";
                 System.out.println("Su restante sera de: " + restante);
+                registrarPago(total, concepto, monto, renta, metodoPago);
             }else{
                 System.out.println("El pago es insuficiente");
                 monto = 0;
@@ -48,7 +52,8 @@ public class pagos {
     }
 
     // Método para procesar pago con tarjeta
-    public float Tarjeta(float total) {
+    public float Tarjeta(float total, int renta) {
+        int metodoPago = 2;
         System.out.println("Bienvenido al apartado de pago con tarjeta");
 
         // Validar número de tarjeta
@@ -98,11 +103,23 @@ public class pagos {
         System.out.println("Cantidad que desea pagar:");
         try {
             monto = Leer.nextFloat();
-            Leer.nextLine(); // Limpiar el buffer del scanner
-            concepto = concepto(monto, total);
+            if (monto > total) {
+                System.out.println("Su cambio es de: " + (monto - total));
+                concepto = "Pago Completo";
+                registrarPago(total, concepto, monto, renta, metodoPago);
+            }else if ((monto < (total * 0.2f) && (monto > (total * 0.2f)))) {
+                restante = total - monto;
+                concepto = "Abono";
+                System.out.println("Su restante sera de: " + restante);
+                registrarPago(total, concepto, monto, renta, metodoPago);
+            }else{
+                System.out.println("El pago es insuficiente");
+                monto = 0;
+            }
         } catch (Exception e) {
-            System.out.println("A ocurrido un error, ¿está seguro que introdujo un número?");
-            Leer.nextLine(); // Limpiar el buffer del scanner en caso de excepción
+            // TODO: handle exception
+            System.out.println("A ocurrido un error, esta seguro que introdujo un numero?");
+            System.out.println("Si desea cancelar presione 0");
         }
         
         return monto;
@@ -225,15 +242,123 @@ public class pagos {
                     }else{
                         System.out.println("Le han sobrado " + (restante * (-1)));
                     }
-                } else {
-                    System.out.println("No se pudo insertar el servicio en la renta.");
-                    return; 
                 }
             }
         } catch (SQLException e) {
             System.out.println("Error al ingresar datos: " + e.getMessage());
         }
 
+    }
+
+    public void getTotalPagos(int IDRenta){
+        Connection conexion = null;
+        float total;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+
+            String obtenerPrecio = "SELECT SUM(monto) AS Pagos from pago WHERE renta = ?";
+
+            try (PreparedStatement statement = conexion.prepareStatement(obtenerPrecio)) {
+            statement.setInt(1, IDRenta);
+            ResultSet resultado = statement.executeQuery();
+    
+                if (resultado.next()) {
+                    float pagos = resultado.getFloat("Pagos");
+                    System.out.println("Tienes un total de  " + pagos + " en tus pagos");
+                } else {
+                    System.out.println("no tienes pagos registrados");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al ingresar datos: " + e.getMessage());
+        }
+
+    }
+
+    public void mostrarPagos(int IDRenta) {
+        Connection conexion = null;
+        float totalPagos = 0f;
+        float totalReservacion = 0f;
+        float restante = 0f;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+
+            String consultaTotal = "SELECT total FROM renta WHERE numero = ?";
+            PreparedStatement statementTotal = conexion.prepareStatement(consultaTotal);
+            statementTotal.setInt(1, IDRenta);
+            ResultSet resultadoTotal = statementTotal.executeQuery();
+
+            if (resultadoTotal.next()) {
+                totalReservacion = resultadoTotal.getFloat("total");
+            }
+
+            String consulta = "SELECT p.numero, p.fechaPago, p.monto, p.concepto, mp.nombre AS metodoPago " +
+                              "FROM pago p " +
+                              "INNER JOIN metodo_pago mp ON p.metodoPago = mp.numero " +
+                              "WHERE p.renta = ?";
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, IDRenta);
+            ResultSet resultado = statement.executeQuery();
+
+            System.out.println("Pagos de la reservación número: " + IDRenta);
+            System.out.println("=========================================================================");
+            System.out.printf("| %-5s | %-12s | %-10s | %-15s | %-15s |\n", "Pago", "Fecha Pago", "Monto", "Concepto", "Método de Pago");
+            System.out.println("=========================================================================");
+
+            while (resultado.next()) {
+                int idPago = resultado.getInt("numero");
+                String fechaPago = resultado.getString("fechaPago");
+                float monto = resultado.getFloat("monto");
+                String concepto = resultado.getString("concepto");
+                String metodoPago = resultado.getString("metodoPago");
+
+                totalPagos += monto;
+
+                System.out.printf("| %-5d | %-12s | %-10.2f | %-15s | %-15s |\n", idPago, fechaPago, monto, concepto, metodoPago);
+            }
+
+            restante = totalReservacion - totalPagos;
+
+            System.out.println("=========================================================================");
+            System.out.printf("| %-25s | %-10.2f |\n", "Total de Pagos:", totalPagos);
+            System.out.printf("| %-25s | %-10.2f |\n", "Total de la Reservación:", totalReservacion);
+            System.out.printf("| %-25s | %-10.2f |\n", "Restante por Pagar:", restante);
+            System.out.println("==========================================");
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener los pagos: " + e.getMessage());
+        }
+    }
+
+    public boolean getPago(int IDRenta){
+        boolean valid = false;
+
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultado = null;
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            String obtenerConceptoPago = "SELECT concepto FROM pago WHERE renta = ?";
+
+            statement = conexion.prepareStatement(obtenerConceptoPago);
+            statement.setInt(1, IDRenta);
+            resultado = statement.executeQuery();
+
+            while (resultado.next()) {
+                String conceptoPago = resultado.getString("concepto");
+                if ("Pago Completo".equals(conceptoPago)) {
+                    valid = true;
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return valid;
     }
 }
 

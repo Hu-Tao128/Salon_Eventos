@@ -99,54 +99,80 @@ public class MostrarRenta {
         Connection conexion = null;
    
             System.out.println("Escoga el mes en el que quiere ver todas las reservaciones");
-            IDMes = Leer.nextInt();
-        
-        try {
-            // Obtener la conexión
-            conexion = ConexionBD.obtenerConexion();
+            System.out.println("[1] Enero");
+            System.out.println("[2] Febrero");
+            System.out.println("[3] Marzo");
+            System.out.println("[4] Abril");
+            System.out.println("[5] Mayo");
+            System.out.println("[6] Junio");
+            System.out.println("[7] Julio");
+            System.out.println("[8] Agosto");
+            System.out.println("[9] Septiembre");
+            System.out.println("[10] Octubre");
+            System.out.println("[11] Noviembre");
+            System.out.println("[12] Diciembre");
             
-            // Consulta SQL para obtener datos de la tabla 'salon'
-            String consulta = "select DATE_FORMAT(r.fechaInicio, \"%d-%m-%y\") as FechaInicio\r\n," +
-                                "s.nombre as Salon\r\n," +
-                                "concat(c.nomContacto,' ',c.primerApellido,' ', ifnull(concat (c.segundoApellido,' '),' ')) as Cliente\r\n," +
-                                "e.nombre as TipoEvento\r\n," +
-                                "s.capacidad as CantidadInvitados\r\n" +
-                                "from renta as r \r\n" +
-                                "inner join salon as s on r.salon = s.numero\r\n" +
-                                "inner join cliente as c on r.cliente = c.numero\r\n" +
-                                "inner join evento as e on r.evento = e.numero\r\n" +
-                                "where month(r.fechaInicio) = ?";
 
-            PreparedStatement statement = conexion.prepareStatement(consulta);
-            statement.setInt(1, IDMes);
-            ResultSet resultado12 = statement.executeQuery();
-            
-            // Encabezado de la tabla
-            /*System.out.println("========================================================================");
-            System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
-            System.out.println("========================================================================");*/
+            do{
+                System.out.println("Escriba numero del mes correspondiente");
+                System.out.println("Escriba 0 para salir");
+                IDMes = Leer.nextInt();
 
-            System.out.println("Reservaciones del mes numero: " + IDMes);
+                if(IDMes > 12){
+                    System.out.println("Numero invalido");
+                }
+            }while(IDMes > 12);
 
-            // Iterar sobre el resultado de la consulta
-            while (resultado12.next()) {
-                String FechaInicio = resultado12.getString("FechaInicio");
-                String Salon = resultado12.getString("Salon");
-                String Cliente = resultado12.getString("Cliente");
-                String TipoEvento = resultado12.getString("TipoEvento");
-                int CantidadInvitados = resultado12.getInt("CantidadInvitados");
+        if(IDMes == 0){
+            System.out.println("Saliendo del apartado");
+        }else{
+            try {
+                // Obtener la conexión
+                conexion = ConexionBD.obtenerConexion();
                 
-                System.out.println("\n========================================================================");
-                System.out.printf("| %-25s | %-40s |\n", "FechaInicio", FechaInicio);
-                System.out.printf("| %-25s | %-40s |\n", "Salon", Salon);
-                System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
-                System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
-                System.out.printf("| %-25s | %-40d |\n", "CantidadInvitados", CantidadInvitados);
-                System.out.println("========================================================================");
+                // Consulta SQL para obtener datos de la tabla 'salon'
+                String consulta = "select DATE_FORMAT(r.fechaInicio, \"%d-%m-%y\") as FechaInicio\r\n," +
+                                    "s.nombre as Salon\r\n," +
+                                    "concat(c.nomContacto,' ',c.primerApellido,' ', ifnull(concat (c.segundoApellido,' '),' ')) as Cliente\r\n," +
+                                    "e.nombre as TipoEvento\r\n," +
+                                    "s.capacidad as CantidadInvitados\r\n" +
+                                    "from renta as r \r\n" +
+                                    "inner join salon as s on r.salon = s.numero\r\n" +
+                                    "inner join cliente as c on r.cliente = c.numero\r\n" +
+                                    "inner join evento as e on r.evento = e.numero\r\n" +
+                                    "where month(r.fechaInicio) = ?";
+    
+                PreparedStatement statement = conexion.prepareStatement(consulta);
+                statement.setInt(1, IDMes);
+                ResultSet resultado12 = statement.executeQuery();
+                
+                // Encabezado de la tabla
+                /*System.out.println("========================================================================");
+                System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+                System.out.println("========================================================================");*/
+                
+                    System.out.println("Reservaciones del mes numero: " + IDMes);
+    
+                // Iterar sobre el resultado de la consulta
+                while (resultado12.next()) {
+                    String FechaInicio = resultado12.getString("FechaInicio");
+                    String Salon = resultado12.getString("Salon");
+                    String Cliente = resultado12.getString("Cliente");
+                    String TipoEvento = resultado12.getString("TipoEvento");
+                    int CantidadInvitados = resultado12.getInt("CantidadInvitados");
+                    
+                    System.out.println("\n========================================================================");
+                    System.out.printf("| %-25s | %-40s |\n", "FechaInicio", FechaInicio);
+                    System.out.printf("| %-25s | %-40s |\n", "Salon", Salon);
+                    System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
+                    System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
+                    System.out.printf("| %-25s | %-40d |\n", "CantidadInvitados", CantidadInvitados);
+                    System.out.println("========================================================================");
+                }
+    
+            } catch (SQLException e) {
+                System.out.println("Error en la consulta: " + e.getMessage());
             }
-
-        } catch (SQLException e) {
-            System.out.println("Error en la consulta: " + e.getMessage());
         }
     }
 

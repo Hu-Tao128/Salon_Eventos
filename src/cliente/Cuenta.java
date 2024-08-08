@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import conexionDB.ConexionBD;
@@ -68,6 +69,9 @@ public class Cuenta {
                 String Nombre = resultado.getString("nomContacto");
                 String primerApellido = resultado.getString("primerApellido");
                 String segundoApellido = resultado.getString("segundoApellido");
+                if (segundoApellido  == "" || segundoApellido == null) {
+                    segundoApellido = "";
+                }
                 String numTel = resultado.getString("numTel");
                 String email = resultado.getString("email");
 
@@ -96,5 +100,4 @@ public class Cuenta {
             System.out.println("Error al obtener los datos del cliente: " + e.getMessage());
         }
     }
-    
 }
