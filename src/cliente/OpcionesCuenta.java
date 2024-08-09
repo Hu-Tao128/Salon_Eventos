@@ -305,12 +305,17 @@ public class OpcionesCuenta {
                 String Nombre = resultado.getString("nomContacto");
                 String primerApellido = resultado.getString("primerApellido");
                 String segundoApellido = resultado.getString("segundoApellido");
+                
+                    if (segundoApellido  == "" || segundoApellido == null) {
+                        segundoApellido = "";
+                    }                
+                
                 String numTel = resultado.getString("numTel");
                 String email = resultado.getString("email");
 
                 System.out.println("Detalles del Cliente:");
                 System.out.println("========================================================================");
-                System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+                System.out.printf("| %-25s | %-40s |\n", "Cliente", IDCliente);
                 System.out.println("========================================================================");
                     
                 if (nombreFiscal != null && !nombreFiscal.isEmpty()) {

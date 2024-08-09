@@ -68,7 +68,7 @@ public class Reservaciones {
                                     
                             System.out.println("\nIntroduzca el número de reservación para conocer más detalles o modificar su reservación.");
                             System.out.println("Introduzca 0 si desea salir de este apartado:");
-                            
+
                             IDRenta = Leer.nextInt();
                             if (IDRenta < 0) {
                                 System.out.println("El número debe ser un número positivo.");
@@ -96,14 +96,16 @@ public class Reservaciones {
         try (Connection conexion = ConexionBD.obtenerConexion()) {
     
             String consultaRenta = "SELECT " + 
+                                    "   r.numero AS renta, " + 
                                    "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " +
                                    "   DATE_FORMAT(r.horaInicio, '%H:%i') AS HoraReservacion, " + 
+                                   "   CONCAT(c.nomContacto, ' ', c.primerApellido, ' ', IFNULL(c.segundoApellido, '')) AS NombreCliente, " +
                                    "   e.numero AS evento, " +
                                    "   e.nombre AS 'Tipo de evento', " +
                                    "   s.nombre AS Salon, " +
                                    "   CONCAT(s.dirCalle, ' ', s.dirNumero, ', ', s.dirColonia) AS Direccion, " +
                                    "   m.nombreMontaje AS TipoMontaje, " +
-                                   "   s.capacidad AS 'Cantidad de invitados', " +
+                                   "   r.invitados AS 'Cantidad de invitados', " +
                                    "   r.total AS 'Costo Total' " +
                                    "FROM salon AS s " +
                                    "INNER JOIN renta AS r ON s.numero = r.salon " +
@@ -123,8 +125,10 @@ public class Reservaciones {
                 while (resultado.next()) {
                     valid = true;
 
+                    int numeroRenta = resultado.getInt("renta");
                     String fechaReservacion = resultado.getString("Fecha de reservacion");
                     String horaReservacion = resultado.getString("HoraReservacion");
+                    String cliente = resultado.getString("NombreCliente");
                     String tipoEvento = resultado.getString("Tipo de evento");
                     String salon = resultado.getString("Salon");
                     String direccion = resultado.getString("Direccion");
@@ -141,7 +145,7 @@ public class Reservaciones {
 
                     System.out.println("Detalles de la Renta:");
                     System.out.println("========================================================================");
-                    System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+                    System.out.printf("| %-25s | %-40s |\n", ("Reservacion: " + numeroRenta), cliente);
                     System.out.println("========================================================================");
                     System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservación", fechaReservacion);
                     System.out.printf("| %-25s | %-40s |\n", "Hora de Reservación", horaReservacion);

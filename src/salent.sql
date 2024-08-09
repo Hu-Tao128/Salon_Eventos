@@ -206,8 +206,8 @@ use salent;
     (null, "Telones de fondo", 1000.00, 8);
 
     insert into metodo_pago(numero, nombre) values
-    (null, "Efectivo"),
-    (null, "Tarjeta");
+    (null, "EFECTIVO"),
+    (null, "DEBITO");
 
     insert into cliente(numero, nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email) values
     (null,"Vibe Venues", "Maria Perez", "García", "López", "664-123-4567", "García.López@gmail.com"),
@@ -299,16 +299,16 @@ use salent;
     (null, "24-08-03", "Pago Completo", 24940.00, 20, 1);
 
     insert into tarjetas(numero, numTarjeta, vencimiento, cvc, cliente) values
-    (null, "4000123456789010", "01-12-26", 123, 1),
-    (null, "4556789012345678", "01-11-25", 456, 2),
-    (null, "4024567890123456", "01-10-27", 789, 3),
-    (null, "4242424242424242", "01-09-26", 321, 4),
-    (null, "4532123456789012", "01-08-25", 654, 5),
-    (null, "4900111122223333", "01-07-27", 987, 6),
-    (null, "7777777777777777", "01-06-26", 111, 7),
-    (null, "4400567812346789", "01-05-28", 222, 8),
-    (null, "4716123456789000", "01-04-29", 333, 9),
-    (null, "4847222233334444", "01-03-27", 444, 10);
+    (null, "4000123456789010", "26-12-01", 123, 1),
+    (null, "4556789012345678", "25-11-01", 456, 2),
+    (null, "4024567890123456", "27-10-01", 789, 3),
+    (null, "4242424242424242", "26-09-01", 321, 4),
+    (null, "4532123456789012", "25-08-01", 654, 5),
+    (null, "4900111122223333", "27-07-01", 987, 6),
+    (null, "7777777777777777", "26-06-01", 111, 7),
+    (null, "4400567812346789", "28-05-01", 222, 8),
+    (null, "4716123456789000", "29-04-01", 333, 9),
+    (null, "4847222233334444", "27-03-01", 444, 10);
 
     insert into servicios_renta(servicios, renta) values 
     (1, 8),

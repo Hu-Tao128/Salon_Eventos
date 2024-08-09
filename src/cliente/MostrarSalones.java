@@ -110,8 +110,8 @@ public class MostrarSalones {
             conexion = ConexionBD.obtenerConexion();
             
             String consulta = "SELECT " +
-                              "   fechaInicio, " +
-                              "   fechaFinal " +
+                              "   DATE_FORMAT(fechaInicio, \"%d-%m-%y\") AS fechaInicio, " +
+                              "   DATE_FORMAT(fechaFinal, \"%d-%m-%y\") AS fechaFinal " +
                               "FROM renta " +
                               "WHERE salon = ?";
     
@@ -125,8 +125,8 @@ public class MostrarSalones {
             System.out.println("===============================");
     
             while (resultado.next()) {
-                Date fechaInicio = resultado.getDate("fechaInicio");
-                Date fechaFinal = resultado.getDate("fechaFinal");
+                String fechaInicio = resultado.getString("fechaInicio");
+                String fechaFinal = resultado.getString("fechaFinal");
     
                 System.out.printf("| %-12s | %-12s |\n", fechaInicio.toString(), fechaFinal.toString());
             }
