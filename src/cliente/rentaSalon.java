@@ -60,10 +60,10 @@ public class rentaSalon {
 
                 if (IDSalon == 0) {
                     System.out.println("No ha seleccionado un salón válido.");
-                    continue; // Salir del bucle actual y volver a pedir un salón
+                    continue; 
                 }
 
-                subtotal = salones.obtenerPrecioSalon(IDSalon);
+                total = salones.obtenerPrecioSalon(IDSalon);
 
                 System.out.println("Ahora elija su evento");
                 eventos.showEventos();
@@ -74,9 +74,11 @@ public class rentaSalon {
                 montajes.showMontajes(IDEvento);
                 IDMontaje = montajes.elegirMontaje();
 
+
+                salones.mostrarFechasNoPermitidas(IDSalon);
+
                 while (true) {
                     System.out.println("Ingrese la fecha en la que desea su evento (dd-MM-yy): ");
-                    salones.mostrarFechasNoPermitidas(IDSalon);
                     try {
                         String input = Leer.nextLine();
                         LocalDate date = LocalDate.parse(input, formatter);
@@ -89,7 +91,6 @@ public class rentaSalon {
 
                 while (true) {
                     System.out.println("Ingrese la fecha en la que desea terminar su evento (dd-MM-yy): ");
-                    salones.mostrarFechasNoPermitidas(IDSalon);
                     try {
                         String input = Leer.nextLine();
                         LocalDate date = LocalDate.parse(input, formatter);
@@ -125,9 +126,9 @@ public class rentaSalon {
                 }
 
                 try {
-                    IVA = subtotal * 0.16f;
-                    total = IVA + subtotal;
-
+                    subtotal = (total/(1*0.16f));
+                    IVA = total - subtotal;
+                    
                     conexion = ConexionBD.obtenerConexion();
                     String sql = "INSERT INTO renta(fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, IVA, subtotal, total, montaje, salon, cliente, evento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement statement = conexion.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);

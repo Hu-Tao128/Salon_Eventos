@@ -38,10 +38,7 @@ public class Reservaciones {
                 ResultSet resultado = statement.executeQuery();
             
                 boolean reservaciones = false;
-                
-                    System.out.println("\nIntroduzca el número de reservación para conocer más detalles o modificar su reservación.");
-                    System.out.println("Introduzca 0 si desea salir de este apartado:");
-        
+                        
                     try {
 
                         // Encabezados
@@ -68,7 +65,10 @@ public class Reservaciones {
                             System.out.println("|                                              No tienes reservaciones aún                                                   |");
                         } else {
                             System.out.println("==============================================================================================================================");
-                                
+                                    
+                            System.out.println("\nIntroduzca el número de reservación para conocer más detalles o modificar su reservación.");
+                            System.out.println("Introduzca 0 si desea salir de este apartado:");
+                            
                             IDRenta = Leer.nextInt();
                             if (IDRenta < 0) {
                                 System.out.println("El número debe ser un número positivo.");

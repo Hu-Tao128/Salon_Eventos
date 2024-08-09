@@ -335,35 +335,48 @@ public class OpcionesCuenta {
         Connection conexion = null;
         PreparedStatement statement = null;
         ResultSet resultado = null;
-
+    
         try {
             conexion = ConexionBD.obtenerConexion();
             String consulta = "SELECT numTarjeta, " + 
-                                "DATE_FORMAT(vencimiento, '%m/%d') AS vencimiento, " +
-                                "cvc FROM tarjetas WHERE cliente = ?";
+                              "DATE_FORMAT(vencimiento, '%m/%y') AS vencimiento, " +
+                              "cvc FROM tarjetas WHERE cliente = ?";
             
             statement = conexion.prepareStatement(consulta);
             statement.setInt(1, clienteID);
             resultado = statement.executeQuery();
-
+    
             System.out.println("===========================================");
-            System.out.printf("| %-17s | %-12s | %-4s |\n", "Número de Tarjeta", "Vencimiento", "CVC");
+            System.out.printf("| %-19s | %-10s | %-4s |\n", "Número de Tarjeta", "Vencimiento", "CVC");
             System.out.println("===========================================");
-
+    
             while (resultado.next()) {
                 String numTarjeta = resultado.getString("numTarjeta");
-                String fechaVencimiento = resultado.getNString("vencimiento");
+                String fechaVencimiento = resultado.getString("vencimiento");
                 int cvc = resultado.getInt("cvc");
-
-                System.out.printf("| %-17s | %-12s | %-4d |\n", numTarjeta, fechaVencimiento, cvc);
+    
+                // Formatear el número de tarjeta para que se muestre como 1234-5678-9123-4567
+                String formattedTarjeta = numTarjeta.replaceAll("(\\d{4})(?=\\d)", "$1-");
+    
+                System.out.printf("| %-19s | %-10s | %-4d |\n", formattedTarjeta, fechaVencimiento, cvc);
             }
-
+    
             System.out.println("===========================================");
             
         } catch (SQLException e) {
             System.out.println("Error al consultar las tarjetas: " + e.getMessage());
+        } finally {
+            // Cerrar recursos
+            try {
+                if (resultado != null) resultado.close();
+                if (statement != null) statement.close();
+                if (conexion != null) conexion.close();
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar los recursos: " + e.getMessage());
+            }
         }
     }
+    
     
     public boolean tieneTarjeta(int clienteID) {
         boolean tieneTarjeta = false;
@@ -401,23 +414,32 @@ public class OpcionesCuenta {
 
     public void agregarTarjetas(int NoCliente) {
         System.out.println("Bienvenido al apartado de Agregar Tarjeta");
-
+    
+        Scanner Leer = new Scanner(System.in);
+        int intentos = 0;
+    
         // Validar número de tarjeta
-        String NoTarjeta;
-        while (true) {
+        String NoTarjeta = null;
+        while (intentos < 3) {
             System.out.println("Introduzca su número de tarjeta (16 dígitos):");
             NoTarjeta = Leer.nextLine();
             if (NoTarjeta.matches("\\d{16}")) {
                 break;
             } else {
+                intentos++;
                 System.out.println("Número de tarjeta inválido. Debe tener 16 dígitos.");
             }
         }
-
+        if (intentos == 3) {
+            System.out.println("Ha excedido el número máximo de intentos. El proceso ha sido cancelado.");
+            return;
+        }
+    
         // Validar fecha de vencimiento
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/yy");
-        YearMonth fechaVencimiento;
-        while (true) {
+        YearMonth fechaVencimiento = null;
+        intentos = 0;
+        while (intentos < 3) {
             try {
                 System.out.println("Ingrese la fecha de vencimiento (MM/yy):");
                 String input = Leer.nextLine();
@@ -426,34 +448,58 @@ public class OpcionesCuenta {
                 if (fechaVencimiento.isAfter(now)) {
                     break;
                 } else {
+                    intentos++;
                     System.out.println("La fecha de vencimiento no puede ser una fecha pasada.");
                 }
             } catch (DateTimeParseException e) {
+                intentos++;
                 System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato MM/yy.");
             }
         }
+        if (intentos == 3) {
+            System.out.println("Ha excedido el número máximo de intentos. El proceso ha sido cancelado.");
+            return;
+        }
     
         // Validar CVC
-        String cvc;
-        while (true) {
+        String cvc = null;
+        intentos = 0;
+        while (intentos < 3) {
             System.out.println("Introduzca los 3 números CVC:");
             cvc = Leer.nextLine();
             if (cvc.matches("\\d{3}")) {
                 break;
             } else {
+                intentos++;
                 System.out.println("CVC inválido. Debe tener 3 dígitos.");
             }
         }
-
-        Connection conexion = null;
-
-        try {
-            conexion = ConexionBD.obtenerConexion();    
-        } catch (Exception e) {
-            // TODO: handle exception
-            System.out.println("A ocurrido un error, esta seguro que introdujo un numero?");
-            System.out.println("Si desea cancelar presione 0");
+        if (intentos == 3) {
+            System.out.println("Ha excedido el número máximo de intentos. El proceso ha sido cancelado.");
+            return;
         }
-        
+    
+        // Conectar a la base de datos y agregar la tarjeta
+        Connection conexion = null;
+    
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            String sql = "INSERT INTO tarjetas (numTarjeta, vencimiento, cvc, cliente) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = conexion.prepareStatement(sql);
+            statement.setString(1, NoTarjeta);
+            statement.setDate(2, java.sql.Date.valueOf(fechaVencimiento.atDay(1)));
+            statement.setInt(3, Integer.parseInt(cvc));
+            statement.setInt(4, NoCliente);
+    
+            int filasAfectadas = statement.executeUpdate();
+            if (filasAfectadas > 0) {
+                System.out.println("Tarjeta agregada con éxito.");
+            } else {
+                System.out.println("No se pudo agregar la tarjeta.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al agregar la tarjeta: " + e.getMessage());
+        }
     }
+    
 }
