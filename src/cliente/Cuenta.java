@@ -39,6 +39,7 @@ public class Cuenta {
                 String Apellido = resultado.getString("Apellido");
                 NoCliente = resultado.getInt("NoCliente");
                 
+                System.out.flush();
                 System.out.println("Bienvenido " + Nombres + " " + Apellido);
             } else {
                 System.out.println("Usuario no encontrado");

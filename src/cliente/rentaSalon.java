@@ -14,10 +14,11 @@ import conexionDB.ConexionBD;
 
 public class rentaSalon {
     LocalDate fechaHoy = LocalDate.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
-    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private String fechaReservacion = fechaHoy.format(formatter);
+    DateTimeFormatter inputDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+    DateTimeFormatter dbDateFormatter = DateTimeFormatter.ofPattern("yy-MM-dd");
+    DateTimeFormatter inputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    DateTimeFormatter outputTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private String fechaReservacion = fechaHoy.format(dbDateFormatter);
     private String fechaInicio;
     private String fechaFinal;
     private String horaInicio;
@@ -56,13 +57,15 @@ public class rentaSalon {
             }
 
             do {
-                
                 System.out.println("Para cuantos invitados quiere su Reservacion?");
 
                 try {
                     invitados = Leer.nextInt();
+                    if (invitados > 500) {
+                        System.out.println(invitados + " invitados excede la capacidad de nuestros salones, pruebe con 500 o menos invitados");
+                        invitados = -1;
+                    }
                 } catch (Exception e) {
-                    // TODO: handle exception
                     System.out.println("Ingresa numeros");
                     Leer.nextLine();
                     invitados = -1;
@@ -76,7 +79,7 @@ public class rentaSalon {
 
                 if (IDSalon == 0) {
                     System.out.println("No ha seleccionado un salón válido.");
-                    continue; 
+                    continue;
                 }
 
                 total = salones.obtenerPrecioSalon(IDSalon);
@@ -96,12 +99,12 @@ public class rentaSalon {
 
                 while (true) {
                     System.out.println("Ingrese la fecha en la que desea su evento (dd-MM-yy): ");
-                    
+
                     try {
                         String input = Leer.nextLine();
                         salones.validarFecha(input, IDSalon);
-                        LocalDate date = LocalDate.parse(input, formatter);
-                        fechaInicio = date.format(formatter);
+                        LocalDate date = LocalDate.parse(input, inputDateFormatter);
+                        fechaInicio = date.format(dbDateFormatter);
                         break;
                     } catch (DateTimeParseException e) {
                         System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato dd-MM-yy: ");
@@ -113,8 +116,8 @@ public class rentaSalon {
                     try {
                         String input = Leer.nextLine();
                         salones.validarFecha(input, IDSalon);
-                        LocalDate date = LocalDate.parse(input, formatter);
-                        fechaFinal = date.format(formatter);
+                        LocalDate date = LocalDate.parse(input, inputDateFormatter);
+                        fechaFinal = date.format(dbDateFormatter);
                         break;
                     } catch (DateTimeParseException e) {
                         System.out.println("Fecha inválida. Por favor, ingrese la fecha en el formato dd-MM-yy: ");
@@ -126,10 +129,10 @@ public class rentaSalon {
                     try {
                         String input = Leer.nextLine();
                         if (input.equals("24:00")) {
-                            System.out.println("Hora invalida, por favoor ingrese de nuevo la hora");
-                        }else{
-                            LocalTime time = LocalTime.parse(input, inputFormatter);
-                            horaInicio = time.format(outputFormatter);
+                            System.out.println("Hora invalida, por favor ingrese de nuevo la hora");
+                        } else {
+                            LocalTime time = LocalTime.parse(input, inputTimeFormatter);
+                            horaInicio = time.format(outputTimeFormatter);
                             break;
                         }
                     } catch (DateTimeParseException e) {
@@ -142,10 +145,10 @@ public class rentaSalon {
                     try {
                         String input = Leer.nextLine();
                         if (input.equals("24:00")) {
-                            System.out.println("Hora invalida, por favoor ingrese de nuevo la hora");
-                        }else{
-                            LocalTime time = LocalTime.parse(input, inputFormatter);
-                            horaFinal = time.format(outputFormatter);
+                            System.out.println("Hora invalida, por favor ingrese de nuevo la hora");
+                        } else {
+                            LocalTime time = LocalTime.parse(input, inputTimeFormatter);
+                            horaFinal = time.format(outputTimeFormatter);
                             break;
                         }
                     } catch (DateTimeParseException e) {
@@ -159,18 +162,17 @@ public class rentaSalon {
                 if (resInvitados.equals("n")) {
                     System.out.println("Ingrese la cantidad de Invitados por favor");
                     try {
-                        invitados = Leer.nextInt();  
+                        invitados = Leer.nextInt();
                     } catch (Exception e) {
-                        // TODO: handle exception
                         System.out.println("Ingrese un numero por favor");
                         Leer.nextLine();
-                    } 
+                    }
                 }
 
                 try {
-                    subtotal = (total/(1*0.16f));
+                    subtotal = (total / (1 * 0.16f));
                     IVA = total - subtotal;
-                    
+
                     conexion = ConexionBD.obtenerConexion();
                     String sql = "INSERT INTO renta(numero, fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, invitados, IVA, subtotal, total, montaje, salon, cliente, evento) VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement statement = conexion.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -247,6 +249,5 @@ public class rentaSalon {
                 }
             } while (IDSalon == 0);
         } while (opcion != 0);
-
     }
 }

@@ -21,69 +21,65 @@ public class AgregarComplementos {
     Reservaciones salon = new Reservaciones();
 
     public void menuComplementos(int IDRenta, int IDEvento, float total) {
+        
         do {
-                System.out.println("Su total es de " + total);
-                System.out.println("Desea agregar algún Servicio o Equipamiento?");
-                System.out.println("1) Agregar Servicio");
-                System.out.println("2) Agregar Equipamiento");
-                System.out.println("3) Mostrar Servicios de mi renta");
-                System.out.println("4) Mostrar Equipamiento de mi renta");
-                System.out.println("0) No, gracias");
-                opcion = Leer.nextInt();
-
-                switch (opcion) {
-                    case 1:
-                        servicios.showServicios();
-                        IDServicios = servicios.elegirServicio();
-
-                        if (IDServicios > 0) {
-                            AgregarServRentas(IDServicios, IDRenta);
-                            total = total + getTotalServicio(IDServicios);
-                        } else {
-                            System.out.println("ID de servicio inválido.");
-                        }
-                        break;
-
-                    case 2:
-
-                        MostrarEquipamientos equipamiento = new MostrarEquipamientos();
-                        equipamiento.showEquipamientos(IDEvento);
-                        IDEquipamientos = equipamiento.elegirEquipamiento();
-
-                        cantidad = equipamiento.getCantidad(IDEquipamientos);
-
-                        MostrarEquipamientos precios = new MostrarEquipamientos();
-                        precio = precios.getPrecio(IDEquipamientos);
-
-                        System.out.println(precio);
-
-                            AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
-                            total += (cantidad * precio);
-                        
-                        break;
-
-                    case 3:
-                        MostrarServicios menu = new MostrarServicios();
-                        menu.showServiciosRenta(IDRenta);
-
-                        break;
-
-                    case 4:
-                        MostrarEquipamientos mostrarEquipamientos =  new MostrarEquipamientos();
-                        mostrarEquipamientos.showEquipoRentas(IDRenta);
-
-                        break;
-
-                    case 0:
-                        System.out.println("Está bien, prosigamos.");
-
-                        break;
-
-                    default:
-                        System.out.println("Opción no válida, intente de nuevo.");
-                        
-                        break;
-                }
+            System.out.println("Su total es de " + total);
+            System.out.println("¿Desea agregar algún Servicio o Equipamiento?");
+            System.out.println("1) Agregar Servicio");
+            System.out.println("2) Agregar Equipamiento");
+            System.out.println("3) Mostrar Servicios de mi renta");
+            System.out.println("4) Mostrar Equipamiento de mi renta");
+            System.out.println("0) No, gracias");
+            opcion = Leer.nextInt();
+    
+            switch (opcion) {
+                case 1:
+                    servicios.showServicios();
+                    int IDServicios = servicios.elegirServicio();
+    
+                    if (IDServicios > 0) {
+                        AgregarServRentas(IDServicios, IDRenta);
+                        float totalServicio = getTotalServicio(IDServicios);
+                        total += totalServicio; 
+                    } else {
+                        System.out.println("ID de servicio inválido.");
+                    }
+                    break;
+    
+                case 2:
+                    MostrarEquipamientos equipamiento = new MostrarEquipamientos();
+                    equipamiento.showEquipamientos(IDEvento);
+                    int IDEquipamientos = equipamiento.elegirEquipamiento();
+    
+                    int cantidad = equipamiento.getCantidad(IDEquipamientos);
+                    float precio = equipamiento.getPrecio(IDEquipamientos);
+    
+                    if (cantidad > 0 && IDEquipamientos > 0) {
+                        AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
+                        total += (cantidad * precio); 
+                    } else {
+                        System.out.println("ID de equipamiento o cantidad inválidos.");
+                    }
+                    break;
+    
+                case 3:
+                    MostrarServicios menuServicios = new MostrarServicios();
+                    menuServicios.showServiciosRenta(IDRenta);
+                    break;
+    
+                case 4:
+                    MostrarEquipamientos mostrarEquipamientos = new MostrarEquipamientos();
+                    mostrarEquipamientos.showEquipoRentas(IDRenta);
+                    break;
+    
+                case 0:
+                    System.out.println("Está bien, prosigamos.");
+                    break;
+    
+                default:
+                    System.out.println("Opción no válida, intente de nuevo.");
+                    break;
+            }
         } while (opcion != 0);
     }
 
@@ -99,7 +95,7 @@ public class AgregarComplementos {
             ResultSet resultado = statement.executeQuery();
 
             if (resultado.next()) {
-                precio = resultado.getFloat("precio");
+                total = resultado.getFloat("precio");
             }
 
         } catch (SQLException e) {

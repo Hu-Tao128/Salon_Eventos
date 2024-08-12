@@ -15,82 +15,81 @@ public class Reservaciones {
     private int IDRenta;
 
     public void verMisReservaciones(int NoCliente) {
-        
-        do{
+        int IDRenta = -1;
+        do {
             System.out.println("Aquí se muestran las reservaciones que tiene registradas");
-
+    
             try (Connection conexion = ConexionBD.obtenerConexion()) {
-
+    
                 String consultaReservaciones = "SELECT " + 
-                                            "   r.numero AS 'No. Reservacion', " + 
-                                            "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " + 
-                                            "   s.nombre AS Salon, " +
-                                            "   e.nombre AS 'Tipo de evento', " +
-                                            "   s.capacidad AS 'Cantidad de invitados' " +
-                                            "FROM salon AS s " +
-                                            "INNER JOIN renta AS r ON s.numero = r.salon " +
-                                            "INNER JOIN cliente AS c ON c.numero = r.cliente " +
-                                            "INNER JOIN evento AS e ON e.numero = r.evento " +
-                                            "WHERE c.numero = ?";
-
+                                               "   c.nomContacto AS 'Nombre del Cliente', " +
+                                               "   r.numero AS 'No. Reservacion', " + 
+                                               "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " + 
+                                               "   s.nombre AS Salon, " +
+                                               "   e.nombre AS 'Tipo de evento', " +
+                                               "   s.capacidad AS 'Cantidad de invitados' " +
+                                               "FROM salon AS s " +
+                                               "INNER JOIN renta AS r ON s.numero = r.salon " +
+                                               "INNER JOIN cliente AS c ON c.numero = r.cliente " +
+                                               "INNER JOIN evento AS e ON e.numero = r.evento " +
+                                               "WHERE c.numero = ?";
+    
                 try (PreparedStatement statement = conexion.prepareStatement(consultaReservaciones)) {
-                statement.setInt(1, NoCliente);
-                ResultSet resultado = statement.executeQuery();
-            
-                boolean reservaciones = false;
-                        
-                    try {
-
-                        // Encabezados
+                    statement.setInt(1, NoCliente);
+                    ResultSet resultado = statement.executeQuery();
+    
+                    boolean reservaciones = false;
+    
+                    // Encabezado del nombre del cliente
+                    if (resultado.next()) {
+                        String nombreCliente = resultado.getString("Nombre del Cliente");
+                        System.out.println("\nCliente: " + nombreCliente);
                         System.out.println("==============================================================================================================================");
                         System.out.printf("| %-17s | %-22s | %-17s | %-32s | %-22s |\n", 
-                                            "No. Reservación", "Fecha Reservación", "Nombre del Salón", "Tipo de Evento", "Cantidad de Invitados");
-                                            System.out.println("==============================================================================================================================");
-                    
-                        while (resultado.next()) {
+                                          "No. Reservación", "Fecha Reservación", "Nombre del Salón", "Tipo de Evento", "Cantidad de Invitados");
+                        System.out.println("==============================================================================================================================");
+                        
+                        do {
                             reservaciones = true;
-                    
+    
                             int noRenta = resultado.getInt("No. Reservacion");
                             String fechaReservacion = resultado.getString("Fecha de reservacion");
                             String nombreSalon = resultado.getString("Salon");
                             String tipoEvento = resultado.getString("Tipo de evento");
                             int cantidadInvitados = resultado.getInt("Cantidad de invitados");
-                    
+    
                             // Filas de datos
                             System.out.printf("| %-17d | %-22s | %-17s | %-32s | %-22d |\n", 
-                                                noRenta, fechaReservacion, nombreSalon, tipoEvento, cantidadInvitados);
-                        }
-                    
-                        if (!reservaciones) {
-                            System.out.println("|                                              No tienes reservaciones aún                                                   |");
-                        } else {
-                            System.out.println("==============================================================================================================================");
-                                    
-                            System.out.println("\nIntroduzca el número de reservación para conocer más detalles o modificar su reservación.");
-                            System.out.println("Introduzca 0 si desea salir de este apartado:");
-
-                            IDRenta = Leer.nextInt();
-                            if (IDRenta < 0) {
-                                System.out.println("El número debe ser un número positivo.");
-                            } else if (IDRenta > 0) {
-                                verDetallesRenta(IDRenta, NoCliente);
-                            }
-                        }
-                        
-                    } catch (InputMismatchException e) {
-                        System.out.println("Ingrese números por favor.");
-                        Leer.next();
+                                              noRenta, fechaReservacion, nombreSalon, tipoEvento, cantidadInvitados);
+                        } while (resultado.next());
+    
+                        System.out.println("==============================================================================================================================");
                     }
-        
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-                                            
+    
+                    if (!reservaciones) {
+                        System.out.println("|                                              No tienes reservaciones aún                                                   |");
+                    } else {
+                        System.out.println("\nIntroduzca el número de reservación para conocer más detalles o modificar su reservación.");
+                        System.out.println("Introduzca 0 si desea salir de este apartado:");
+    
+                        IDRenta = Leer.nextInt();
+                        if (IDRenta < 0) {
+                            System.out.println("El número debe ser un número positivo.");
+                        } else if (IDRenta > 0) {
+                            verDetallesRenta(IDRenta, NoCliente);
+                        }
+                    }
+    
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+    
             } catch (SQLException e) {
                 System.out.println("Error en la consulta: " + e.getMessage());
             }
         } while (IDRenta != 0);
     }
+    
 
     public void verDetallesRenta(int IDRenta, int NoCliente) {
         try (Connection conexion = ConexionBD.obtenerConexion()) {

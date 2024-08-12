@@ -212,55 +212,44 @@ public class MostrarSalones {
     }
 
     public String validarFecha(String fecha, int IDSalon) {
-        Connection conexion = null;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
+        sdf.setLenient(false); // Para asegurar que solo fechas válidas sean aceptadas
+    
         try {
             // Validar el formato de la fecha
-            sdf.setLenient(false);
             java.util.Date fechaUsuarioUtil = sdf.parse(fecha);
             java.sql.Date fechaUsuarioSQL = new java.sql.Date(fechaUsuarioUtil.getTime());
-
-            // Obtener la conexión
-            conexion = ConexionBD.obtenerConexion();
-
-            // Consulta para obtener las fechas reservadas
-            String consulta = "SELECT fechaInicio, fechaFinal " +
-                              "FROM renta " +
-                              "WHERE salon = ?";
-            PreparedStatement statement = conexion.prepareStatement(consulta);
-            statement.setInt(1, IDSalon);
-            ResultSet resultado = statement.executeQuery();
-
-            while (resultado.next()) {
-                Date fechaInicio = resultado.getDate("fechaInicio");
-                Date fechaFinal = resultado.getDate("fechaFinal");
-
-                // Validar que la fecha del usuario no esté en el rango de fechas reservadas
-                if ((fechaUsuarioSQL.equals(fechaInicio) || fechaUsuarioSQL.equals(fechaFinal)) ||
-                    (fechaUsuarioSQL.after(fechaInicio) && fechaUsuarioSQL.before(fechaFinal))) {
-                    return "Fecha no disponible. Por favor, elija otra fecha.";
+    
+            // Obtener la conexión y preparar la consulta
+            try (Connection conexion = ConexionBD.obtenerConexion();
+                 PreparedStatement statement = conexion.prepareStatement(
+                         "SELECT fechaInicio, fechaFinal FROM renta WHERE salon = ?")) {
+    
+                statement.setInt(1, IDSalon);
+                ResultSet resultado = statement.executeQuery();
+    
+                while (resultado.next()) {
+                    Date fechaInicio = resultado.getDate("fechaInicio");
+                    Date fechaFinal = resultado.getDate("fechaFinal");
+    
+                    // Validar que la fecha del usuario no coincida con fechas ya reservadas
+                    if (fechaUsuarioSQL.equals(fechaInicio) || fechaUsuarioSQL.equals(fechaFinal) ||
+                        (fechaUsuarioSQL.after(fechaInicio) && fechaUsuarioSQL.before(fechaFinal))) {
+                        return "Fecha no disponible. Por favor, elija otra fecha.";
+                    }
                 }
+    
+                // Si la fecha es válida, devolverla en el formato correcto
+                return sdf.format(fechaUsuarioSQL);
+    
+            } catch (SQLException e) {
+                return "Error al verificar las fechas reservadas: " + e.getMessage();
             }
-
-            // Si la fecha es válida, devolverla en el formato correcto
-            return sdf.format(fechaUsuarioSQL);
-
+    
         } catch (ParseException e) {
             return "Formato de fecha inválido. Por favor, use el formato dd-MM-yyyy.";
-        } catch (SQLException e) {
-            return "Error al verificar las fechas reservadas: " + e.getMessage();
-        } finally {
-            // Cerrar la conexión si no es null
-            if (conexion != null) {
-                try {
-                    conexion.close();
-                } catch (SQLException e) {
-                    System.out.println("Error al cerrar la conexión: " + e.getMessage());
-                }
-            }
         }
-    }
+    }    
     
     public void consultaResSalon(){
 

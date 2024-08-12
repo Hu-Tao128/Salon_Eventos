@@ -27,27 +27,31 @@ public class pagos {
         int metodoPago = 1;
         System.out.println("La cantidad a pagar es: " + total);
         System.out.println("Ingrese la cantidad que pagara (Debera apartar con " + (total * 0.2f) + " minimo)");
+        boolean opcion = false;
 
-        try {
-            monto = Leer.nextFloat();
-            if (monto > total) {
-                System.out.println("Su cambio es de: " + (monto - total));
-                concepto = "Pago Completo";
-                registrarPago(total, concepto, monto, renta, metodoPago);
-            }else if ((monto < (total * 0.2f) && (monto > (total * 0.2f)))) {
-                restante = total - monto;
-                concepto = "Abono";
-                System.out.println("Su restante sera de: " + restante);
-                registrarPago(total, concepto, monto, renta, metodoPago);
-            }else{
-                System.out.println("El pago es insuficiente");
-                monto = 0;
+        do {
+            try {
+                monto = Leer.nextFloat();
+                if (monto > total) {
+                    System.out.println("Su cambio es de: " + (monto - total));
+                    concepto = "Pago Completo";
+                    registrarPago(total, concepto, monto, renta, metodoPago);
+                }else if ((monto < (total * 0.2f) && (monto > (total * 0.2f)))) {
+                    restante = total - monto;
+                    concepto = "Abono";
+                    System.out.println("Su restante sera de: " + restante);
+                    registrarPago(total, concepto, monto, renta, metodoPago);
+                }else{
+                    System.out.println("El pago es insuficiente");
+                    monto = 0;
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println("A ocurrido un error, esta seguro que introdujo un numero?");
+                System.out.println("Si desea cancelar presione 0");
             }
-        } catch (Exception e) {
-            // TODO: handle exception
-            System.out.println("A ocurrido un error, esta seguro que introdujo un numero?");
-            System.out.println("Si desea cancelar presione 0");
-        }
+        } while (!opcion);
+       
         return monto;
     }
 

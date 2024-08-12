@@ -10,7 +10,6 @@ import cliente.rentaSalon;
 public class Salent {
 
     public static void main(String[] args) {
-        System.out.flush();
         Scanner Leer = new Scanner(System.in);
         
         int NoCliente = 0;
@@ -91,6 +90,8 @@ public class Salent {
 
             } catch (Exception e) {
                 System.out.println("Ingrese Numeros por favor");
+                Leer.nextLine();
+                Opcion = -1;
             }
 
             }else{
@@ -146,6 +147,8 @@ public class Salent {
     
                 } catch (Exception e) {
                     System.out.println("Por Favor, Ingrese los Numeros Indicados Por Favor");
+                    Leer.nextLine();
+                    Opcion = -1;
                 }
             }
 
