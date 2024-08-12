@@ -34,7 +34,7 @@ public class MostrarMontajeEvento {
                 int montaje = resultado.getInt("montaje"); 
 
                    
-                System.out.printf("%-20s %-15s\n", 
+                System.out.printf("|%-14s |  %-12s | \n", 
                                     evento, montaje);
                 }
                 System.out.println("=====================================");

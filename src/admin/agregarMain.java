@@ -32,10 +32,12 @@ public class agregarMain {
             System.out.println("|--------------------------------|");
             System.out.println("|       9) Equipamiento de evento|");
             System.out.println("|--------------------------------|");
+            System.out.println("|       10) Tipos de servicio    |");
+            System.out.println("|--------------------------------|");
             System.out.println("|        0) salir                |");
             System.out.println("|--------------------------------|");
             System.out.println("=================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
             try{
                 opcion1 = Integer.parseInt(validar1);
@@ -84,6 +86,11 @@ public class agregarMain {
                     case 9:
                         AgregarEventoEquipamiento data9 = new AgregarEventoEquipamiento();
                         data9.agregarEventoEquipamientoF();
+                    break;
+
+                    case 10:
+                        AgregarTiposServicios data10 = new AgregarTiposServicios();
+                        data10.agregarTiposServiciosF();
                     break;
 
                     case 0:

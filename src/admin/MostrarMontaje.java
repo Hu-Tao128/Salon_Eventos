@@ -79,8 +79,9 @@ public class MostrarMontaje {
 
         Connection conexion = null;
    
-            System.out.println("Escoga el montaje al que quiere ver las reservaciones");
+            System.out.println("Lista de montajes");
             showMontaje();
+            System.out.println("Escoja el montaje al que quiere ver todas las reservaciones en las que se ha pedido:");
             IDMontaje = Leer.nextInt();
         
         try {
@@ -132,13 +133,12 @@ public class MostrarMontaje {
                 String TipoEvento = resultado14.getString("TipoEvento");
                 int CantidadInvitados = resultado14.getInt("CantidadInvitados");
                    
-                System.out.println("\n========================================================================");
                 System.out.printf("| %-25s | %-40d |\n", "Reservacion", Reservacion);
-                System.out.printf("| %-25s | %-40s |\n", "FechaReservacion", FechaReservacion);
+                System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservacion", FechaReservacion);
                 System.out.printf("| %-25s | %-40s |\n", "Salon", Salon);
                 System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
-                System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
-                System.out.printf("| %-25s | %-40d |\n", "CantidadInvitados", CantidadInvitados);
+                System.out.printf("| %-25s | %-40s |\n", "Tipo de Evento", TipoEvento);
+                System.out.printf("| %-25s | %-40d |\n", "Cantidad de Invitados", CantidadInvitados);
                 System.out.println("========================================================================");
             }
 
@@ -168,7 +168,7 @@ public class MostrarMontaje {
             System.out.println("|        0) salir                |");
             System.out.println("|--------------------------------|");
             System.out.println("=================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
 
             try{

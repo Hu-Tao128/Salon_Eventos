@@ -189,7 +189,7 @@ public class ActualizarSalon {
                                         System.out.println("Opcion no valida");
                                     break;
                                 }
-                                if(opcion5 > 0 && opcion5 < 2){
+                                if(opcion5 > 0 && opcion5 < 8){
                                     System.out.println("Cambio realizado");
                                 }
                             }while(opcion5 != 0);

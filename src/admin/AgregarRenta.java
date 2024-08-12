@@ -34,6 +34,8 @@ public class AgregarRenta {
     private int IDCliente;
     private int opcion = 0;
 
+    private int invitados;
+
     private float IVA = 0f;
     private float subtotal = 0f;
     private float total = 0f;
@@ -94,6 +96,9 @@ public class AgregarRenta {
                 System.out.println("Eliga al cliente al que se le asignara la renta");
                 clientes.showClientes();
                 IDCliente = clientes.elegirCliente();
+
+                System.out.println("Introduzca la cantidad de invitados que asistiran");
+                invitados = Leer.nextInt();
 
                 System.out.println("Elija un salon para el cliente:");
                 salones.showSalones();
@@ -164,6 +169,7 @@ public class AgregarRenta {
                 System.out.println("Salon numero: " + IDSalon);
                 System.out.println("Evento numero: " + IDEvento);
                 System.out.println("Montaje numero: " + IDMontaje);
+                System.out.println("Invitados: " + invitados);
 
                 do{
                     System.out.println("Escribio bien los datos? (s/n)");
@@ -192,6 +198,7 @@ public class AgregarRenta {
                                 System.out.println("[6] Salon numero: " + IDSalon);
                                 System.out.println("[7] Evento numero: " + IDEvento);
                                 System.out.println("[8] Montaje numero: " + IDMontaje);
+                                System.out.println("[9] Invitados: " + invitados);
                                 System.out.println("Ingrese el numero de la opcion a modificar");
                                 System.out.println("Ingrese 0 para salir de este apartado");
                                 opcion5 = datos.nextInt();
@@ -280,6 +287,11 @@ public class AgregarRenta {
                                     montajes.showMontajes(IDEvento);
                                     IDMontaje = montajes.elegirMontaje();
                                     break;
+
+                                    case 9:
+                                    System.out.println("Introduzca la cantidad de invitados que asistiran");
+                                     invitados = Leer.nextInt();
+                                    break;
     
                                     case 0:
                                         System.out.println("Saliendo del apartado");
@@ -317,20 +329,21 @@ public class AgregarRenta {
                     total = (IVA + subtotal);
 
                     conexion = ConexionBD.obtenerConexion();
-                    String sql = "INSERT INTO renta (numero, fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, cliente, salon, evento, montaje, IVA, subtotal, total) VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    String sql = "INSERT INTO renta (numero, fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, invitados, cliente, salon, evento, montaje, IVA, subtotal, total) VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement statement = conexion.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     statement.setString(1, fechaReservacion);
                     statement.setString(2, fechaInicio);
                     statement.setString(3, fechaFinal);
                     statement.setString(4, horaInicio);
                     statement.setString(5, horaFinal);
-                    statement.setInt(6, IDCliente);
-                    statement.setInt(7, IDSalon);
-                    statement.setInt(8, IDEvento);
-                    statement.setInt(9, IDMontaje);
-                    statement.setFloat(10, IVA);
-                    statement.setFloat(11, subtotal);
-                    statement.setFloat(12, total);
+                    statement.setInt(6, invitados);
+                    statement.setInt(7, IDCliente);
+                    statement.setInt(8, IDSalon);
+                    statement.setInt(9, IDEvento);
+                    statement.setInt(10, IDMontaje);
+                    statement.setFloat(11, IVA);
+                    statement.setFloat(12, subtotal);
+                    statement.setFloat(13, total);
     
                     int filasAfectadas = statement.executeUpdate();
                     if (filasAfectadas > 0) {

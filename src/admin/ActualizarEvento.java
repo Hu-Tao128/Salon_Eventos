@@ -55,8 +55,9 @@ public class ActualizarEvento {
 
         if(opcion3.equals("s")){
             do{
-            System.out.println("Seleccione el evento que sera modificado");
+            
             evento.showEventos();
+            System.out.println("Seleccione el evento que sera modificado");
             IDEvento = evento.elegirEvento();
     
             System.out.println("Esta seguro de querer actualizar toda la informacion del evento numero " + IDEvento + " (s/n)");

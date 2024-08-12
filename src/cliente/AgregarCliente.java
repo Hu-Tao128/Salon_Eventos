@@ -23,6 +23,7 @@ public class AgregarCliente {
         String numTel;
         String email;
         int NoCliente = 0;
+        boolean valid = false;
 
         System.out.println("Bienvenido al Formulario para registrarse en Salent");
 
@@ -34,6 +35,7 @@ public class AgregarCliente {
             if (opcion.equalsIgnoreCase("s")) {
                 System.out.println("A que nombre de empresa quedaran los eventos?");
                 nombreFiscal = datos.next();
+                datos.nextLine();
             }else{
                 nombreFiscal = null;
             }
@@ -60,36 +62,47 @@ public class AgregarCliente {
             System.out.println("Desea registrarse? (s/n), si escribio mal un dato podra modificarlo al presionar s");
             opcion = datos.next();
 
-        } while (opcion.equalsIgnoreCase("n"));
-
-        try {
-            connection = ConexionBD.obtenerConexion();
-            
-            String agregarUsuario = "INSERT INTO cliente (numero, nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email) VALUES (null, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(agregarUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
-            statement.setString(1, nombreFiscal);
-            statement.setString(2, Nombre);
-            statement.setString(3, primerApellido);
-            statement.setString(4, segundoApellido);
-            statement.setString(5, numTel);
-            statement.setString(6, email);
-
-            int filasAfectadas = statement.executeUpdate();
-            if (filasAfectadas > 0) {
-                ResultSet generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    NoCliente = generatedKeys.getInt(1);
-                    System.out.println("Gracias por haberse resgistrado en Renta de Salones Salent.");
-                    System.out.println("A continuacion sus datos");
-
-                    perfil.perfil(NoCliente);
-                }
-            } else {
-                System.out.println("No se pudo agregar los datos.");
+            if (opcion.equals("n")) {
+                valid = false;
+                break;
+            }else{
+                valid = true;
             }
 
-        } catch (SQLException e) {
-            System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
+        } while (opcion.equalsIgnoreCase("n"));
+
+        if (valid) {
+            try {
+                connection = ConexionBD.obtenerConexion();
+                
+                String agregarUsuario = "INSERT INTO cliente (numero, nombreFiscal, nomContacto, primerApellido, segundoApellido, numTel, email) VALUES (null, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement statement = connection.prepareStatement(agregarUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
+                statement.setString(1, nombreFiscal);
+                statement.setString(2, Nombre);
+                statement.setString(3, primerApellido);
+                statement.setString(4, segundoApellido);
+                statement.setString(5, numTel);
+                statement.setString(6, email);
+    
+                int filasAfectadas = statement.executeUpdate();
+                if (filasAfectadas > 0) {
+                    ResultSet generatedKeys = statement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        NoCliente = generatedKeys.getInt(1);
+                        System.out.println("Gracias por haberse resgistrado en Renta de Salones Salent.");
+                        System.out.println("A continuacion sus datos");
+    
+                        perfil.perfil(NoCliente);
+                    }
+                } else {
+                    System.out.println("No se pudo agregar los datos.");
+                }
+    
+            } catch (SQLException e) {
+                System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
+            }
+        }else{
+            System.out.println("Vuelva pronto");
         }
 
         return NoCliente;

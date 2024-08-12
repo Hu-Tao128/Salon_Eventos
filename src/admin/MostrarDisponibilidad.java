@@ -28,10 +28,8 @@ public class MostrarDisponibilidad {
                 // Obtener datos
                 int numero = resultado.getInt("numero");
                 String estado = resultado.getString("estado");
-                
-
-                // Imprimir datos en forma d tabla
-                System.out.printf("%-12d %-30s\n", 
+  
+                System.out.printf("|%-12d | %-15s| \n", 
                                 numero, estado);
                 }
 

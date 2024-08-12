@@ -33,10 +33,14 @@ public class eliminarMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       9) EquiposRenta         |");
             System.out.println("|-------------------------------|");
+            System.out.println("|       10) Tarjetas            |");
+            System.out.println("|-------------------------------|");
+            System.out.println("|       11) Tipo Servicio       |");
+            System.out.println("|-------------------------------|");
             System.out.println("|       0) salir                |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
             try{
                 opcion1 = Integer.parseInt(validar1);
@@ -85,6 +89,16 @@ public class eliminarMain {
                     case 9:
                         EliminarEquiposEvento data9 = new EliminarEquiposEvento();
                         data9.deleteEquiposEvento();
+                    break;
+
+                    case 10:
+                        EliminarTarjetas data10 = new EliminarTarjetas();
+                        data10.deleteTarjeta();
+                    break;
+
+                    case 11:
+                        EliminarTiposServicios data11 = new EliminarTiposServicios();
+                        data11.deleteTiposServicios();
                     break;
 
                     case 0:

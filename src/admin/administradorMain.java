@@ -25,7 +25,7 @@ public class administradorMain {
             System.out.println("|            0) Salir           |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
             try{
                 opcion1 = Integer.parseInt(validar1);

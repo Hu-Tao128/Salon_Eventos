@@ -278,6 +278,7 @@ public class pagos {
 
     public void mostrarPagos(int IDRenta) {
         Connection conexion = null;
+        float numPagos = 0f;
         float totalPagos = 0f;
         float totalReservacion = 0f;
         float restante = 0f;
@@ -308,6 +309,7 @@ public class pagos {
             System.out.println("=========================================================================");
 
             while (resultado.next()) {
+                //numPagos = resultado.getInt("pagos");
                 int idPago = resultado.getInt("numero");
                 String fechaPago = resultado.getString("fechaPago");
                 float monto = resultado.getFloat("monto");
@@ -315,14 +317,18 @@ public class pagos {
                 String metodoPago = resultado.getString("metodoPago");
 
                 totalPagos += monto;
+                numPagos += 1;
 
                 System.out.printf("| %-5d | %-12s | %-10.2f | %-15s | %-15s |\n", idPago, fechaPago, monto, concepto, metodoPago);
             }
-
             restante = totalReservacion - totalPagos;
+            if (restante < 0) {
+                restante = 0;
+            }
 
             System.out.println("=========================================================================");
-            System.out.printf("| %-25s | %-10.2f |\n", "Total de Pagos:", totalPagos);
+            System.out.printf("| %-25s | %-10.2f |\n", "Numero de Pagos:", numPagos);
+            System.out.printf("| %-25s | %-10.2f |\n", "Total de los Pagos:", totalPagos);
             System.out.printf("| %-25s | %-10.2f |\n", "Total de la Reservación:", totalReservacion);
             System.out.printf("| %-25s | %-10.2f |\n", "Restante por Pagar:", restante);
             System.out.println("==========================================");

@@ -5,7 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 //import java.util.Calendar;
 import java.sql.Date;
 import java.util.Scanner;
@@ -13,7 +15,7 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class MostrarSalones {
-
+    private List<Integer> salonesDisponbibles = new ArrayList<>();
     private int IDSalon;
     
     public void showSalones() {
@@ -56,7 +58,78 @@ public class MostrarSalones {
             System.out.println("Error en la consulta: " + e.getMessage());
         }
     }
+
+    public void showSalonesRenta(int invitados) {
+
+        Connection conexion = null;
+        try {
+            // Obtener la conexión
+            conexion = ConexionBD.obtenerConexion();
+            
+            salonesDisponbibles.clear();
+            // Consulta SQL para obtener datos de la tabla 'salon'
+            String consulta = "SELECT * FROM salon where capacidad > ?";
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, invitados);
+            ResultSet resultado = statement.executeQuery();
+            
+            // Iterar sobre el resultado de la consulta
+            while (resultado.next()) {
+                int numero = resultado.getInt("numero");
+                String nombre = resultado.getString("nombre");
+                int capacidad = resultado.getInt("capacidad");
+                double tamanio = resultado.getDouble("tamanio");
+                double precio = resultado.getDouble("precio");
+                String dirColonia = resultado.getString("dirColonia");
+                String dirCalle = resultado.getString("dirCalle");
+                String dirNumero = resultado.getString("dirNumero");
     
+                salonesDisponbibles.add(numero);
+                // Encabezado del salón
+                System.out.println("===================================================================");
+                System.out.printf("| %-20s | %-40s |\n", "Salon " + numero, nombre);
+                System.out.println("===================================================================");
+    
+                // Detalles del salón
+                System.out.printf("| %-20s | %-40d |\n", "Capacidad:", capacidad);
+                System.out.printf("| %-20s | %-40.2f |\n", "Tamaño (m²):", tamanio);
+                System.out.printf("| %-20s | %-40.2f |\n", "Precio:", precio);
+                System.out.printf("| %-20s | %-40s |\n", "Dirección:", dirCalle + " " + dirNumero);
+                System.out.printf("| %-20s | %-40s |\n", "", "Colonia: " + dirColonia);
+                System.out.println("===================================================================");
+            }
+    
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+    }
+    
+
+    public int elegirSalonRenta() {
+        Scanner leer = new Scanner(System.in);
+        int ID = 0;
+
+        do {
+            System.out.println("Ingresar el número de Salon:");
+
+            try {
+                ID = leer.nextInt();
+                if (ID <= 0) {
+                    System.out.println("El número de salon debe ser un número positivo.");
+                    ID = 0;
+                } else if (!salonesDisponbibles.contains(ID)) {
+                    System.out.println("El número del salon ingresado no está disponible. Por favor, elija un número de la lista.");
+                    ID = 0;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ingrese números por favor.");
+                leer.next(); // Limpiar el buffer del scanner
+            }
+
+        } while (ID == 0);
+
+        return ID;
+    }
 
    public int elegirSalon() {
         Scanner Leer = new Scanner(System.in);

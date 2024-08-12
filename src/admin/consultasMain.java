@@ -24,9 +24,9 @@ public class consultasMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       3) equipamiento         |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       4) equipos_eventos      |");
+            System.out.println("|       4) equipos_renta        |");
             System.out.println("|-------------------------------|");
-            System.out.println("|       5) equipos_renta        |");
+            System.out.println("|       5) equipos_eventos      |");
             System.out.println("|-------------------------------|");
             System.out.println("|       6) evento               |");
             System.out.println("|-------------------------------|");
@@ -42,10 +42,19 @@ public class consultasMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       12) servicios_renta     |");
             System.out.println("|-------------------------------|");
+            System.out.println("|       13) pago                |");
+            System.out.println("|-------------------------------|");
+            System.out.println("|       14) metodo_pago         |");
+            System.out.println("|-------------------------------|");
+            System.out.println("|       15) tarjetas            |");
+            System.out.println("|-------------------------------|");
+            System.out.println("|       16) tipo_servicio       |");
+            System.out.println("|-------------------------------|");
             System.out.println("|       0) salir                |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
 
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
             try{
                 opcion1 = Integer.parseInt(validar1);
@@ -109,6 +118,26 @@ public class consultasMain {
                     case 12:
                         MostrarServiciosRenta data12 = new MostrarServiciosRenta();
                         data12.showServiciosRenta();
+                    break;
+
+                    case 13:
+                        MostrarPago data13 = new MostrarPago();
+                        data13.showPagos();
+                    break;
+
+                    case 14:
+                        MostrarMetodoPago data14 = new MostrarMetodoPago();
+                        data14.showMetodoPago();
+                    break;
+
+                    case 15:
+                        MostrarTarjetas data15 = new MostrarTarjetas();
+                        data15.showTarjetas();
+                    break;
+
+                    case 16:
+                        MostrarTipoServicio data16 = new MostrarTipoServicio();
+                        data16.showTipoServicio();
                     break;
 
                     case 0:

@@ -92,8 +92,9 @@ public class ActualizarRenta {
 
         if(opcion3.equals("s")){
             do{
-                System.out.println("Seleccione la renta que sera modificado");
+                
                 renta.showRentas();
+                System.out.println("Seleccione la renta que sera modificado");
                 IDRenta = renta.elegirRenta();
         
                 System.out.println("Esta seguro de querer actualizar toda la informacion de la renta numero " + IDRenta + " (s/n)");

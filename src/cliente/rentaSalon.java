@@ -14,7 +14,7 @@ import conexionDB.ConexionBD;
 
 public class rentaSalon {
     LocalDate fechaHoy = LocalDate.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("HH:mm");
     DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     private String fechaReservacion = fechaHoy.format(formatter);
@@ -34,6 +34,7 @@ public class rentaSalon {
     private float total = 0f;
 
     private float monto = 0f;
+    private int invitados;
 
     public void reservacion(int NoCliente) {
         Scanner Leer = new Scanner(System.in);
@@ -53,10 +54,24 @@ public class rentaSalon {
             if (!respuesta.equals("s")) {
                 break;
             }
+
             do {
-                System.out.println("Primero elija un salón de su agrado:");
-                salones.showSalones();
-                IDSalon = salones.elegirSalon();
+                
+                System.out.println("Para cuantos invitados quiere su Reservacion?");
+
+                try {
+                    
+                    invitados = Leer.nextInt();
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    System.out.println("Ingresa numeros");
+                }
+            } while (invitados < 0);
+
+            do {
+                System.out.println("A continuacion elija un salón de su agrado:");
+                salones.showSalonesRenta(invitados);
+                IDSalon = salones.elegirSalonRenta();
 
                 if (IDSalon == 0) {
                     System.out.println("No ha seleccionado un salón válido.");
@@ -74,13 +89,16 @@ public class rentaSalon {
                 montajes.showMontajes(IDEvento);
                 IDMontaje = montajes.elegirMontaje();
 
+                Leer.nextLine();
 
                 salones.mostrarFechasNoPermitidas(IDSalon);
 
                 while (true) {
                     System.out.println("Ingrese la fecha en la que desea su evento (dd-MM-yy): ");
+                    
                     try {
                         String input = Leer.nextLine();
+                        salones.validarFecha(input, IDSalon);
                         LocalDate date = LocalDate.parse(input, formatter);
                         fechaInicio = date.format(formatter);
                         break;
@@ -93,6 +111,7 @@ public class rentaSalon {
                     System.out.println("Ingrese la fecha en la que desea terminar su evento (dd-MM-yy): ");
                     try {
                         String input = Leer.nextLine();
+                        salones.validarFecha(input, IDSalon);
                         LocalDate date = LocalDate.parse(input, formatter);
                         fechaFinal = date.format(formatter);
                         break;
@@ -105,9 +124,13 @@ public class rentaSalon {
                 while (true) {
                     try {
                         String input = Leer.nextLine();
-                        LocalTime time = LocalTime.parse(input, inputFormatter);
-                        horaInicio = time.format(outputFormatter);
-                        break;
+                        if (input.equals("24:00")) {
+                            System.out.println("Hora invalida, por favoor ingrese de nuevo la hora");
+                        }else{
+                            LocalTime time = LocalTime.parse(input, inputFormatter);
+                            horaInicio = time.format(outputFormatter);
+                            break;
+                        }
                     } catch (DateTimeParseException e) {
                         System.out.println("Hora inválida. Por favor, ingrese la hora en el formato HH:mm: ");
                     }
@@ -117,12 +140,30 @@ public class rentaSalon {
                 while (true) {
                     try {
                         String input = Leer.nextLine();
-                        LocalTime time = LocalTime.parse(input, inputFormatter);
-                        horaFinal = time.format(outputFormatter);
-                        break;
+                        if (input.equals("24:00")) {
+                            System.out.println("Hora invalida, por favoor ingrese de nuevo la hora");
+                        }else{
+                            LocalTime time = LocalTime.parse(input, inputFormatter);
+                            horaFinal = time.format(outputFormatter);
+                            break;
+                        }
                     } catch (DateTimeParseException e) {
                         System.out.println("Hora inválida. Por favor, ingrese la hora en el formato HH:mm: ");
                     }
+                }
+
+                System.out.println("La cantidad de invitados sera " + invitados + " ? (s/n)");
+                String resInvitados = Leer.next();
+
+                if (resInvitados.equals("n")) {
+                    System.out.println("Ingrese la cantidad de Invitados por favor");
+                    try {
+                        invitados = Leer.nextInt();  
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        System.out.println("Ingrese un numero por favor");
+                        Leer.nextLine();
+                    } 
                 }
 
                 try {
@@ -130,20 +171,21 @@ public class rentaSalon {
                     IVA = total - subtotal;
                     
                     conexion = ConexionBD.obtenerConexion();
-                    String sql = "INSERT INTO renta(fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, IVA, subtotal, total, montaje, salon, cliente, evento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    String sql = "INSERT INTO renta(numero, fechaReservacion, fechaInicio, fechaFinal, horaInicio, horaFinal, invitados, IVA, subtotal, total, montaje, salon, cliente, evento) VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement statement = conexion.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     statement.setString(1, fechaReservacion);
                     statement.setString(2, fechaInicio);
                     statement.setString(3, fechaFinal);
                     statement.setString(4, horaInicio);
                     statement.setString(5, horaFinal);
-                    statement.setFloat(6, IVA);
-                    statement.setFloat(7, subtotal);
-                    statement.setFloat(8, total);
-                    statement.setInt(9, IDMontaje);
-                    statement.setInt(10, IDSalon);
-                    statement.setInt(11, NoCliente);
-                    statement.setInt(12, IDEvento);
+                    statement.setInt(6, invitados);
+                    statement.setFloat(7, IVA);
+                    statement.setFloat(8, subtotal);
+                    statement.setFloat(9, total);
+                    statement.setInt(10, IDMontaje);
+                    statement.setInt(11, IDSalon);
+                    statement.setInt(12, NoCliente);
+                    statement.setInt(13, IDEvento);
 
                     int filasAfectadas = statement.executeUpdate();
                     if (filasAfectadas > 0) {

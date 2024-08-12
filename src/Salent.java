@@ -1,12 +1,8 @@
 import java.util.Scanner;
 
-import admin.MostrarMontaje;
 import admin.administradorMain;
 import cliente.AgregarCliente;
 import cliente.Cuenta;
-import cliente.MostrarEventos;
-import cliente.MostrarSalones;
-import cliente.MostrarServicios;
 import cliente.Reservaciones;
 import cliente.Servicios;
 import cliente.rentaSalon;
@@ -14,6 +10,7 @@ import cliente.rentaSalon;
 public class Salent {
 
     public static void main(String[] args) {
+        System.out.flush();
         Scanner Leer = new Scanner(System.in);
         
         int NoCliente = 0;
@@ -36,6 +33,7 @@ public class Salent {
                 System.out.println("|-------------------------------|");
                 System.out.println("================================");
 
+                System.out.println("Escriba el numero de la opción a elegir:");
                 Validar = Leer.next();
 
             try {
@@ -61,12 +59,12 @@ public class Salent {
 
                             
                                 do{
-                                    System.out.println("Ingrese la contraseña para ingresar a la vista de administrador");
+                                    System.out.println("Ingrese la contraseña para ingresar a la vista de administrador:");
                                     admin1 = Leer.next();
                                     
                                     if(!admin1.equals(admin)){
                                         System.out.println("Quieres salir de este apartado? (si/no)");
-                                        pass = Leer.nextLine();
+                                        pass = Leer.next();
 
                                         if(pass.equals("si")){
                                             pass2 = "si";
@@ -112,7 +110,7 @@ public class Salent {
                 System.out.println("|            0) Salir           |");
                 System.out.println("|-------------------------------|");
                 System.out.println("================================");
-
+                System.out.println("Escriba el numero de la opción a elegir:");
                 Validar = Leer.next();
 
                 try {

@@ -38,6 +38,7 @@ public class AgregarComplementos {
 
                         if (IDServicios > 0) {
                             AgregarServRentas(IDServicios, IDRenta);
+                            total = getTotalServicio(IDServicios);
                         } else {
                             System.out.println("ID de servicio inválido.");
                         }
@@ -57,6 +58,7 @@ public class AgregarComplementos {
                         System.out.println(precio);
 
                             AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
+                            total = getTotalEquipamiento(IDEquipamientos);
                         
                         break;
 
@@ -83,6 +85,50 @@ public class AgregarComplementos {
                         break;
                 }
         } while (opcion != 0);
+    }
+
+    public float getTotalServicio(int id){
+        float total = 0f;
+        Connection conexion = null;
+        String consulta = "SELECT precio FROM servicios WHERE numero = ?";
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, id);
+            ResultSet resultado = statement.executeQuery();
+
+            if (resultado.next()) {
+                precio = resultado.getFloat("precio");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+
+        return total;
+    }
+
+    public float getTotalEquipamiento(int id){
+        float total = 0f;
+        Connection conexion = null;
+        String consulta = "SELECT precio FROM equipamiento WHERE numero = ?";
+
+        try {
+            conexion = ConexionBD.obtenerConexion();
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, id);
+            ResultSet resultado = statement.executeQuery();
+
+            if (resultado.next()) {
+                precio = resultado.getFloat("precio");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+
+        return total;
     }
 
     public void menuComplementosReservacion(int IDRenta, int IDEvento) {
@@ -198,11 +244,11 @@ public class AgregarComplementos {
                 }
             }
     
-            subtotal = salon.getTotal(IDRenta);
+            total = salon.getTotal(IDRenta);
             
-            subtotal += precioServicio;
-            IVA = subtotal * 0.16f;
-            total = subtotal + IVA;
+            total += precioServicio;
+            subtotal = (total/1.16f);
+            IVA = total - subtotal;
     
             try (PreparedStatement statementInsert = conexion.prepareStatement(insertServiciosRenta)) {
                 statementInsert.setInt(1, IDServicios);
@@ -274,10 +320,11 @@ public class AgregarComplementos {
                 }
             }
     
-            float subtotal = salon.getTotal(IDRenta);
-            subtotal += importe;
-            float IVA = subtotal * 0.16f;
-            float total = subtotal + IVA;
+            float total = salon.getTotal(IDRenta);
+            
+            total += importe;
+            float subtotal = (total/1.16f);
+            float IVA = total - subtotal;
     
             try (PreparedStatement statementActualizarRenta = conexion.prepareStatement(actualizarRenta)) {
                 statementActualizarRenta.setFloat(1, subtotal);

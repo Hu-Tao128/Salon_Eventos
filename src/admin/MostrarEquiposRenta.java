@@ -20,9 +20,9 @@ public class MostrarEquiposRenta {
             ResultSet resultado = statement.executeQuery();
             
             System.out.println("Detalles de la relacion de equipos y renta");
-            System.out.println("================================================================");
-            System.out.printf("| %-10s | %-15s | %-15s | %-15s\n", "Equipamiento", "Renta", "Cantidad", "Importe");
-            System.out.println("================================================================");
+            System.out.println("===================================================================");
+            System.out.printf("| %-10s | %-15s | %-15s | %-15s | \n", "Equipamiento", "Renta", "Cantidad", "Importe");
+            System.out.println("===================================================================");
                 while (resultado.next()) {
                 // Obtener datos
                 int equipamiento = resultado.getInt("equipamiento");
@@ -31,11 +31,11 @@ public class MostrarEquiposRenta {
                 double importe = resultado.getDouble("importe");
 
                 // Imprimir datos en forma de tabla
-                System.out.printf("%-20d %-15s %-15s %-15s\n", 
+                System.out.printf("|%-13d | %-15s | %-15s | %-12s |\n", 
                     equipamiento, renta, cantidad, importe);
                 }
 
-                System.out.println("================================================================");
+                System.out.println("===================================================================");
 
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());

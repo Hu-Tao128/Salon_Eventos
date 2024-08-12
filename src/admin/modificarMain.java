@@ -29,10 +29,12 @@ public class modificarMain {
             System.out.println("|-------------------------------|");
             System.out.println("|       7) servicios            |");
             System.out.println("|-------------------------------|");
+            System.out.println("|       8) Tipos de servicios   |");
+            System.out.println("|-------------------------------|");
             System.out.println("|       0) salir                |");
             System.out.println("|-------------------------------|");
             System.out.println("================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
             try{
                 opcion1 = Integer.parseInt(validar1);
@@ -71,6 +73,11 @@ public class modificarMain {
                     case 7:
                         ActualizarServicios data7 = new ActualizarServicios();
                         data7.updateSalon();
+                    break;
+
+                    case 8:
+                        ActualizarTipoServicio data8 = new ActualizarTipoServicio();
+                        data8.updateTipoServicio();
                     break;
                     
                     case 0:

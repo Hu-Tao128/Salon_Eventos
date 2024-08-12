@@ -7,8 +7,11 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class AgregarServicios {
+    private int IDTiposServicios;
     public void agregarServiciosF(){
         Connection connection = null;
+
+        MostrarTipoServicio tiposServicios = new MostrarTipoServicio();
 
         Scanner datos = new Scanner(System.in);
         String opcion;
@@ -65,10 +68,16 @@ public class AgregarServicios {
                 System.out.println("Ingrese si esta disponible o no (1 = si/0 = no)");
                 disponibilidad = datos.nextInt();
 
+                System.out.println("Informacion de los tipos de servicios");
+                tiposServicios.showTipoServicio();
+                System.out.println("Escoje el numero del tipo de servicio al que pertenece el servicio");
+                IDTiposServicios = datos.nextInt();
+
                 System.out.println("Nombre del servicio: " + nombreServicio);
                 System.out.println("Descripcion: " + descripcion);
                 System.out.println("Precio del servicio: " + precio);
                 System.out.println("Disponibilidad: " + disponibilidad);
+                System.out.println("Tipo de servicio: " + IDTiposServicios);
     
                 do{
                     System.out.println("Escribio bien los datos? (s/n)");
@@ -93,6 +102,7 @@ public class AgregarServicios {
                                 System.out.println("[2] Descripcion: " + descripcion);
                                 System.out.println("[3] Precio del servicio: " + precio);
                                 System.out.println("[4] Disponibilidad: " + disponibilidad);
+                                System.out.println("[5] Tipo de servicio: " + IDTiposServicios);
                                 System.out.println("Ingrese el numero de la opcion a modificar");
                                 System.out.println("Ingrese 0 para salir de este apartado");
                                 opcion5 = datos.nextInt();
@@ -118,6 +128,13 @@ public class AgregarServicios {
                                     disponibilidad = datos.nextInt();
                                     break;
 
+                                    case 5:
+                                    System.out.println("Informacion de los tipos de servicios");
+                                    tiposServicios.showTipoServicio();
+                                    System.out.println("Escoje el numero del tipo de servicio al que pertenece el servicio");
+                                    IDTiposServicios = datos.nextInt();
+                                    break;
+
                                     case 0:
                                         System.out.println("Saliendo del apartado");
                                         opcion2 = "s";
@@ -127,7 +144,7 @@ public class AgregarServicios {
                                         System.out.println("Opcion no valida");
                                     break;
                                 }
-                                if(opcion5 > 0 && opcion5 < 3){
+                                if(opcion5 > 0 && opcion5 < 6){
                                     System.out.println("Cambio realizado");
                                 }
                             }while(opcion5 != 0);
@@ -151,12 +168,13 @@ public class AgregarServicios {
     
                 connection = ConexionBD.obtenerConexion();
                 
-                String agregarUsuario = "INSERT INTO servicios (numero, nombreServicio, descripcion, precio, disponibilidad) VALUES (null, ?, ?, ?, ?)";
+                String agregarUsuario = "INSERT INTO servicios (numero, nombreServicio, descripcion, precio, disponibilidad, tipoServicio) VALUES (null, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(agregarUsuario);
                 statement.setString(1, nombreServicio);
                 statement.setString(2, descripcion);
                 statement.setDouble(3, precio);
                 statement.setInt(4, disponibilidad);
+                statement.setInt(5, IDTiposServicios);
     
                 int filasAfectadas = statement.executeUpdate();
                 if (filasAfectadas > 0) {

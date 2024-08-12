@@ -23,7 +23,7 @@ public class MostrarRenta {
             ResultSet resultado = statement.executeQuery();
             
             System.out.printf("%-10s %-30s %-40s %-40s %-30s %-20s %-20s %-20s %-20s %-20s %-20s %-20s %-20s\n", 
-            "Numero", "Fecha reservacion", "Fecha de inicio", "Fecha de finalizacion", "Hora de inicio", "Hora de finalizacion", "IVA", "subtotal", "Total", "Montaje", "Salon", "Cliente", "Evento");
+            "Numero", "Fecha reservacion", "Fecha de inicio", "Fecha de finalizacion", "Hora de inicio", "Hora de finalizacion", "Invitados","IVA", "subtotal", "Total", "Montaje", "Salon", "Cliente", "Evento");
 
                 while (resultado.next()) {
                 // Obtener datos
@@ -33,6 +33,7 @@ public class MostrarRenta {
                 String fechaFinal = resultado.getString("fechaFinal");
                 String horaInicio = resultado.getString("horaInicio");
                 String horaFinal = resultado.getString("horaFinal");
+                int invitados = resultado.getInt("invitados");
                 double IVA = resultado.getDouble("IVA");
                 double subtotal = resultado.getDouble("subtotal");
                 double total = resultado.getDouble("total");
@@ -50,6 +51,7 @@ public class MostrarRenta {
                 System.out.printf("| %-25s | %-40s |\n", "Fecha finalizacion", fechaFinal);
                 System.out.printf("| %-25s | %-40s |\n", "Hora de inicio", horaInicio);
                 System.out.printf("| %-25s | %-40s |\n", "Hora de finalizacion", horaFinal);
+                System.out.printf("| %-25s | %-40s |\n", "Invitados", invitados);
                 System.out.printf("| %-25s | %-40s |\n", "IVA", IVA);
                 System.out.printf("| %-25s | %-40s |\n", "Subtotal", subtotal);
                 System.out.printf("| %-25s | %-40s |\n", "Total", total);
@@ -111,11 +113,9 @@ public class MostrarRenta {
             System.out.println("[10] Octubre");
             System.out.println("[11] Noviembre");
             System.out.println("[12] Diciembre");
-            
 
             do{
-                System.out.println("Escriba numero del mes correspondiente");
-                System.out.println("Escriba 0 para salir");
+                System.out.println("Escriba numero del mes correspondiente o 0 para salir");
                 IDMes = Leer.nextInt();
 
                 if(IDMes > 12){
@@ -165,8 +165,8 @@ public class MostrarRenta {
                     System.out.printf("| %-25s | %-40s |\n", "FechaInicio", FechaInicio);
                     System.out.printf("| %-25s | %-40s |\n", "Salon", Salon);
                     System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
-                    System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
-                    System.out.printf("| %-25s | %-40d |\n", "CantidadInvitados", CantidadInvitados);
+                    System.out.printf("| %-25s | %-40s |\n", "Tipo de Evento", TipoEvento);
+                    System.out.printf("| %-25s | %-40d |\n", "Cantidad de Invitados", CantidadInvitados);
                     System.out.println("========================================================================");
                 }
     
@@ -196,7 +196,7 @@ public class MostrarRenta {
             System.out.println("|        0) salir                |");
             System.out.println("|--------------------------------|");
             System.out.println("=================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
 
             try{

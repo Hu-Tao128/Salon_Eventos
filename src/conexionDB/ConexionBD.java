@@ -8,9 +8,9 @@ import java.sql.SQLException;
 
 public class ConexionBD {
     // Datos de conexión a la base de datos
-    private static final String URL = "jdbc:mysql://localhost:3306/salent";
-    private static final String USUARIO = "root";
-    private static final String CONTRASEÑA = "";
+    private static final String URL = "jdbc:mysql://192.168.20.7:3306/salent";
+    private static final String USUARIO = "luis";
+    private static final String CONTRASEÑA = "papa";
 
     // Método para establecer la conexión
     public static Connection obtenerConexion() {

@@ -37,7 +37,7 @@ public class MostrarEquipamiento {
                 int stock = resultado.getInt("stock");
 
                 // Imprimir datos en forma de tabla
-                System.out.printf("%-15d %-40s %-15s %-10s\n", 
+                System.out.printf("|%-10d | %-40s | %-10s | %-10s |\n", 
                                 numero, descripcion, precio, stock);
                 }
 
@@ -81,8 +81,9 @@ public class MostrarEquipamiento {
 
         Connection conexion = null;
    
-            System.out.println("Escoga el equipamiento al que quiere ver las reservaciones");
+            System.out.println("Lista de equipamientos");
             showEquipamiento();
+            System.out.println("Escoja el numero del equipamiento para ver las reservaciones que fue pedido");
             IDEquipamiento = Leer.nextInt();
         
         try {
@@ -127,9 +128,10 @@ public class MostrarEquipamiento {
 
             System.out.println("\n========================================================================");
             String DescripcionEquipo = resultado11.getString("DescripcionEquipo");
-            System.out.printf("| %-25s | %-40s |", "DescripcionEquipo", DescripcionEquipo);
+            double CostoEquipo = resultado11.getDouble("CostoEquipo");
+            System.out.printf("| %-25s | %-40s |\n", "Descripcion del Equipo", DescripcionEquipo);
+            System.out.printf("| %-25s | %-40.0f |", "CostoEquipo", CostoEquipo);
             System.out.println("\n========================================================================");
-
             ResultSet resultado12 = statement.executeQuery();
 
             // Iterar sobre el resultado de la consulta
@@ -140,16 +142,15 @@ public class MostrarEquipamiento {
                 String Cliente = resultado12.getString("Cliente");
                 String TipoEvento = resultado12.getString("TipoEvento");
                 int CapacidadInvitados = resultado12.getInt("CapacidadInvitados");
-                double CostoEquipo = resultado12.getDouble("CostoEquipo");
                 
-                System.out.println("\n========================================================================");
+                
                 System.out.printf("| %-25s | %-40d |\n", "Reservacion", Reservacion);
-                System.out.printf("| %-25s | %-40s |\n", "FechaReservacion", FechaReservacion);
+                System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservacion", FechaReservacion);
                 System.out.printf("| %-25s | %-40s |\n", "Salon", Salon);
                 System.out.printf("| %-25s | %-40s |\n", "Cliente", Cliente);
-                System.out.printf("| %-25s | %-40s |\n", "TipoEvento", TipoEvento);
-                System.out.printf("| %-25s | %-40d |\n", "CapacidadInvitados", CapacidadInvitados);
-                System.out.printf("| %-25s | %-40.0f |\n", "CostoEquipo", CostoEquipo);
+                System.out.printf("| %-25s | %-40s |\n", "Tipo de Evento", TipoEvento);
+                System.out.printf("| %-25s | %-40d |\n", "Capacidad de Invitados", CapacidadInvitados);
+                
                 System.out.println("========================================================================");
             }
 
@@ -179,7 +180,7 @@ public class MostrarEquipamiento {
             System.out.println("|        0) salir                |");
             System.out.println("|--------------------------------|");
             System.out.println("=================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
 
             try{

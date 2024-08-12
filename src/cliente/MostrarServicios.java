@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import admin.MostrarTipoServicio;
+
 import conexionDB.ConexionBD;
 
 public class MostrarServicios {
@@ -225,6 +227,67 @@ public class MostrarServicios {
         }
     }
 
+    public void consultaTiposServicios(){
+        Scanner Leer = new Scanner(System.in);
+
+        Connection conexion = null;
+
+        MostrarTipoServicio tpservis = new MostrarTipoServicio();
+   
+            System.out.println("Lista de tipos de servicios");
+            tpservis.showTipoServicio();
+            System.out.println("Escoja el numero del servicios en donde quiere ver todas las reservaciones que ha sido pedido el servicio:");
+            IDServicio = Leer.nextInt();
+        
+        try {
+            // Obtener la conexión
+            conexion = ConexionBD.obtenerConexion();
+            
+            // Consulta SQL para obtener datos de la tabla 'salon'
+            String consulta = "SELECT\r\n" +  
+                "ts.nombre AS DescripcionTipoServicio\r\n," +
+                "s.descripcion AS DescripcionServicio\r\n," +
+                "s.precio AS Precio\r\n" +
+                "FROM servicios AS s\r\n" + 
+                "INNER JOIN tipo_servicios AS ts ON s.tipoServicio = ts.numero\r\n" +
+                "WHERE ts.numero = ?";
+            PreparedStatement statement = conexion.prepareStatement(consulta);
+            statement.setInt(1, IDServicio);
+            ResultSet resultado12 = statement.executeQuery();
+            
+            // Encabezado de la tabla
+            /*System.out.println("========================================================================");
+            System.out.printf("| %-25s | %-40s |\n", "Datos", "Valor");
+            System.out.println("========================================================================");*/
+
+            System.out.println("Reservaciones donde se pidio el servicio numero: " + IDServicio);
+
+            resultado12.next();
+
+            System.out.println("\n===================================================================================");
+            String DescripcionTipoServicio = resultado12.getString("DescripcionTipoServicio");
+            System.out.printf("| %-35s | %-40s |", "Descripcion del tipo de servicio", DescripcionTipoServicio);
+            System.out.println("\n===================================================================================");
+
+            ResultSet resultado11 = statement.executeQuery();
+
+            // Iterar sobre el resultado de la consulta
+            while (resultado11.next()) {
+                String DescripcionServicio = resultado11.getString("DescripcionServicio");
+                int Precio = resultado11.getInt("Precio");
+                
+                System.out.printf("| %-35s | %-40s |\n", "Descripcion del servicio", DescripcionServicio);
+                System.out.printf("| %-35s | %-40d |\n", "Precio", Precio);
+                
+                
+                System.out.println("===================================================================================");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta: " + e.getMessage());
+        }
+    }
+
     public void menuServicios(){
         System.out.println("Bienvenido al menu de servicios");
 
@@ -242,10 +305,13 @@ public class MostrarServicios {
             System.out.println("|       2) Reservaciones para    |");
             System.out.println("|          el mismo servicio     |");
             System.out.println("|--------------------------------|");
+            System.out.println("|       3) Servicios del         |");
+            System.out.println("|          mismo tipo            |");
+            System.out.println("|--------------------------------|");
             System.out.println("|        0) salir                |");
             System.out.println("|--------------------------------|");
             System.out.println("=================================");
-
+            System.out.println("Escriba el numero de la opción a elegir:");
             validar1 = Leer.next();
 
             try{
@@ -258,6 +324,10 @@ public class MostrarServicios {
 
                     case 2:
                         consultaResServicio();
+                    break;
+
+                    case 3:
+                        consultaTiposServicios();
                     break;
 
                     case 0:

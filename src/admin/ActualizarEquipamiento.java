@@ -57,8 +57,9 @@ public class ActualizarEquipamiento {
         if(opcion3.equals("s")){
 
         do{
-            System.out.println("Seleccione el equipamiento que sera modificado");
+            
             equipamiento.showEquipamiento();
+            System.out.println("Seleccione el equipamiento que sera modificado");
             IDEquipamiento = equipamiento.elegirEquipamiento();
 
             System.out.println("Esta seguro de querer actualizar toda la informacion del equipamiento numero " + IDEquipamiento + " (s/n)");
