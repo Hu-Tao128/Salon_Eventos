@@ -1,28 +1,29 @@
 package cliente;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-
+import java.util.regex.Pattern;
 import conexionDB.ConexionBD;
 
 public class AgregarCliente {
 
     Cuenta perfil = new Cuenta();
-
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$");
+    private String opcion;
+    private String nombreFiscal = "";
+    private String Nombre;
+    private String primerApellido;
+    private String segundoApellido;
+    private String numTel;
+    private String email;
+    private int NoCliente = 0;
+    
     public int Formulario() {
         Connection connection = null;
-
         Scanner datos = new Scanner(System.in);
-        String opcion;
-        String nombreFiscal = "";
-        String Nombre;
-        String primerApellido;
-        String segundoApellido;
-        String numTel;
-        String email;
-        int NoCliente = 0;
         boolean valid = false;
 
         System.out.println("Bienvenido al Formulario para registrarse en Salent");
@@ -34,20 +35,31 @@ public class AgregarCliente {
 
             if (opcion.equalsIgnoreCase("s")) {
                 System.out.println("A que nombre de empresa quedaran los eventos?");
-                nombreFiscal = datos.next();
-                datos.nextLine();
-            }else{
+                nombreFiscal = datos.nextLine();
+            } else {
                 nombreFiscal = null;
             }
 
             System.out.println("Ingrese su nombre y segundo nombre (No Apellidos)");
             Nombre = datos.nextLine();
+            if (!isValidName(Nombre)) {
+                System.out.println("Nombre inválido. Debe contener solo letras.");
+                continue;
+            }
 
             System.out.println("Ingrese su primer apellido:");
             primerApellido = datos.nextLine();
+            if (!isValidName(primerApellido)) {
+                System.out.println("Primer apellido inválido. Debe contener solo letras.");
+                continue;
+            }
 
             System.out.println("Escriba su segundo apellido, si no tiene solo ponga 0");
             segundoApellido = datos.nextLine();
+            if (!segundoApellido.equals("0") && !isValidName(segundoApellido)) {
+                System.out.println("Segundo apellido inválido. Debe contener solo letras.");
+                continue;
+            }
 
             if (segundoApellido.equals("0")) {
                 segundoApellido = null;
@@ -65,7 +77,7 @@ public class AgregarCliente {
             if (opcion.equals("n")) {
                 valid = false;
                 break;
-            }else{
+            } else {
                 valid = true;
             }
 
@@ -89,8 +101,8 @@ public class AgregarCliente {
                     ResultSet generatedKeys = statement.getGeneratedKeys();
                     if (generatedKeys.next()) {
                         NoCliente = generatedKeys.getInt(1);
-                        System.out.println("Gracias por haberse resgistrado en Renta de Salones Salent.");
-                        System.out.println("A continuacion sus datos");
+                        System.out.println("Gracias por haberse registrado en Renta de Salones Salent.");
+                        System.out.println("A continuación sus datos:");
     
                         perfil.perfil(NoCliente);
                     }
@@ -101,10 +113,14 @@ public class AgregarCliente {
             } catch (SQLException e) {
                 System.out.println("Error al conectar a la base de datos o al insertar datos: " + e.getMessage());
             }
-        }else{
+        } else {
             System.out.println("Vuelva pronto");
         }
 
         return NoCliente;
+    }
+    
+    private boolean isValidName(String name) {
+        return NAME_PATTERN.matcher(name).matches();
     }
 }

@@ -96,22 +96,24 @@ public class Reservaciones {
     
             String consultaRenta = "SELECT " + 
                                     "   r.numero AS renta, " + 
-                                   "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " +
-                                   "   DATE_FORMAT(r.horaInicio, '%H:%i') AS HoraReservacion, " + 
-                                   "   CONCAT(c.nomContacto, ' ', c.primerApellido, ' ', IFNULL(c.segundoApellido, '')) AS NombreCliente, " +
-                                   "   e.numero AS evento, " +
-                                   "   e.nombre AS 'Tipo de evento', " +
-                                   "   s.nombre AS Salon, " +
-                                   "   CONCAT(s.dirCalle, ' ', s.dirNumero, ', ', s.dirColonia) AS Direccion, " +
-                                   "   m.nombreMontaje AS TipoMontaje, " +
-                                   "   r.invitados AS 'Cantidad de invitados', " +
-                                   "   r.total AS 'Costo Total' " +
-                                   "FROM salon AS s " +
-                                   "INNER JOIN renta AS r ON s.numero = r.salon " +
-                                   "INNER JOIN cliente AS c ON c.numero = r.cliente " +
-                                   "INNER JOIN evento AS e ON e.numero = r.evento " +
-                                   "INNER JOIN montaje AS m ON r.montaje = m.numero " +
-                                   "WHERE c.numero = ? AND r.numero = ?";
+                                    "   DATE_FORMAT(r.fechaReservacion, '%d-%m-%y') AS 'Fecha de reservacion', " +
+                                    "   DATE_FORMAT(r.horaInicio, '%H:%i') AS HoraReservacion, " + 
+                                    "   DATE_FORMAT(r.fechaInicio, '%d-%m-%y') AS 'Fecha de Inicio'," +
+                                    "   DATE_FORMAT(r.fechaFinal, '%d-%m-%y') AS 'Fecha Final'," +
+                                    "   CONCAT(c.nomContacto, ' ', c.primerApellido, ' ', IFNULL(c.segundoApellido, '')) AS NombreCliente, " +
+                                    "   e.numero AS evento, " +
+                                    "   e.nombre AS 'Tipo de evento', " +
+                                    "   s.nombre AS Salon, " +
+                                    "   CONCAT(s.dirCalle, ' ', s.dirNumero, ', ', s.dirColonia) AS Direccion, " +
+                                    "   m.nombreMontaje AS TipoMontaje, " +
+                                    "   r.invitados AS 'Cantidad de invitados', " +
+                                    "   r.total AS 'Costo Total' " +
+                                    "FROM salon AS s " +
+                                    "INNER JOIN renta AS r ON s.numero = r.salon " +
+                                    "INNER JOIN cliente AS c ON c.numero = r.cliente " +
+                                    "INNER JOIN evento AS e ON e.numero = r.evento " +
+                                    "INNER JOIN montaje AS m ON r.montaje = m.numero " +
+                                    "WHERE c.numero = ? AND r.numero = ?";
     
             try (PreparedStatement statement = conexion.prepareStatement(consultaRenta)) {
                 statement.setInt(1, NoCliente);
@@ -120,13 +122,15 @@ public class Reservaciones {
                 boolean valid = false;
     
                 int IDEvento = 0; 
-
+    
                 while (resultado.next()) {
                     valid = true;
-
+    
                     int numeroRenta = resultado.getInt("renta");
                     String fechaReservacion = resultado.getString("Fecha de reservacion");
                     String horaReservacion = resultado.getString("HoraReservacion");
+                    String fechaInicio = resultado.getString("Fecha de Inicio");
+                    String fechaFinal = resultado.getString("Fecha Final");
                     String cliente = resultado.getString("NombreCliente");
                     String tipoEvento = resultado.getString("Tipo de evento");
                     String salon = resultado.getString("Salon");
@@ -134,20 +138,22 @@ public class Reservaciones {
                     String montaje = resultado.getString("TipoMontaje");
                     int cantInvitados = resultado.getInt("Cantidad de invitados");
                     float costoTotal = resultado.getFloat("Costo Total");
-
+    
                     IDEvento = resultado.getInt("evento"); // Aquí dentro del bucle
-
+    
                     // Asumiendo que la dirección está en el formato "Calle Número, Colonia"
                     String[] direccionPartes = direccion.split(",\\s*");
                     String calleNumero = direccionPartes[0];  // "Calle Número"
                     String colonia = direccionPartes.length > 1 ? direccionPartes[1] : ""; // "Colonia"
-
+    
                     System.out.println("Detalles de la Renta:");
                     System.out.println("========================================================================");
                     System.out.printf("| %-25s | %-40s |\n", ("Reservacion: " + numeroRenta), cliente);
                     System.out.println("========================================================================");
-                    System.out.printf("| %-25s | %-40s |\n", "Fecha de Reservación", fechaReservacion);
+                    System.out.printf("| %-25s | %-40s |\n", "Reservado el dia", fechaReservacion);
                     System.out.printf("| %-25s | %-40s |\n", "Hora de Reservación", horaReservacion);
+                    System.out.printf("| %-25s | %-40s |\n", "Con fecha de Inicio", fechaInicio);
+                    System.out.printf("| %-25s | %-40s |\n", "y fecha Final", fechaFinal);
                     System.out.printf("| %-25s | %-40s |\n", "Tipo de Evento", tipoEvento);
                     System.out.printf("| %-25s | %-40s |\n", "Salón", salon);
                     System.out.printf("| %-25s | %-40s |\n", "Domicilio", "Calle:");
@@ -158,17 +164,15 @@ public class Reservaciones {
                     System.out.printf("| %-25s | %-40d |\n", "Cantidad de Invitados", cantInvitados);
                     System.out.printf("| %-25s | %-40.2f |\n", "Costo Total", costoTotal);
                     System.out.println("========================================================================");
-                    
-
+    
                     AgregarComplementos complementos = new AgregarComplementos();
                     complementos.menuComplementosReservacion(IDRenta, IDEvento);
                 }
-
+    
                 if (!valid) {
                     System.out.println("No encontramos datos de la renta o el número de la renta no te pertenece.");
                 }
-
-                
+    
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -176,7 +180,7 @@ public class Reservaciones {
             System.out.println("Error en la consulta: " + e.getMessage());
         }
     }
-
+    
     public float getTotal(int IDRenta) {
         String consultaTotal = "SELECT total FROM renta WHERE numero = ?";
         float total = 0f;
