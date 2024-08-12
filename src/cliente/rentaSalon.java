@@ -60,11 +60,12 @@ public class rentaSalon {
                 System.out.println("Para cuantos invitados quiere su Reservacion?");
 
                 try {
-                    
                     invitados = Leer.nextInt();
                 } catch (Exception e) {
                     // TODO: handle exception
                     System.out.println("Ingresa numeros");
+                    Leer.nextLine();
+                    invitados = -1;
                 }
             } while (invitados < 0);
 

@@ -38,7 +38,7 @@ public class AgregarComplementos {
 
                         if (IDServicios > 0) {
                             AgregarServRentas(IDServicios, IDRenta);
-                            total = getTotalServicio(IDServicios);
+                            total = total + getTotalServicio(IDServicios);
                         } else {
                             System.out.println("ID de servicio inválido.");
                         }
@@ -58,7 +58,7 @@ public class AgregarComplementos {
                         System.out.println(precio);
 
                             AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
-                            total = getTotalEquipamiento(IDEquipamientos);
+                            total += (cantidad * precio);
                         
                         break;
 
