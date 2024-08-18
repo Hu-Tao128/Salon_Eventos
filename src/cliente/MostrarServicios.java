@@ -14,6 +14,7 @@ import conexionDB.ConexionBD;
 public class MostrarServicios {
 
     private int IDServicio;
+    private int opcion1 = 0;
     
     // Método para mostrar servicios disponibles
     public void showServicios() {
@@ -156,7 +157,6 @@ public class MostrarServicios {
     
     
     public void consultaResServicio(){
-        String opcion = "";
 
         Scanner Leer = new Scanner(System.in);
 
@@ -294,7 +294,6 @@ public class MostrarServicios {
         Scanner Leer = new Scanner(System.in);
 
         String validar1;
-        int opcion1 = 0;
 
         do{
             System.out.println("=================================");

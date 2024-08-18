@@ -10,10 +10,11 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class MostrarEventos {
+    
+    private Scanner Leer = new Scanner(System.in);
+    private int IDEvento = 0;
+
     public void showEventos() {
-        Scanner leer = new Scanner(System.in);
-        int opcion;
-        int evento = 0;
         Connection conexion = null;
         try {
             // Obtener la conexión
@@ -48,8 +49,6 @@ public class MostrarEventos {
     
 
     public int elegirEvento() {
-        Scanner Leer = new Scanner(System.in);
-        int IDEvento = 0;
 
         do {
             System.out.println("Ingresar el número del evento:");

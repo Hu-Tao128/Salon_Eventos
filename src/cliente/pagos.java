@@ -18,7 +18,7 @@ public class pagos {
     private float restante;
     private String concepto;
 
-    private int contador;
+    private int contador = 0;
 
     Scanner Leer = new Scanner(System.in);
 
@@ -41,6 +41,8 @@ public class pagos {
                     concepto = "Abono";
                     System.out.println("Su restante sera de: " + restante);
                     registrarPago(total, concepto, monto, renta, metodoPago);
+                }else if (monto == 0) {
+                    opcion = true;
                 }else{
                     System.out.println("El pago es insuficiente");
                     monto = 0;
@@ -50,7 +52,9 @@ public class pagos {
                 System.out.println("A ocurrido un error, esta seguro que introdujo un numero?");
                 System.out.println("Si desea cancelar presione 0");
             }
-        } while (!opcion);
+            contador += 1;
+
+        } while (!opcion || contador < 3);
        
         return monto;
     }

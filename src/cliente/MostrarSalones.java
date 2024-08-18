@@ -16,7 +16,10 @@ import conexionDB.ConexionBD;
 
 public class MostrarSalones {
     private List<Integer> salonesDisponbibles = new ArrayList<>();
+    private Scanner Leer = new Scanner(System.in);
+    
     private int IDSalon;
+    private float precio = 0;
     
     public void showSalones() {
         Connection conexion = null;
@@ -106,40 +109,39 @@ public class MostrarSalones {
     
 
     public int elegirSalonRenta() {
-        Scanner leer = new Scanner(System.in);
-        int ID = 0;
+        IDSalon = 0;
 
         do {
             System.out.println("Ingresar el número de Salon:");
 
             try {
-                ID = leer.nextInt();
-                if (ID <= 0) {
+                IDSalon = Leer.nextInt();
+                if (IDSalon <= 0) {
                     System.out.println("El número de salon debe ser un número positivo.");
-                    ID = 0;
-                } else if (!salonesDisponbibles.contains(ID)) {
+                    IDSalon = 0;
+                } else if (!salonesDisponbibles.contains(IDSalon)) {
                     System.out.println("El número del salon ingresado no está disponible. Por favor, elija un número de la lista.");
-                    ID = 0;
+                    IDSalon = 0;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
-                leer.next(); // Limpiar el buffer del scanner
+                Leer.next(); // Limpiar el buffer del scanner
             }
 
-        } while (ID == 0);
+        } while (IDSalon == 0);
 
-        return ID;
+        return IDSalon;
     }
 
    public int elegirSalon() {
         Scanner Leer = new Scanner(System.in);
-        int ID = -1;
+        IDSalon = -1;
         boolean entradaValida = false;
 
         do {
             System.out.println("Ingresar el número de salón");
             try {
-                ID = Leer.nextInt();
+                IDSalon = Leer.nextInt();
                 Leer.nextLine(); 
                 entradaValida = true; 
             } catch (InputMismatchException e) {
@@ -148,12 +150,11 @@ public class MostrarSalones {
             }
         } while (!entradaValida);
 
-        return ID;
+        return IDSalon;
     }
 
     public float obtenerPrecioSalon(int numeroSalon) {
         Connection conexion = null;
-        float precio = 0;
 
         String consulta = "SELECT precio FROM salon WHERE numero = ?";
 
@@ -212,50 +213,35 @@ public class MostrarSalones {
     }
 
     public String validarFecha(String fecha, int IDSalon) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        sdf.setLenient(false); // Para asegurar que solo fechas válidas sean aceptadas
-    
-        try {
-            // Validar el formato de la fecha
-            java.util.Date fechaUsuarioUtil = sdf.parse(fecha);
-            java.sql.Date fechaUsuarioSQL = new java.sql.Date(fechaUsuarioUtil.getTime());
-    
-            // Obtener la conexión y preparar la consulta
-            try (Connection conexion = ConexionBD.obtenerConexion();
-                 PreparedStatement statement = conexion.prepareStatement(
-                         "SELECT fechaInicio, fechaFinal FROM renta WHERE salon = ?")) {
-    
-                statement.setInt(1, IDSalon);
-                ResultSet resultado = statement.executeQuery();
-    
-                while (resultado.next()) {
-                    Date fechaInicio = resultado.getDate("fechaInicio");
-                    Date fechaFinal = resultado.getDate("fechaFinal");
-    
-                    // Validar que la fecha del usuario no coincida con fechas ya reservadas
-                    if (fechaUsuarioSQL.equals(fechaInicio) || fechaUsuarioSQL.equals(fechaFinal) ||
-                        (fechaUsuarioSQL.after(fechaInicio) && fechaUsuarioSQL.before(fechaFinal))) {
-                        return "Fecha no disponible. Por favor, elija otra fecha.";
-                    }
+
+        // Obtener la conexión y preparar la consulta
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement statement = conexion.prepareStatement(
+                    "SELECT " + 
+                    "   DATE_FORMAT(fechaInicio, \"%d-%m-%y\") AS fechaInicio, " +
+                    "   DATE_FORMAT(fechaFinal, \"%d-%m-%y\") AS fechaFinal " +
+                    " FROM renta WHERE salon = ?")) {
+
+            statement.setInt(1, IDSalon);
+            ResultSet resultado = statement.executeQuery();
+
+            while (resultado.next()) {
+                String fechaInicio = resultado.getString("fechaInicio");
+                String fechaFinal = resultado.getString("fechaFinal");
+
+                // Validar que la fecha del usuario no coincida con fechas ya reservadas
+                if (fecha.equals(fechaFinal) || fecha.equals(fechaInicio)) {
+                    return "Fecha no disponible. Por favor, elija otra fecha.";
                 }
-    
-                // Si la fecha es válida, devolverla en el formato correcto
-                return sdf.format(fechaUsuarioSQL);
-    
-            } catch (SQLException e) {
-                return "Error al verificar las fechas reservadas: " + e.getMessage();
             }
-    
-        } catch (ParseException e) {
-            return "Formato de fecha inválido. Por favor, use el formato dd-MM-yyyy.";
+
+        } catch (SQLException e) {
+            return "Error al verificar las fechas reservadas: " + e.getMessage();
         }
+        return fecha;
     }    
     
     public void consultaResSalon(){
-
-        String opcion = "";
-
-        Scanner Leer = new Scanner(System.in);
 
         Connection conexion = null;
    
@@ -313,8 +299,6 @@ public class MostrarSalones {
     public void menuSalones(){
 
         System.out.println("Bienvenido al menu de salones");
-
-        Scanner Leer = new Scanner(System.in);
 
         String validar1;
         int opcion1 = 0;

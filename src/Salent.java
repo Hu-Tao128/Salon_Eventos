@@ -8,7 +8,6 @@ import cliente.Servicios;
 import cliente.rentaSalon;
 
 public class Salent {
-
     public static void main(String[] args) {
         Scanner Leer = new Scanner(System.in);
         

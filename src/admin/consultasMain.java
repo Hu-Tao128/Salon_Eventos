@@ -63,6 +63,8 @@ public class consultasMain {
                     case 1:
                         MostrarClientes data1 = new MostrarClientes();
                         data1.showClientes();
+                        int noCliente = data1.elegirCliente();
+                        
                     break;
 
                     case 2:

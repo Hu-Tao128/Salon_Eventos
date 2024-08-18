@@ -20,7 +20,7 @@ public class AgregarComplementos {
     MostrarServicios servicios = new MostrarServicios();
     Reservaciones salon = new Reservaciones();
 
-    public void menuComplementos(int IDRenta, int IDEvento, float total) {
+    public float menuComplementos(int IDRenta, int IDEvento, float total) {
         
         do {
             System.out.println("Su total es de " + total);
@@ -81,6 +81,8 @@ public class AgregarComplementos {
                     break;
             }
         } while (opcion != 0);
+
+        return total;
     }
 
     public float getTotalServicio(int id){

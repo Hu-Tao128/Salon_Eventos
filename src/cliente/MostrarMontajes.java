@@ -14,6 +14,9 @@ import conexionDB.ConexionBD;
 public class MostrarMontajes {
     private List<Integer> montajesDisponibles = new ArrayList<>();
 
+    private Scanner leer = new Scanner(System.in);
+    private int ID = 0;
+
     public void showMontajes(int evento) {
         Connection conexion = null;
     
@@ -65,8 +68,6 @@ public class MostrarMontajes {
     }
     
     public int elegirMontaje() {
-        Scanner leer = new Scanner(System.in);
-        int ID = 0;
 
         do {
             System.out.println("Ingresar el número de montaje:");

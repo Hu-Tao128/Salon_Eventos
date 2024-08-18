@@ -10,7 +10,11 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class MostrarEquipamientos {
-    Scanner Leer = new Scanner(System.in);
+    private Scanner Leer = new Scanner(System.in);
+
+    private int cantidad = 0;
+    private int ID = -1;
+    private float precio = 0f;
 
     public void showEquipamientos(int evento) {
         Connection conexion = null;
@@ -56,7 +60,6 @@ public class MostrarEquipamientos {
 
     public int elegirEquipamiento() {
         Scanner Leer = new Scanner(System.in);
-        int ID = -1;
 
         do {
             System.out.println("Ingresar el número del equipamiento:");
@@ -77,7 +80,6 @@ public class MostrarEquipamientos {
     }
 
     public int getCantidad(int IDEquipamientos) {
-        int cantidad = 0;
         Connection conexion = null;
 
         try {
@@ -125,7 +127,6 @@ public class MostrarEquipamientos {
     }
 
     public float getPrecio(int IDEquipamientos) {
-        float precio = 0f;
         Connection conexion = null;
     
             conexion = ConexionBD.obtenerConexion();

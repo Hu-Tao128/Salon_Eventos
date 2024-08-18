@@ -9,11 +9,10 @@ import java.util.Scanner;
 import conexionDB.ConexionBD;
 
 public class Cuenta {
-    private int NoCliente;
+    private int NoCliente = 0;
 
     public int InicioSesion(){
         Scanner leer = new Scanner(System.in);
-        int NoCliente = 0;
 
             System.out.println("Bienvenido, Por Favor Ingrese su Numero de Cliente");
             NoCliente = leer.nextInt();

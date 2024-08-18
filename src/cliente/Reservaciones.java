@@ -12,10 +12,10 @@ import conexionDB.ConexionBD;
 public class Reservaciones {
 
     Scanner Leer = new Scanner(System.in);
-    private int IDRenta;
+    private int IDRenta = -1;
+    private float total = 0f;
 
     public void verMisReservaciones(int NoCliente) {
-        int IDRenta = -1;
         do {
             System.out.println("Aquí se muestran las reservaciones que tiene registradas");
     
@@ -183,7 +183,6 @@ public class Reservaciones {
     
     public float getTotal(int IDRenta) {
         String consultaTotal = "SELECT total FROM renta WHERE numero = ?";
-        float total = 0f;
     
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement statement = conexion.prepareStatement(consultaTotal)) {

@@ -11,7 +11,7 @@ import conexionDB.ConexionBD;
 public class AgregarCliente {
 
     Cuenta perfil = new Cuenta();
-    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$");
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
     private String opcion;
     private String nombreFiscal = "";
     private String Nombre;
