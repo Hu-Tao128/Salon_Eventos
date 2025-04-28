@@ -164,7 +164,7 @@ public class OpcionesCuenta {
                 if (filasActualizadas > 0) {
                     System.out.println("Nombre de contacto actualizado exitosamente.");
                 } else {
-                    System.out.println("No se pudo actualizar el nombre de contacto. Verifique el número de cliente.");
+                    System.out.println("No se pudo actualizar el nombre de contacto.");
                 }
             }
 

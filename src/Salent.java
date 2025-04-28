@@ -145,16 +145,13 @@ public class Salent {
                     }
     
                 } catch (Exception e) {
-                    System.out.println("Por Favor, Ingrese los Numeros Indicados Por Favor");
+                    System.out.println("Ingrese los Numeros Indicados Por Favor");
                     Leer.nextLine();
                     Opcion = -1;
                 }
             }
 
         } while (Opcion != 0);
-        
-        /*InsertarDatos dato = new InsertarDatos();
-        dato.insertarDatosSalon();*/
     }
 
 }

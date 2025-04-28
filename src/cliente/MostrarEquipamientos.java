@@ -62,19 +62,23 @@ public class MostrarEquipamientos {
         Scanner Leer = new Scanner(System.in);
 
         do {
-            System.out.println("Ingresar el número del equipamiento:");
+            System.out.println("Ingresar el número del equipamiento, 0 para cancelar:");
             try {
                 ID = Leer.nextInt();
                 Leer.nextLine();
-                if (ID <= 0) {
+                if (ID < 0) {
                     System.out.println("El número del equipamiento debe ser un número positivo.");
                     ID = -1; 
+                }
+
+                if(ID == 0){
+                    System.out.println("Saliendo del Menu");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Ingrese números por favor.");
                 Leer.nextLine();
             }
-        } while (ID <= 0);
+        } while (ID < 0);
 
         return ID;
     }

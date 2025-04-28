@@ -25,9 +25,9 @@ public class MostrarEquipamiento {
             ResultSet resultado = statement.executeQuery();
             
             System.out.println("Detalles de los equipamientos");
-                System.out.println("=====================================================================================");
-                System.out.printf("| %-10s | %-40s | %-10s | %-10s |\n", "Número", "Descripcion", "Precio", "Stock");
-                System.out.println("=====================================================================================");
+                System.out.println("==================================================================================");
+                System.out.printf("| %-9s | %-40s | %-10s | %-10s |\n", "Número", "Descripcion", "Precio", "Stock");
+                System.out.println("==================================================================================");
 
                 while (resultado.next()) {
                 // Obtener datos
@@ -37,11 +37,11 @@ public class MostrarEquipamiento {
                 int stock = resultado.getInt("stock");
 
                 // Imprimir datos en forma de tabla
-                System.out.printf("|%-10d | %-40s | %-10s | %-10s |\n", 
+                System.out.printf("|%-10s | %-40s | %-10s | %-10s |\n", 
                                 numero, descripcion, precio, stock);
                 }
 
-                System.out.println("======================================================================================");
+                System.out.println("==================================================================================");
 
         } catch (SQLException e) {
             System.out.println("Error en la consulta: " + e.getMessage());

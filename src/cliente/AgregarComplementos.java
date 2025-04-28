@@ -134,7 +134,7 @@ public class AgregarComplementos {
         pagos pagoss = new pagos();
 
         do {
-                System.out.println("Desea agregar algún Servicio o Equipamiento?");
+                System.out.println("Que opcion desea realizar?");
                 System.out.println("1) Agregar Servicio");
                 System.out.println("2) Agregar Equipamiento");
                 System.out.println("3) Mostrar Servicios de mi renta");
@@ -164,14 +164,18 @@ public class AgregarComplementos {
                         equipamiento.showEquipamientos(IDEvento);
                         IDEquipamientos = equipamiento.elegirEquipamiento();
 
-                        cantidad = equipamiento.getCantidad(IDEquipamientos);
-
-                        MostrarEquipamientos precios = new MostrarEquipamientos();
-                        precio = precios.getPrecio(IDEquipamientos);
-
-                        System.out.println(precio);
-
-                            AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
+                        if(IDEquipamientos != 0){
+                            cantidad = equipamiento.getCantidad(IDEquipamientos);
+                            
+                            MostrarEquipamientos precios = new MostrarEquipamientos();
+                            precio = precios.getPrecio(IDEquipamientos);
+    
+                            System.out.println(precio);
+    
+                                AgregarEquipRenta(IDEquipamientos, IDRenta, cantidad, precio);
+                        }else{
+                            System.out.println("Volviendo...");
+                        }
                         
                         break;
 

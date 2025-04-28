@@ -46,6 +46,7 @@ public class Servicios {
                     break;
             
                 default:
+                    System.out.println("Ingrese un numero de los que se indican en el menu");
                     break;
             }
         } while (opcion != 0);

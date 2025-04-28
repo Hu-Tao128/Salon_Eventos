@@ -66,7 +66,7 @@ public class MostrarServicios {
                     return 0; // Salir del método si el usuario cancela
                 }
 
-                if (ID <= 0) {
+                if (ID < 0) {
                     System.out.println("El número del servicio debe ser un número positivo.");
                 } else if (!esServicioDisponible(ID)) {
                     System.out.println("El servicio seleccionado no está disponible. Por favor, elija otro.");
